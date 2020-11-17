@@ -1,0 +1,32 @@
+<apex:component controller="OpportunityNotificationCSRepCtrl" access="global">
+    
+    <apex:attribute name="clientServiceId" type="String" assignTo="{!clientService}" description="Client Service Id"/>
+    <apex:attribute name="advance" type="Integer" assignTo="{!notificationAdvance}" description="Number of days before opportunity CloseDate"/>
+    
+    <html>
+        <body>
+            <p>
+                Hello,
+                <br/>
+            </p>
+            
+            <apex:outputPanel rendered="{!ClosingOpportunities.size > 0}">
+                <p>
+                    Following Opportunities has not been Closed Won or Closed Lost.<br/>
+                    Please reach out to Client Contact to confirm if Campaigns are still confirmed to launch on &nbsp; <apex:outputField value="{!ClosingOpportunities[0].CloseDate}"/>.
+                </p>
+                
+                <c:OpportunityNotificationTable Opportunities="{!ClosingOpportunities}" instanceUrl="{!instanceUrl}"/>
+                
+            </apex:outputPanel>
+            
+            <p>
+                <br/>
+                Kind regards,
+                <br/>
+                Administration
+            </p>
+        </body>
+    </html>
+    
+</apex:component>

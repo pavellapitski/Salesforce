@@ -1,0 +1,56 @@
+<apex:page standardController="Contact_Opportunity__c" extensions="NewContactOpportunityController"
+           lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}"
+           recordSetVar="contactRoles" tabStyle="Opportunity">
+    <apex:form id="newContactRoles">
+        <apex:actionRegion >
+            <apex:pageMessages id="messages"/>
+            <apex:pageBlock >
+                <apex:pageBlockButtons >
+                    <apex:commandButton action="{!save}" value="Save" rerender="newContactRoles"/>
+                    <apex:commandButton action="{!cancel}" value="Cancel" rerender="newContactRoles" immediate="true"/>
+                </apex:pageBlockButtons>
+                <apex:pageBlockSection title="Contact Roles" collapsible="false" columns="1">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel styleClass="btn" onclick="addNewContactRole();">Add Contact</apex:outputLabel>
+                        <apex:actionRegion >
+                            <apex:outputPanel id="contactroles">
+                                <table class="list" border="1" cellpadding="0" cellspacing="0"
+                                       id="mainTable_Contact_Opportunity__c">
+                                    <tr class="headerRow">
+                                        <th>{!$objectType.Contact_Opportunity__c.Fields.Contact__c.Label}</th>
+                                        <th>{!$objectType.Contact_Opportunity__c.Fields.Role__c.Label}</th>
+                                        <th></th>
+                                    </tr>
+                                    <apex:variable var="contactRoleRow" value="{!0}"/>
+                                    <apex:repeat value="{!contactRoles}" var="contactRole">
+                                        <tr class="dataRow">
+                                            <td>
+                                                <apex:inputField value="{!contactRole.Contact__c}" required="false"/>
+                                            </td>
+                                            <td>
+                                                <apex:inputField value="{!contactRole.Role__c}"/>
+                                            </td>
+                                            <td>
+                                                <apex:outputLabel onclick="deleteContactRole('{!contactRoleRow}');"
+                                                                  styleClass="btn">
+                                                    <a>Del</a>
+                                                </apex:outputLabel>
+                                            </td>
+                                        </tr>
+                                        <apex:variable var="contactRoleRow" value="{!contactRoleRow+1}"/>
+                                    </apex:repeat>
+                                </table>
+                            </apex:outputPanel>
+                            <apex:actionFunction name="addNewContactRole" action="{!addNewContactRole}"
+                                                 reRender="contactroles" status="myStatus2"/>
+                        </apex:actionRegion>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:actionFunction action="{!deleteContactRole}" name="deleteContactRole" rerender="contactroles"
+                                 status="myStatus2">
+                <apex:param name="contactRoleRow" assignTo="{!contactRoleRow}" value=""/>
+            </apex:actionFunction>
+        </apex:actionRegion>
+    </apex:form>
+</apex:page>

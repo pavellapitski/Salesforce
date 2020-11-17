@@ -1,0 +1,703 @@
+<apex:component controller="PlanComponentCtrl" allowDML="true">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <apex:attribute name="contractRecId" assignTo="{!contractId}" type="String" required="true" description="Campaign Id (i.e. Contract record Id)" />
+    <apex:variable value="{!$User.UIThemeDisplayed == 'Theme4d'}" var="isLightningTheme" />
+    <apex:variable value="{!OR($Profile.Name ='System Administrator', $User.CanDeletePPs__c = True)}" var="canDeletePPs" />
+
+    <style type="text/css">
+        .extendedRow {
+            background-color: #F3F781;
+            border-bottom: 1px solid #e3deb8;
+        }
+        .wrongDate {
+            background-color: #CED8F6;
+            border-bottom: 1px solid #e3deb8;
+        }
+        .disabledCell {
+            background-color: #D3D9DB;
+            border-bottom: 1px solid #e3deb8;
+        }
+        .pbBody .messageCell {
+            margin: 6px 40px 6px 10px;
+            float: left;
+        }
+        .pbBody .msgIcon {
+            margin: auto 0;
+        }
+        .pbBody .message .infoM3 {
+            display: inline-flex;
+            width: 95%;
+        }
+        .pbBody .message .infoM3 .infoBtns {
+            padding: 2px 20px;
+            display: inline-block;
+            margin: auto 0;
+        }
+        .pbBody .message .infoM3 .infoBtns input {
+            min-width:  40px;
+        }
+        .arrowLink {
+            background-image: url({!$Resource.downarrow});
+            background-size: 18px;
+            background-repeat: no-repeat;
+            padding: 1px 0 1px 22px;
+            line-height: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .arrowLink span {
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+        /*tr .dataRow td {
+             border: 1px solid #ededed !important;
+        }*/
+        /* Highlight Payment row. Colors: #ecebea or #f8f8f8 */
+         .dataRow {
+             background-color: #f8f8f8  !important;
+         }
+        /* Picklists width */
+        td select {
+            min-width: 100px;
+        }
+        /* Inline Edit cells needs to be narrower */
+        span .inlineEditWrite {
+            white-space: break-spaces;
+        }
+        span .inlineEditWriteOn {
+            white-space: break-spaces;
+        }
+        /* Custom Styles */
+        .noTextWrap {
+            white-space: nowrap;
+        }
+        .textWrap {
+            white-space: break-spaces;
+        }
+        /* Table Headers 'L' -> Lightning Design System */
+        .headerText-L {
+            color: rgb(81, 79, 77);
+            font-weight: 700;
+            line-height: normal;
+            text-transform: uppercase;
+            letter-spacing: 0.0625rem;
+            font-size: .75rem
+        }
+        .headerText {
+            color: #000;
+            font-weight: bold;
+        }
+        /* Text for a cell in Lightning */
+        .textCell-L {
+            color: rgb(8, 7, 7);
+            font-size: .8125rem;
+        }
+    </style>
+
+    <apex:outputPanel id="planComponentPanel">
+        <script>
+            var isLightningTheme = {!isLightningTheme};
+        </script>
+        <p id="removeInlineEditFocus"></p>
+
+        <apex:pageBlock title="Payment Plan" mode="inlineEdit">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Reset to Defaults"
+                                    onclick="var res; res = window.confirm('Recreating Payment Plan will delete all existing data including Payments, Media Spend and View Delivery.\nAre you sure you wish to proceed?'); if (res == true) {recreatesObjects();}"
+                                    rendered="{!OR(PaymentsList.size == 0, ISNULL(PaymentsList[0].payment.Project__r.MinPaymentStartDate__c), PaymentsList[0].payment.Project__r.MinPaymentStartDate__c > TODAY())}"
+                                    styleClass="saveBtn" status="waitingStatus" reRender="none"/>
+                <apex:commandButton value="Save" onclick="onSaveClick({!project.Start_Date__c})" id="saveButton" style="display:none;" styleClass="paymentPlanSaveBtn" rerender="none"/>
+                <apex:commandButton value="New Payment" onclick="PaymentPlan.addPayment();" rerender="none"/>
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection columns="2" rendered="{!PaymentsList.size > 0}">
+                <apex:inlineEditSupport showOnEdit="saveButton, cancelButton" event="ondblclick" />
+                <apex:outputField value="{!project.Gaps_Exist_Between_Projects__c}"/>
+                <apex:outputField value="{!project.Start_Date__c}"/>
+                <apex:outputField value="{!project.Client_Spend__c}"/>
+                <apex:outputField value="{!project.End_Date__c}"/>
+                <apex:outputLabel />
+            </apex:pageBlockSection>
+
+            <apex:pageMessages id="paymentPlanMessages" escape="false"/>
+
+            <table class="{!IF(isLightningTheme, 'list slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered', 'list')}" border="0" cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th><a><apex:outputLabel onclick="PaymentPlan.expandAll();" style="text-decoration: underline;">Show<br/>Projects</apex:outputLabel></a></th>
+                        <th>Payments</th>
+                        <th>Start Date </th>
+                        <th>End Date</th>
+                        <th style="min-width:8rem">Client Spend</th>
+                        <th>Suggested<br/>Client Spend</th>
+                        <th style="min-width:7rem">Media<br/>Order</th>
+                        <th colspan="3"></th>
+                        <th style="min-width:7rem">Media<br/>Spend</th>
+                        <th>Invoice Amount</th>
+                        <th>Ad Serving<br/>Costs</th>
+                        <th>{!$objectType.Sub_Project__c.Fields.Checked__c.Label}</th>
+                        <th style="min-width:5rem">{!$objectType.Sub_Project__c.Fields.Paid__c.Label}</th>
+                        <apex:outputLabel rendered="{!project.Discount_Terms__c}"><th>Discount<br/>Violation</th></apex:outputLabel>
+                        <th>Invoice</th>
+                        <apex:outputLabel rendered="{!$objectType.Sub_Project__c.Fields.Xero_Invoice__c.Accessible}">
+                            <th>{!$objectType.Sub_Project__c.Fields.Xero_Invoice__c.Label}</th>
+                        </apex:outputLabel>
+                        <apex:outputLabel rendered="{!canDeletePPs}"><th>Action</th></apex:outputLabel>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <apex:variable var="paymentRow" value="{!0}" />
+                    <apex:repeat value="{!PaymentsList}" var="paymentWrapper">
+                        <tr class="dataRow" onblur="if(window.hiOff){hiOff(this);}" onfocus="if(window.hiOn){hiOn(this);}" onmouseout="if(window.hiOff){hiOff(this);}" onmouseover="if(window.hiOn){hiOn(this);}" >
+                            <apex:inlineEditSupport showOnEdit="saveButton, cancelButton" event="ondblclick"/>
+                            <td>
+                                <apex:outputLabel rendered="{!NOT(ISBLANK(paymentWrapper.payment.Id))}">
+                                    <apex:outputLabel rendered="{!IF(CONTAINS(expandedPayments, paymentWrapper.payment.Id), false, true)}" onclick="PaymentPlan.showProjects('{!paymentWrapper.payment.Id}');">
+                                        <a class="arrowLink">
+                                            <span>({!IF(paymentToProjectsNumberMap[paymentWrapper.payment.Id] != null, paymentToProjectsNumberMap[paymentWrapper.payment.Id], '')})</span>
+                                        </a>
+                                    </apex:outputLabel>
+                                    <apex:outputLabel rendered="{!IF(CONTAINS(expandedPayments, paymentWrapper.payment.Id), true, false)}" onclick="PaymentPlan.hideProjects('{!paymentWrapper.payment.Id}');">
+                                        <a style="cursor: pointer;"><apex:image alt="Hide Projects" url="{!$Resource.toparrow}" width="22" title="Hide Projects"/></a>
+                                    </apex:outputLabel>
+                                </apex:outputLabel>
+                            </td>
+                            <td>
+                                <apex:outputLink rendered="{!NOT(ISBLANK(paymentWrapper.payment.Id))}" value="{!URLFOR($Action.Sub_Project__c.View, paymentWrapper.payment.Id)}" target="_blank">
+                                View
+                                </apex:outputLink>
+                            </td>
+                            <td class="{!IF(paymentWrapper.payment.Start_Date__c != null && project['Start_Date__c'] != null && paymentWrapper.payment.Start_Date__c < project['Start_Date__c'], "extendedRow", IF(AND(!ISBLANK(paymentWrapper.payment.Id), isStartDateCorrect[paymentWrapper.payment.Id] == false), "wrongDate", ""))}">
+                                <apex:outputField value="{!paymentWrapper.payment.Start_Date__c}" styleClass="slds-truncate"/>
+                            </td>
+                            <td class="{!IF(paymentWrapper.payment.End_Date__c != null && project['Start_Date__c'] != null && paymentWrapper.payment.End_Date__c > project['End_Date__c'], "extendedRow", IF(AND(!ISBLANK(paymentWrapper.payment.Id), isEndDateCorrect[paymentWrapper.payment.Id] == false), "wrongDate", ""))}">
+                                <apex:outputField value="{!paymentWrapper.payment.End_Date__c}" styleClass="slds-truncate"/>
+                            </td>
+                            <td class="clientSpendField" recId="{!paymentWrapper.payment.Id}">
+                                <apex:outputField value="{!paymentWrapper.payment.Client_Spend__c}" />
+                            </td>
+                            <td><span class="textWrap"><apex:outputField value="{!paymentWrapper.payment.Suggested_Client_Spend__c}" /></span></td>
+                            <td><span class="textWrap"><apex:outputField value="{!paymentWrapper.payment.Media_Order__c}" /></span></td>
+                            <td colspan="3"></td>
+                            <td><span class="textWrap"><apex:outputField value="{!paymentWrapper.payment.AdWordsSpend__c}" /></span></td>
+                            <td><apex:outputField value="{!paymentWrapper.payment.Invoice_Amount__c}"/></td>
+                            <td><apex:outputField value="{!paymentWrapper.payment.Ad_Serving_Costs__c}" /></td>
+                            <td><apex:outputField value="{!paymentWrapper.payment.Checked__c}" /></td>
+                            <td><apex:outputField value="{!paymentWrapper.payment.Paid__c}" /></td>
+
+                            <apex:outputLabel rendered="{!AND($objectType.Sub_Project__c.Fields.Discount_Violation__c.Accessible, paymentWrapper.payment.BillingConditionDiscountTerms__c != NULL, paymentWrapper.payment.BillingConditionDiscountTerms__c > 0)}">
+                                <td><apex:outputField value="{!paymentWrapper.payment.Discount_Violation__c}"/></td>
+                            </apex:outputLabel>
+
+                            <td>
+                                <apex:outputPanel rendered="{!AND(ISBLANK(project.Xero_ID__c), ISBLANK(project.Account__r.Xero_Id__c))}">
+                                    Not Synced With Xero
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!OR(NOT(ISBLANK(project.Xero_ID__c)), NOT(ISBLANK(project.Account__r.Xero_Id__c)))}">
+                                    <apex:outputText value="Missing Media Spends" rendered="{!AND(NOT(paymentWrapper.payment.MediaSpendAssigned__c), paymentWrapper.payment.PaymentType__c != '100% Upfront')}" />
+
+                                    <apex:outputLabel rendered="{!OR(paymentWrapper.payment.MediaSpendAssigned__c, paymentWrapper.payment.PaymentType__c == '100% Upfront')}">
+                                        <apex:outputLabel rendered="{!paymentWrapper.payment.InvoicingLocked__c}">
+                                            Invoicing locked until  <apex:outputField value="{!paymentWrapper.payment.LockedUntil__c}"/>
+                                        </apex:outputLabel>
+                                        <apex:outputLabel rendered="{!NOT(paymentWrapper.payment.InvoicingLocked__c)}">
+                                            <apex:outputLabel styleClass="btn" onclick="PaymentPlan.invoice('{!paymentWrapper.payment.Id}', {!paymentWrapper.inconsistentSpends});" rendered="{!ISBLANK(paymentWrapper.payment.XeroStatus__c)}">
+                                                Invoice
+                                            </apex:outputLabel>
+                                            <apex:outputLabel rendered="{!AND(NOT(ISBLANK(paymentWrapper.payment.XeroStatus__c)), CONTAINS(paymentWrapper.payment.XeroStatus__c, 'Submitted'))}">
+                                                Invoice Submitted
+                                            </apex:outputLabel>
+                                            <apex:outputLabel rendered="{!AND(NOT(ISBLANK(paymentWrapper.payment.XeroStatus__c)), CONTAINS(paymentWrapper.payment.XeroStatus__c, 'Authorised'))}">
+                                                <apex:outputLabel rendered="{!NOT(paymentWrapper.payment.HasPendingCreditNotes__c)}">
+                                                    <a href="/{!$objectType.CreditNote__c.KeyPrefix}/e?paymentId={!paymentWrapper.payment.Id}" target="_blank">
+                                                       Revise
+                                                    </a>
+                                                </apex:outputLabel>
+                                                <apex:outputLabel rendered="{!paymentWrapper.payment.HasPendingCreditNotes__c}">
+                                                    Awaiting CN Approval
+                                                </apex:outputLabel>
+                                            </apex:outputLabel>
+                                            <apex:outputLabel rendered="{!AND(NOT(ISBLANK(paymentWrapper.payment.XeroStatus__c)), CONTAINS(paymentWrapper.payment.XeroStatus__c, 'Paid'))}">
+                                                Paid
+                                            </apex:outputLabel>
+                                        </apex:outputLabel>
+                                    </apex:outputLabel>
+                                </apex:outputPanel>
+                            </td>
+
+                            <td><apex:outputField value="{!paymentWrapper.payment.Xero_Invoice__c}"/></td>
+
+                            <apex:outputLabel rendered="{!canDeletePPs}">
+                                <td>
+                                    <apex:outputPanel rendered="{!AND(PaymentsList.size > 0, NOT(ISBLANK(paymentWrapper.payment.Id)))}">
+                                        <span>Del</span>
+                                        <apex:inputCheckbox value="{!paymentWrapper.deletePayment}" onclick="PaymentPlan.delPayment('{!paymentWrapper.payment.Id}');"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!ISBLANK(paymentWrapper.payment.Id)}">
+                                        <apex:commandButton value="Cancel" onclick="PaymentPlan.cancelNewPayment('{!paymentRow}');" rerender="none"/>
+                                    </apex:outputPanel>
+                                </td>
+                            </apex:outputLabel>
+                        </tr>
+
+                        <apex:outputLabel rendered="{!IF(AND(!ISBLANK(paymentWrapper.payment.Id), CONTAINS(expandedPayments, paymentWrapper.payment.Id)), true, false)}">
+                            <tr>
+                                <th colspan="2" style="text-align: right;"><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.labelPlural}:</span></th>
+                                <th colspan="{!IF(canDeletePPs, 17, 16)}">
+                                    <apex:commandButton value="New Project" onclick="PaymentPlan.addProject('{!paymentWrapper.payment.Id}');" rendered="{!NOT($Profile.Name='Sales User')}" rerender="none" />
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="2"></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.Start_Date__c.Label}</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.End_Date__c.Label}</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.Client_Spend__c.Label}</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">Suggested<br/>Client Spend</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.Media_Order__c.Label}</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.UnitCost__c.Label}</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">Ordered</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.AmountDelivered__c.Label}</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">Media<br/>Spend</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.InvoiceAmount__c.Label}</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Platform__c.Label}</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.CostStructure__c.Label}</span></th>
+                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.Media_Buyer__c.Label}</span></th>
+                                <th colspan="{!IF(canDeletePPs, 3, 2)}"><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">Creatives</span></th>
+                            </tr>
+
+                            <apex:variable var="projectRow" value="{!-1}" />
+                            <apex:repeat value="{!expandedProjectsByPaymentId[paymentWrapper.payment.Id]}" var="projWrapper">
+                                <apex:variable var="projectRow" value="{!projectRow+1}"/>
+                                <tr >
+                                    <td colspan="2" style="text-align: right;"><a href="/{!projWrapper.project.Id}" target="_blank">{!projWrapper.project.StrikeIdFormula__c}</a></td>
+                                    <td><apex:outputField value="{!projWrapper.project.Start_Date__c}"/></td>
+                                    <td><apex:outputField value="{!projWrapper.project.End_Date__c}"/></td>
+                                    <td><span class="textWrap"><apex:outputField value="{!projWrapper.project.Client_Spend__c}"/></span></td>
+                                    <td><span class="textWrap"><apex:outputField value="{!projWrapper.project.SuggestedSpend__c}"/></span></td>
+                                    <td><span class="textWrap"><apex:outputField value="{!projWrapper.project.Media_Order__c}"/></span></td>
+                                    <apex:outputLabel rendered="{!OR(NOT(projWrapper.project.VariableUnitCost__c), projWrapper.project.OpportunityPlatform__r.NoCostStructure__c)}">
+                                        <td class="disabledCell">
+                                            <apex:outputLabel rendered="{!NOT(projWrapper.project.OpportunityPlatform__r.NoCostStructure__c)}" styleClass="{!IF(isLightningTheme, 'textCell-L', '')}">
+                                                {!projWrapper.project.CurrencyIsoCode} {!projWrapper.project.UnitCost__c}
+                                            </apex:outputLabel>
+                                        </td>
+                                    </apex:outputLabel>
+                                    <apex:outputLabel rendered="{!AND(projWrapper.project.VariableUnitCost__c, NOT(projWrapper.project.OpportunityPlatform__r.NoCostStructure__c))}" ondblclick="PaymentPlan.toggleUnitCost({!paymentRow}, {!projectRow});">
+                                        <td >
+                                            <apex:outputLabel styleClass="unitCost{!paymentRow}-{!projectRow}" style="display: none;">
+                                                <apex:inputField value="{!projWrapper.project.UnitCost__c}"/>
+                                            </apex:outputLabel>
+                                            <apex:outputLabel styleClass="unitCost{!paymentRow}-{!projectRow}">
+                                                <apex:outputText value="{!projWrapper.project.CurrencyIsoCode} {0, number, 0.0000}" styleClass="{!IF(isLightningTheme, 'textCell-L', '')}">
+                                                    <apex:param value="{!projWrapper.project.UnitCost__c}" />
+                                                </apex:outputText>
+                                            </apex:outputLabel>
+                                        </td>
+                                    </apex:outputLabel>
+                                    <td><apex:outputField value="{!projWrapper.project.Quantity__c}"/></td>
+                                    <apex:outputLabel rendered="{!AND(AND(NOT(ISNULL(projWrapper.project.AmountDelivered__c)), projWrapper.project.AmountDelivered__c > 0), NOT(ISBLANK(projWrapper.project.Quantity__c)))}">
+                                        <td style="{!IF(projWrapper.project.AmountDelivered__c < projWrapper.project.Quantity__c, 'background-color: #f78383;', 'background-color: #96c796;')}">
+                                            <span class="{!IF(isLightningTheme, 'textCell-L', '')}"><apex:outputField value="{!projWrapper.project.AmountDelivered__c}" styleClass=""/></span>
+                                        </td>
+                                    </apex:outputLabel>
+                                    <apex:outputLabel rendered="{!OR(ISNULL(projWrapper.project.AmountDelivered__c), NOT(projWrapper.project.AmountDelivered__c > 0), ISBLANK(projWrapper.project.Quantity__c))}">
+                                        <td><span class="textWrap"><apex:outputField value="{!projWrapper.project.AmountDelivered__c}"/></span></td>
+                                    </apex:outputLabel>
+
+                                    <td><span class="textWrap"><apex:outputField value="{!projWrapper.project.AdWordsSpend__c}"/></span></td>
+                                    <td><span class="textWrap"><apex:outputField value="{!projWrapper.project.InvoiceAmount__c}"/></span></td>
+                                    <td>
+                                        <apex:selectList value="{!projWrapper.project.OpportunityPlatform__c}" onchange="PaymentPlan.updatePlatform('{!paymentWrapper.payment.Id}','{!projectRow}');" multiselect="false" size="1" >
+                                            <apex:selectOptions value="{!availablePlatforms}"/>
+                                        </apex:selectList>
+                                    </td>
+                                    <td>
+                                        <apex:outputPanel rendered="{!projWrapper.project.Id != null}">
+                                            <apex:selectList value="{!projWrapper.project.CostStructure__c}" onchange="PaymentPlan.updateCostStructure('{!paymentWrapper.payment.Id}','{!projectRow}');" multiselect="false" size="1"
+                                                             rendered="{!!projWrapper.project.OpportunityPlatform__r.NoCostStructure__c}">
+                                                <apex:selectOptions value="{!projWrapper.availableCostStructures}"/>
+                                            </apex:selectList>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!projWrapper.project.Id == null}">
+                                            <apex:selectList value="{!projWrapper.project.CostStructure__c}" multiselect="false" size="1" onchange="PaymentPlan.updateCostStructure('{!paymentWrapper.payment.Id}','{!projectRow}');"
+                                                             rendered="{!!projWrapper.project.OpportunityPlatform__r.NoCostStructure__c}">
+                                                <apex:selectOptions value="{!projWrapper.availableCostStructures}"/>
+                                            </apex:selectList>
+                                        </apex:outputPanel>
+                                    </td>
+
+                                    <td>
+                                        <apex:outputField value="{!projWrapper.project.Media_Buyer__c}" />
+                                    </td>
+                                    <td colspan="2">
+                                        <apex:outputpanel styleClass="{!paymentWrapper.payment.Id}-{!projectRow}-creativesDiv" layout="block" style="border: 1px solid #ff000000; min-height:1rem" rendered="{!projWrapper.creativesOptions.size > 0}">
+                                            <apex:repeat value="{!projWrapper.creativesOptions}" var="creative">
+                                                <p>
+                                                    <apex:outputPanel style="{!IF(creative.isSelected,'','display:none')}" >
+                                                        <label class="noTextWrap">
+                                                            <apex:inputcheckbox value="{!creative.isSelected}" onChange="showSave()"
+                                                                                styleClass="cChbx-{!paymentWrapper.payment.Id}-{!projectRow} creativeId-{!creative.creativeId}"
+                                                            />
+                                                            <apex:outputPanel styleClass="slds-checkbox‐‐faux" />
+                                                            <apex:outputPanel styleClass="slds-form-element__label" onClick="return false;">{!creative.name}</apex:outputPanel>
+                                                        </label>
+                                                    </apex:outputPanel>
+                                                </p>
+                                            </apex:repeat>
+                                            <apex:actionSupport event="ondblclick" onsubmit="toggleCreativeCheckboxes('{!paymentWrapper.payment.Id}','{!projectRow}');" reRender=""/>
+                                        </apex:outputpanel>
+                                    </td>
+
+                                    <apex:outputLabel rendered="{!canDeletePPs}">
+                                        <td >
+                                            <apex:outputPanel rendered="{!NOT(ISNULL(projWrapper.project.Id))}">
+                                                <span>Del</span>
+                                                <apex:repeat value="{!deleteProjectsMap}" var="key">
+                                                    <apex:outputText rendered="{!key==projWrapper.project.Id}">
+                                                        <apex:inputCheckbox value="{!deleteProjectsMap[projWrapper.project.Id]}" onclick="PaymentPlan.delProject('{!projWrapper.project.Id}');"/>
+                                                    </apex:outputText>
+                                                </apex:repeat>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!ISNULL(projWrapper.project.Id)}">
+                                                <apex:commandButton value="Cancel" onclick="PaymentPlan.cancelNewProject('{!paymentWrapper.payment.Id}','{!projectRow}');" rerender="none"/>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </apex:outputLabel>
+                                </tr>
+                            </apex:repeat>
+
+                            <tr><td colspan="{!IF(canDeletePPs, 19, 18)}"></td></tr>
+                        </apex:outputLabel>
+
+                        <apex:variable var="paymentRow" value="{!paymentRow+1}"/>
+                    </apex:repeat>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td style="text-align: right;" class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}" colspan="2">Summary:</td>
+                        <td><apex:outputText value="{0,date, M/d/yyyy}" styleClass="{!IF(isLightningTheme, 'textCell-L', '')}"><apex:param value="{!project.Start_Date__c}" /></apex:outputText></td>
+                        <td><apex:outputText value="{0,date, M/d/yyyy}" styleClass="{!IF(isLightningTheme, 'textCell-L', '')}"><apex:param value="{!project.End_Date__c}" /></apex:outputText></td>
+                        <td colspan="6"></td>
+                        <td><span class="{!IF(isLightningTheme, 'textCell-L textWrap', 'textWrap')}"><apex:outputField value="{!project.AdWords_Spend__c}"/></span></td>
+                        <td><span class="{!IF(isLightningTheme, 'textCell-L textWrap', 'textWrap')}"><apex:outputField value="{!Project.Invoice_Amount_Roll_Up__c}"/></span></td>
+                        <td colspan="6"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </apex:pageBlock>
+    </apex:outputPanel>
+
+    <apex:actionRegion >
+        <apex:actionFunction action="{!showProjectsForPayment}" name="showProjectsForPayment" rerender="planComponentPanel" oncomplete="onCompleteShowProject();">
+            <apex:param name="paymentId" assignTo="{!paymentId}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction action="{!showProjectsForAllPayments}" name="showProjectsForAllPayments" rerender="planComponentPanel" oncomplete="onCompleteShowProject();">
+        </apex:actionFunction>
+        <apex:actionFunction action="{!hideProjectsForPayment}" name="hideProjectsForPayment" rerender="planComponentPanel" oncomplete="onCompleteShowProject();">
+            <apex:param name="paymentId" assignTo="{!paymentId}" value="" />
+        </apex:actionFunction>
+
+        <apex:actionFunction action="{!paymentDeleteChanged}" name="paymentDeleteChanged" rerender="paymentPlanMessages" oncomplete="showSave(); PaymentPlan.hideSpinner(); resizeIFrame();">
+            <apex:param name="paymentId" assignTo="{!paymentId}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction action="{!projectDeleteChanged}" name="projectDeleteChanged" rerender="paymentPlanMessages" oncomplete="showSave(); PaymentPlan.hideSpinner(); resizeIFrame(); ">
+            <apex:param name="projectId" assignTo="{!projectId}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="clientSpendChange" action="{!onClientSpendChange}" oncomplete="PaymentPlan.hideSpinner();">
+            <apex:param name="recIdWithChangedClientSpend" value="" assignTo="{!recIdWithChangedClientSpend}"/>
+        </apex:actionFunction>
+        <apex:actionFunction name="recreatesObjects" action="{!recreatesObjects}" reRender="planComponentPanel" oncomplete="onCompleteShowProject();"/>
+
+        <apex:actionFunction name="addNewPayment" action="{!addNewPayment}" reRender="planComponentPanel" oncomplete="showSave(); PaymentPlan.hideSpinner();"/>
+        <apex:actionFunction name="addNewProject" action="{!addNewProject}" rerender="planComponentPanel" oncomplete="showSave(); onCompleteShowProject();">
+            <apex:param name="paymentId" assignTo="{!paymentId}" value="" />
+        </apex:actionFunction>
+
+        <apex:actionFunction action="{!cancelNewPayment}" name="cancelPayment" rerender="planComponentPanel" oncomplete="showSave(); onCompleteShowProject();">
+            <apex:param name="paymentRow" assignTo="{!paymentRow}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction action="{!cancelNewProject}" name="cancelNewProject" rerender="planComponentPanel" oncomplete="onCompleteShowProject();">
+            <apex:param name="paymentId" assignTo="{!paymentId}" value="" />
+            <apex:param name="projectRow" assignTo="{!projectRow}" value="" />
+        </apex:actionFunction>
+   </apex:actionRegion>
+
+    <apex:actionFunction action="{!projectPlatformUpdated}" name="projectPlatformUpdated" rerender="planComponentPanel" oncomplete="showSave(); onCompleteShowProject();">
+        <apex:param name="paymentId" assignTo="{!paymentId}" value="" />
+        <apex:param name="projectRow" assignTo="{!projectRow}" value="" />
+    </apex:actionFunction>
+    <apex:actionFunction action="{!projectCostStructureUpdated}" name="projectCostStructureUpdated" rerender="planComponentPanel" oncomplete="showSave(); onCompleteShowProject();">
+        <apex:param name="paymentId" assignTo="{!paymentId}" value="" />
+        <apex:param name="projectRow" assignTo="{!projectRow}" value="" />
+    </apex:actionFunction>
+
+    <apex:actionFunction name="saveRecords" action="{!saveObjects}" rerender="{!IF(errorOccurred, 'paymentPlanMessages', 'planComponentPanel, paymentPlanMessages')}" onComplete="onCompleteShowProject();"/>
+
+    <apex:actionFunction action="{!sendInvoice}" name="sendInvoice" rerender="planComponentPanel" onComplete="onCompleteShowProject();">
+        <apex:param name="paymentToInvoice" assignTo="{!paymentToInvoice}" value=""/>
+    </apex:actionFunction>
+
+    <script>
+        const creativesEmptyCellHeight = 2;
+        var isCreativesViewModeArray = new Array(),
+            $j = jQuery.noConflict(),
+            clientSpendOnIO = {!project.Client_Spend_Defined_on_IO__c};
+
+        $j(document).ready(function() {
+            $j('input', '.clientSpendField').on('blur', function(e) {
+                let parent = $j(e.currentTarget).parents('td[recId]');
+                let recId = parent[0].getAttribute('recId');
+                clientSpendChange(recId);
+            });
+        });
+
+        var PaymentPlan = (function() {
+            return {
+                hideSpinner: function() {
+                    ContractDetails.hideSpinner();
+                },
+
+                showProjects: function(paymentId) {
+                    ContractDetails.showSpinner();
+                    showProjectsForPayment(paymentId);
+                },
+
+                hideProjects: function(paymentId) {
+                    ContractDetails.showSpinner();
+                    hideProjectsForPayment(paymentId);
+                },
+
+                addProject: function(paymentId) {
+                    ContractDetails.showSpinner();
+                    addNewProject(paymentId);
+                    showSave();
+                },
+
+                addPayment: function() {
+                    ContractDetails.showSpinner();
+                    addNewPayment();
+                },
+
+                delPayment: function(paymentId) {
+                    ContractDetails.showSpinner();
+                    paymentDeleteChanged(paymentId);
+                },
+
+                delProject: function(projectId) {
+                    ContractDetails.showSpinner();
+                    projectDeleteChanged(projectId);
+                },
+
+                updateCostStructure: function(paymentId, row) {
+                    ContractDetails.showSpinner();
+                    projectCostStructureUpdated(paymentId,row);
+                },
+
+                updatePlatform: function(paymentId, row) {
+                    ContractDetails.showSpinner();
+                    projectPlatformUpdated(paymentId, row);
+                },
+
+                expandAll: function() {
+                    ContractDetails.showSpinner();
+                    showProjectsForAllPayments();
+                },
+
+                invoice: function(paymentId, inconsistentSpends) {
+                    if (inconsistentSpends) {
+                        let confirm = window.confirm('{!$Label.Inconsistent_Spends}');
+                        if (confirm === true) {
+                            sendInvoice(paymentId);
+                        }
+                    } else {
+                        sendInvoice(paymentId);
+                    }
+                },
+
+                cancelNewPayment: function(row) {
+                    ContractDetails.showSpinner();
+                    cancelPayment(row);
+                },
+
+                cancelNewProject: function(paymentId, row) {
+                    ContractDetails.showSpinner();
+                    cancelNewProject(paymentId, row);
+                },
+
+                toggleUnitCost: function(paymentRow, projectRow) {
+                    $j('.' + 'unitCost' + paymentRow + '-' + projectRow).toggle();
+                    showSave();
+                }
+            }
+        })();
+
+        function onCompleteShowProject() {
+            // reset the array
+            PaymentPlan.hideSpinner();
+            resetViewMode();
+            resizeIFrame();
+            fixCreativesCellHeight();
+        }
+
+        function resizeIFrame() {
+            ContractDetails.resizeIFrames();
+        }
+
+        function resetViewMode() {
+            if (isLightningTheme) {
+                DialogModal.close();
+            }
+            disableCheckboxes();
+            isCreativesViewModeArray = new Array();
+        }
+
+        function onSaveClick() {
+            $j("#removeInlineEditFocus").trigger("click");
+
+            let records = $j('[recId]'),
+                isClientSpendChanged = false;
+
+            // the loop check the "undo"" icon in invoice amount cell and gets id of changed records
+            for (var i = 0; i < records.length; i++) {
+                if ($j('.inlineEditUndoLink', records[i])[i] && $j('.inlineEditUndoLink', records[i])[i].style.display === 'inline') {
+                    isClientSpendChanged = true;
+                    break;
+                }
+            }
+
+            if (isClientSpendChanged === true && clientSpendOnIO === true) {
+                let title = 'Client Spend Defined on IO',
+                    message = 'WARNING.\nClient Spend was defined on IO. Do you wish to adjust the value?',
+                    submitFunction = function() {
+                        DialogModal.close();
+                        ContractDetails.showSpinner();
+                        saveRecords();
+                    };
+
+                DialogModal.dialog(title, message, submitFunction, true);
+            } else {
+                ContractDetails.showSpinner();
+                saveRecords();
+            }
+        }
+
+        function showSave() {
+            $j(".paymentPlanSaveBtn").show();
+        }
+
+        function fixCreativesCellHeight() {
+            // if Creative options are not selected, then regulate the Height of div inside a cell
+            let $creativesDivCells = $j('[class$=creativesDiv]');
+
+            $creativesDivCells.each(function(idx, divCell) {
+                let $divCell = $j(divCell);
+
+                let visibleChbxAmount = 0;
+                $divCell.children('p').children('span').each(function(idx, chbx) {
+                    if (chbx.style.display !== 'none') {
+                        visibleChbxAmount++;
+                    }
+                });
+                if (visibleChbxAmount === 0) {
+                    divCell.style.height = creativesEmptyCellHeight + 'rem';
+                } else {
+                    divCell.style.height = (creativesEmptyCellHeight * (visibleChbxAmount)) + 'rem';
+                }
+            });
+        }
+
+        function disableCheckboxes() {
+            // disable via javascript, otherwise the changes doesn't go into controller by clicking Save
+            let $creativesDivCells = $j('[class$=creativesDiv]');
+            $creativesDivCells.each(function(idx, divCell) {
+                let $divCell = $j(divCell);
+                // findint all inputs, it should be checkboxes
+                $divCell.find('input').each(function(idx, chbx) {
+                    if (chbx.style.display !== 'none') {
+                        $j(chbx).attr('disabled', true);
+                    }
+                });
+            });
+        }
+
+        function toggleCreativeCheckboxes(paymentId, projectRowIdx) {
+            let $creativesCheckboxes = $j('.cChbx-' + paymentId + '-' + projectRowIdx),
+                paymentProjectRowId = paymentId + '-' + projectRowIdx,
+                isViewMode = isCreativesViewModeArray.includes(paymentProjectRowId),
+                $creativesDiv = $j('.' + paymentId + '-' + projectRowIdx + '-creativesDiv')
+
+            if (isViewMode) {
+                // disable all checkboxes
+                // hide non-selected creatives and their checkboxes
+                // pass changed values to apex controller
+
+                let selectedCreativeIds = new Array(),
+                    idxToMoveOnTop = new Array();
+                $creativesCheckboxes.each(function(idx, chbx) {
+                    let $chbx = $j(chbx);
+                    $chbx.attr('disabled', true);
+
+                    if (chbx.checked) {
+                        let classes = chbx.className.split(' ');
+                        idxToMoveOnTop.push(idx);
+                        classes.forEach(function(className) {
+                            if (className.indexOf('creativeId-') >= 0 ) {
+                                selectedCreativeIds.push(className.split('creativeId-')[1]);
+                            }
+                        })
+                    } else {
+                        chbx.style.display = 'none';
+                        chbx.parentNode.parentNode.style.display = 'none';
+                    }
+                });
+
+                // move selected checkboxes on top in DOM
+                let topDOMHtml = new Array();
+                $creativesDiv.children('span').each(function(idx, elem) {
+                    if (idxToMoveOnTop.includes(idx)) {
+                        // add class to highlight changes
+                        elem.className += " inlineEditModified";
+                        topDOMHtml.push(elem.cloneNode(true));
+                        let $elem = $j(elem);
+
+                        $elem.next('br').remove(); // removing all <BR>s
+                        $elem.remove(); // removing element itself
+                    }
+                });
+                for (let i = topDOMHtml.length-1; i >= 0; i--) {
+                    $creativesDiv.prepend(topDOMHtml[i]);
+                }
+
+                fixCreativesCellHeight();
+                //creativesUpdated(selectedCreativeIds.join(), paymentId, projectRowIdx);
+            } else {
+                // remove height limitation from cell
+                $creativesDiv[0].style.height = 'auto';
+
+                // all checkboxes should be enabled
+                // all checkboxes become visible
+                // all hidden Creative tabs are shown
+                $creativesCheckboxes.each(function(idx, chbx) {
+                    // remove orange changes highlight
+                    chbx.parentNode.parentNode.classList.remove("inlineEditModified");
+                    // enable checkbox
+                    $j(chbx).removeAttr('disabled');
+                    // show checkbox and parent div
+                    chbx.style.display = '';
+                    chbx.parentNode.parentNode.style.display = '';
+                });
+                showSave();
+            }
+
+            if (isViewMode) {
+                // remove element from array
+                isCreativesViewModeArray = isCreativesViewModeArray.filter(item => item !== paymentProjectRowId);
+            } else {
+                isCreativesViewModeArray.push(paymentId + '-' + projectRowIdx);
+            }
+        }
+    </script>
+</apex:component>

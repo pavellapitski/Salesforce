@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Payment_Discount_Terms_Violated</fullName>
+        <ccEmails>accounting@strikesocial.com</ccEmails>
+        <description>Payment Discount Terms Violated -ae</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>jrinard@strikesocial.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>pskotnicki@strikesocial.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderAddress>salesforce@strikesocial.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Contract_Templates/Payment_Discount_Terms_Violated</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Mark_PAID_on_Payment</fullName>
+        <field>Paid__c</field>
+        <literalValue>1</literalValue>
+        <name>Mark PAID on Payment</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <rules>
+        <fullName>Mark Invoice paid if date is in</fullName>
+        <actions>
+            <name>Mark_PAID_on_Payment</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Sub_Project__c.Payment_Date__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Sub_Project__c.Paid__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Payment Discount Terms Violated</fullName>
+        <active>true</active>
+        <criteriaItems>
+            <field>Sub_Project__c.Discount_Violation__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Sub_Project__c.Discount_Terms__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Sub_Project__c.Paid__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Payment_Discount_Terms_Violated</name>
+                <type>Alert</type>
+            </actions>
+            <offsetFromField>Sub_Project__c.End_Date__c</offsetFromField>
+            <timeLength>45</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+</Workflow>

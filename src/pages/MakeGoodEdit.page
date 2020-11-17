@@ -1,0 +1,36 @@
+<apex:page standardController="MakeGood__c" tabStyle="MakeGood__c"
+           lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}">
+    
+    <apex:pageMessages id="messages"/>
+    
+    <apex:actionStatus id="pleaseWaitStatus" startText="Please Wait..." StopText="" >
+        <apex:facet name="start">
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                &nbsp;
+            </div>
+            <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                    <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                    <span style="display: inline-block; padding: 10px 0px;">Please Wait...</span>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+    
+    <apex:form >
+        <apex:pageBlock title="Make Good Edit">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!Save}" value="Save" rerender="messages" status="pleaseWaitStatus"/>  
+                <apex:commandButton action="{!Cancel}" value="Cancel"/> 
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Information" collapsible="false">
+                <apex:inputField value="{!MakeGood__c.Contract__c}"/>
+                <apex:inputField value="{!MakeGood__c.StartDate__c}"/>
+                <apex:inputField value="{!MakeGood__c.Amount__c}"/>
+                <apex:inputField value="{!MakeGood__c.EndDate__c}"/>
+                <apex:inputField value="{!MakeGood__c.CurrencyIsoCode}"/>                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

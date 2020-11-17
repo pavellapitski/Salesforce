@@ -1,0 +1,49 @@
+<apex:component controller="CreditNotesNotificationCtrl" access="global">
+    <p>
+         Hello,
+    </p>
+    
+    <p>
+        Following requests are waiting for approval:
+    </p>       
+      
+    <h4>
+        {!$objectType.Sub_Project__c.LabelPlural}
+    </h4>
+    
+    <apex:repeat value="{!payments}" var="payment">             
+        <ul>
+            <li>
+                <a href='https://go.xero.com/AccountsReceivable/View.aspx?InvoiceID={!payment.Xero_Id__c}' target="_blank">View In Xero: {!payment.Invoice__c}</a> - 
+                <a href='{!instanceUrl}/{!payment.Id}' target="_blank">{!$objectType.Sub_Project__c.Label}: {!payment.Name}</a> -
+                <a href='{!instanceUrl}/{!payment.Project__c}' target="_blank">{!$objectType.Project__c.Label}: {!payment.Project__r.Name}</a>
+            </li>
+        </ul>           
+    </apex:repeat>
+    
+    <br/> 
+	
+    <h4>
+        {!$objectType.CreditNote__c.LabelPlural}
+    </h4>
+    
+    <apex:repeat value="{!creditNotes}" var="creditNote">             
+        <ul>
+            <li>
+                <a href='https://go.xero.com/AccountsReceivable/ViewCreditNote.aspx?creditNoteID={!creditNote.XeroId__c}' target="_blank">View In Xero: {!creditNote.XeroNumber__c}</a> - 
+                <a href='{!instanceUrl}/{!creditNote.Id}' target="_blank">View In Salesforce</a> - 
+                <a href='{!instanceUrl}/{!creditNote.Payment__c}' target="_blank">{!$objectType.Sub_Project__c.Label}: {!creditNote.Payment__r.Name}</a> -
+                <a href='{!instanceUrl}/{!creditNote.Payment__r.Project__c}' target="_blank">{!$objectType.Project__c.Label}: {!creditNote.Payment__r.Project__r.Name}</a>
+            </li>
+        </ul>           
+    </apex:repeat>
+    
+    <br/>
+    
+    <p>
+        Kind regards,
+    </p>
+    <p>
+        Administration
+    </p>
+</apex:component>

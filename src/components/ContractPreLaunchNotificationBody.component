@@ -1,0 +1,35 @@
+<apex:component access="global">
+    
+    <apex:attribute name="PreLaunchContracts" type="Project__c[]" description="Contracts"/>
+    <apex:attribute name="instanceUrl" type="String" description="Instance Url"/>
+    <apex:attribute name="clientNotificationReminder" type="Boolean" default="false" description="Add reminder to nofify client"/>
+        
+    <html>
+        <body>
+            <p>
+                Hello,
+                <br/>
+            </p>
+            
+            <apex:outputPanel rendered="{!PreLaunchContracts.size > 0}">
+                <p>
+                    Following campaigns are set to start on &nbsp; <apex:outputField value="{!PreLaunchContracts[0].Start_Date__c}"/>.
+                    <apex:outputLabel rendered="{!clientNotificationReminder}">
+                        <br/>
+                        Please send <b>pre-campaign email</b> to clients.
+                    </apex:outputLabel>
+                </p>
+                
+                <c:ContractLaunchTable contracts="{!PreLaunchContracts}" instanceUrl="{!instanceUrl}"/>
+                
+            </apex:outputPanel>
+            
+            <p>
+                <br/>
+                Kind regards,
+                <br/>
+                Administration
+            </p>
+        </body>
+    </html>
+</apex:component>

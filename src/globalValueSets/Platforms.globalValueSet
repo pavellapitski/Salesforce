@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>AdWords CPM</fullName>
+        <default>false</default>
+        <label>AdWords CPM</label>
+    </customValue>
+    <customValue>
+        <fullName>DBM RTB</fullName>
+        <default>false</default>
+        <label>DBM RTB</label>
+    </customValue>
+    <customValue>
+        <fullName>DBM TrueView</fullName>
+        <default>false</default>
+        <label>DBM TrueView</label>
+    </customValue>
+    <customValue>
+        <fullName>Facebook</fullName>
+        <default>false</default>
+        <label>Facebook</label>
+    </customValue>
+    <customValue>
+        <fullName>Instagram</fullName>
+        <default>false</default>
+        <label>Instagram</label>
+    </customValue>
+    <customValue>
+        <fullName>LinkedIn</fullName>
+        <default>false</default>
+        <label>LinkedIn</label>
+    </customValue>
+    <customValue>
+        <fullName>Pinterest</fullName>
+        <default>false</default>
+        <label>Pinterest</label>
+    </customValue>
+    <customValue>
+        <fullName>Snapchat</fullName>
+        <default>false</default>
+        <label>Snapchat</label>
+    </customValue>
+    <customValue>
+        <fullName>TrueView</fullName>
+        <default>false</default>
+        <label>TrueView</label>
+    </customValue>
+    <customValue>
+        <fullName>Twitter</fullName>
+        <default>false</default>
+        <label>Twitter</label>
+    </customValue>
+    <masterLabel>Platforms</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

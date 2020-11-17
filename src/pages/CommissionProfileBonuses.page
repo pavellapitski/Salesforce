@@ -1,0 +1,17 @@
+<apex:page standardController="Commission_Profile__c" 
+           extensions="CommissionProfileBonusesController"
+           lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}">    
+    <apex:pageBlock >
+	    <apex:pageBlockTable value="{!Bonuses}" var="bonus" rendered="{!OR($Profile.Name ='System Administrator',$Profile.Name ='Finance', Commission_Profile__c.Salesforce_User__c = $User.Id)}">
+            <apex:column headerValue="Quarter"><apex:outputLink value="/{!bonus.id}" target="_blank">Q{!bonus.Quarter__c}</apex:outputLink>-<apex:outputLink value="/{!bonus.Year__c}" target="_blank">{!bonus.year__r.Year__c}</apex:outputLink> </apex:column>               
+            <apex:column headerValue="Gross Profit">
+                <apex:outputText value="{0, number, #,###}">
+                   <apex:param value="{!bonus.Gross_Profit__c}" />
+                </apex:outputText> {!bonus.CurrencyISOCode}</apex:column>
+            <apex:column headerValue="Gross Profit Threshold">
+                <apex:outputText value="{0, number, #,###}">
+                   <apex:param value="{!bonus.GP_Threshold__c}" />
+                </apex:outputText> {!bonus.CurrencyISOCode}</apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>

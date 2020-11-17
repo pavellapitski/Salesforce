@@ -1,0 +1,27 @@
+<apex:component controller="InvoiceNotificationCtrl" access="global">
+    
+    <apex:attribute name="clientServiceId" type="String" assignTo="{!clientService}" description="Client Service Id"/>
+    
+    <p>
+         Hello,
+    </p>
+    
+    <p>
+        The following Payments are actualized and ready to invoice:
+    </p>       
+    
+    <apex:repeat value="{!payments}" var="payment">
+        <ul>
+            <li><a href='{!instanceUrl}/{!payment.Id}' target="_blank">{!payment.Name}</a> - <a href='{!instanceUrl}/{!payment.Project__c}' target="_blank">{!payment.Project__r.Name}</a></li>
+        </ul>           
+    </apex:repeat>
+
+    <br/>
+ 
+    <p>
+        Kind regards,
+    </p>
+    <p>
+        Administration
+    </p>
+</apex:component>

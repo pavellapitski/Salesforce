@@ -1,0 +1,7 @@
+<apex:component controller="ContractPreLaunchCSRepNotifyCtrl" access="global">
+    
+    <apex:attribute name="clientServiceId" type="String" assignTo="{!clientService}" description="Client Service Id"/>
+    
+    <c:ContractPreLaunchNotificationBody PreLaunchContracts="{!PreLaunchContracts}" instanceUrl="{!instanceUrl}" clientNotificationReminder="true"/>
+    
+</apex:component>

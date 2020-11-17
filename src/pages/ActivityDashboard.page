@@ -1,0 +1,42 @@
+<apex:page controller="activityDashboardController"
+           lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}">
+    
+    <apex:pageBlock >
+       <b>{!$Label.TodaysEmails}</b> 
+    		<br/> 
+    		<apex:repeat value="{!emails}" var="items" id="theRepeat">
+                <apex:outputText value="{!items}"/>
+    		</apex:repeat>
+   		<br/> 
+        <br/> 
+        </apex:pageBlock>  
+    <apex:pageBlock >
+       <b>{!$Label.TodaysCalls}</b> 
+<br/> 
+        
+    		<apex:repeat value="{!calls}" var="items" id="theRepeat2">
+                <apex:outputText value="{!items}"/>
+    		</apex:repeat>
+   		<br/> 
+        <br/> 
+    </apex:pageBlock> 
+    <apex:pageBlock >
+       <b>{!$Label.TodaysMeetings}</b> 
+<br/> 
+    		<apex:repeat value="{!Meetings}" var="items" id="theRepeat3">
+                <apex:outputText value="{!items}"/>
+    		</apex:repeat>
+   		<br/> 
+        <br/> 
+    </apex:pageBlock>    
+    
+   <apex:pageBlock >
+       <b>{!$Label.TodaysClosedOpportunities}</b> 
+		<br/> 
+    		<apex:repeat value="{!opportunities}" var="items" id="theRepeat4">
+                <apex:outputText value="{!items}"/>
+    		</apex:repeat>
+   		<br/> 
+        <br/> 
+    </apex:pageBlock>  
+</apex:page>

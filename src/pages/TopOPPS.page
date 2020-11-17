@@ -1,0 +1,9 @@
+<apex:page showHeader="true" sidebar="false" cache="false">
+<span id="topopps_iframe_span">
+    <apex:iframe src="" title="https://app.topopps.com/?salesforce_oauth_token={!$Api.Session_ID}&salesforce_instance_url_soap={!$Api.Partner_Server_URL_290}&salesforce_user_id={!$User.Id}&salesforce_organization_id={!$Organization.Id}" frameborder="false" scrolling="true" />
+</span>
+<script type="text/javascript">
+var cachebuster = Math.round(new Date().getTime() / 1000);
+document.write('<scr'+'ipt type="text/javascript" src="https://app.topopps.com/static/apex_topopps_full.js?cb=' +cachebuster+'"></scr' + 'ipt>');
+</script>
+</apex:page>

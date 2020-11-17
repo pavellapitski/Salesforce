@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Event fires when InlineEditCell is changed">
+    <aura:attribute name="record" type="sObject"/>
+    <aura:attribute name="noChanges" type="Boolean" description="if there are no changes in record, the value is true" default="false"/>
+</aura:event>

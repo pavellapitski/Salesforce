@@ -1,0 +1,22 @@
+<apex:component access="global">
+    
+    <apex:attribute name="Opportunities" type="Opportunity[]" description="Opportunities"/>
+    <apex:attribute name="instanceUrl" type="String" description="Instance Url"/>
+    
+    <table border="1" style="width:60%; border-collapse: collapse;" cellpadding="3">
+        <tr>
+            <th>{!$objectType.Opportunity.Fields.Name.Label}</th>
+            <th>{!$objectType.Opportunity.Fields.CloseDate.Label}</th>
+            <th>{!$objectType.Opportunity.Fields.AccountId.Label}</th>
+            <th>{!$objectType.Opportunity.Fields.Brand__c.Label}</th>
+        </tr> 
+        <apex:repeat value="{!Opportunities}" var="opp">
+            <tr>
+                <td><a href='{!instanceUrl}/{!opp.Id}' target="_blank">{!opp.Name}</a></td>
+                <td><apex:outputField value="{!opp.CloseDate}"/></td>
+                <td><a href='{!instanceUrl}/{!opp.AccountId}' target="_blank">{!opp.Account.Name}</a></td>
+                <td><a href='{!instanceUrl}/{!opp.Brand__c}' target="_blank">{!opp.Brand__r.Name}</a></td>
+            </tr>                
+        </apex:repeat>
+    </table>
+</apex:component>

@@ -1,0 +1,22 @@
+<apex:page id="BrandRelationshipHistory" StandardController="Account" extensions="BrandRelationshipHistoryCtrl" lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}">
+    <base target="_parent" />
+    <apex:pageBlock >
+        <apex:pageBlockTable id="abTable" value="{!brandAccounts}" var="ba" >
+            <apex:column headerValue="Brand/Account" >
+                <apex:outputLink value="{!URLFOR($Action.Brand_Account__c.View, ba.Id, ['retURL'=retUrl])}">
+                    <apex:outputText value="Show" />
+                </apex:outputLink>
+            </apex:column>
+            <apex:column headerValue="Account Name" >
+                <apex:outputLink value="{!URLFOR($Action.Account.View, ba.Accounts__c)}">
+                    <apex:outputText value="{!ba.Accounts__r.Name}" />
+                </apex:outputLink>
+            </apex:column>
+            <apex:column headerValue="No of Open Opportunities" value="{!ba.OpenOpportunities__c}" />
+            <apex:column headerValue="{!$ObjectType.Brand_Account__c.Fields.NoOfContracts__c.Label}" value="{!ba.NoOfContracts__c}" />
+            <apex:column headerValue="{!$ObjectType.Brand_Account__c.Fields.ContractsClientSpend__c.Label}" value="{!ba.ContractsClientSpend__c}" />
+            <apex:column headerValue="{!$ObjectType.Brand_Account__c.Fields.ClientSince__c.Label}" value="{!ba.ClientSince__c}" />
+            <apex:column headerValue="{!$ObjectType.Brand_Account__c.Fields.LastContractEndDate__c.Label}" value="{!ba.LastContractEndDate__c}" />
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>

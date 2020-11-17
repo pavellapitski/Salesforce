@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <baseObject>Payment__c</baseObject>
+    <category>admin</category>
+    <deployed>true</deployed>
+    <description>Report type based of Projects with information from related Accounts, Contracts, Payments &amp; Opportunities</description>
+    <label>Projects CS</label>
+    <sections>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Account</displayNameOverride>
+            <field>Project__c.Account__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Actual Gross Profit</displayNameOverride>
+            <field>Project__c.ActualGrossProfit__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Actual Rebate</displayNameOverride>
+            <field>Project__c.Actual_Rebate__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>AdWords Spend</displayNameOverride>
+            <field>Project__c.AdWords_Spend__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>All Invoices Paid Date</displayNameOverride>
+            <field>Project__c.AllInvoicesPaidDate__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Billing Condition</displayNameOverride>
+            <field>Project__c.BillingCondition__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Billing Profile</displayNameOverride>
+            <field>Project__c.Account_Type__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Brand</displayNameOverride>
+            <field>Project__c.Brand__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Client Services Rep</displayNameOverride>
+            <field>Project__c.ClientServicesRep__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Client Spend</displayNameOverride>
+            <field>Project__c.Client_Spend__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Company Verticals</displayNameOverride>
+            <field>Project__c.Brand__c.Verticals__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Content Verticals</displayNameOverride>
+            <field>Project__c.Verticals__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Contract ID</displayNameOverride>
+            <field>Project__c.Id</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Contract Name</displayNameOverride>
+            <field>Project__c.Name</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Contract Status</displayNameOverride>
+            <field>Project__c.Campaign_Status__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>CPM</displayNameOverride>
+            <field>Project__c.CPM__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>CPV</displayNameOverride>
+            <field>Project__c.CPV__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Days running</displayNameOverride>
+            <field>Project__c.Days_running__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>End Date</displayNameOverride>
+            <field>Project__c.End_Date__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Project__c.Expected_Gross_Profit__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Expected Rebate</displayNameOverride>
+            <field>Project__c.ExpectedRebate__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Expected Revenue</displayNameOverride>
+            <field>Project__c.Total_Revenue__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Final Margin</displayNameOverride>
+            <field>Project__c.Final_Margin__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Geo</displayNameOverride>
+            <field>Project__c.Geo__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Gaps Exist Between Projects</displayNameOverride>
+            <field>Project__c.Gaps_Exist_Between_Projects__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Invoices Paid</displayNameOverride>
+            <field>Project__c.InvoicesPaid__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>IO #</displayNameOverride>
+            <field>Project__c.Client_IO__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Is Running</displayNameOverride>
+            <field>Project__c.IsRunning__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>KPI</displayNameOverride>
+            <field>Project__c.KPI__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Margin</displayNameOverride>
+            <field>Project__c.Margin__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Media Order</displayNameOverride>
+            <field>Project__c.Media_Order__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>More Info</displayNameOverride>
+            <field>Project__c.More_Info__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>More Invoicing Info</displayNameOverride>
+            <field>Project__c.More_Invoicing_Info__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Net Profit</displayNameOverride>
+            <field>Project__c.Net_Profit__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Payment Type</displayNameOverride>
+            <field>Project__c.Payment_Type__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Platforms</displayNameOverride>
+            <field>Project__c.Platforms__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>PO#</displayNameOverride>
+            <field>Project__c.PO__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Project Number</displayNameOverride>
+            <field>Project__c.Project_Number__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Start Date</displayNameOverride>
+            <field>Project__c.Start_Date__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Strike ID</displayNameOverride>
+            <field>Project__c.Project_ID__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Region</displayNameOverride>
+            <field>Project__c.Region__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Total Revenue</displayNameOverride>
+            <field>Project__c.Total_Revenue_RollUp__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Xero Contact</displayNameOverride>
+            <field>Project__c.Xero_Contact__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <masterLabel>Contract</masterLabel>
+    </sections>
+    <sections>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Media Spend</displayNameOverride>
+            <field>Payment__c.AdWordsSpend__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Actual Gross Profit</displayNameOverride>
+            <field>Payment__c.Gross_Profit_Report__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Actual Revenue</displayNameOverride>
+            <field>Payment__c.Total_Revenue_report__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Checked</displayNameOverride>
+            <field>Payment__c.Checked__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Client Spend</displayNameOverride>
+            <field>Payment__c.Client_Spend__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Delivered</displayNameOverride>
+            <field>Payment__c.Delivered__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: End Date</displayNameOverride>
+            <field>Payment__c.End_Date__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Payment__c.Expected_Gross_Profit__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Expected Revenue</displayNameOverride>
+            <field>Payment__c.Total_Revenue__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Final Margin</displayNameOverride>
+            <field>Payment__c.Final_Margin__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Invoice Amount</displayNameOverride>
+            <field>Payment__c.Invoice_Amount__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Invoice #</displayNameOverride>
+            <field>Payment__c.Invoice__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Payment Code</displayNameOverride>
+            <field>Payment__c.Name</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Payment ID</displayNameOverride>
+            <field>Payment__c.Id</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Xero ID</displayNameOverride>
+            <field>Payment__c.Xero_ID__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Rebate</displayNameOverride>
+            <field>Payment__c.Rebate__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Start Date</displayNameOverride>
+            <field>Payment__c.Start_Date__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Synced with Xero</displayNameOverride>
+            <field>Payment__c.Synced_with_Xero__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Xero Invoice</displayNameOverride>
+            <field>Payment__c.Xero_Invoice__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>P: Xero Status</displayNameOverride>
+            <field>Payment__c.XeroStatus__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <masterLabel>Payment</masterLabel>
+    </sections>
+    <sections>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Actual_Gross_Profit_New__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Action_Type__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Campaign_Status__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Client_Spend__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Days_Running__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>End_Date__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Margin__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Media_Order__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>true</checkedByDefault>
+            <field>Name</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Id</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Start_Date__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>ProjectID__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>AmountDelivered__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>CostStructure__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <masterLabel>Projects</masterLabel>
+    </sections>
+    <sections>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>O: Additional Rep</displayNameOverride>
+            <field>Opportunity__c.Additional_Rep__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>O: Client Spend</displayNameOverride>
+            <field>Opportunity__c.Amount</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>O: Brand</displayNameOverride>
+            <field>Opportunity__c.Brand__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>O: Strike ID</displayNameOverride>
+            <field>Opportunity__c.Strike_ID__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Opportunity Owner</displayNameOverride>
+            <field>Opportunity__c.Owner</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Opportunity ID</displayNameOverride>
+            <field>Opportunity__c.Id</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>O: Stage</displayNameOverride>
+            <field>Opportunity__c.StageName</field>
+            <table>Payment__c</table>
+        </columns>
+        <masterLabel>Opportunity</masterLabel>
+    </sections>
+    <sections>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Account ID</displayNameOverride>
+            <field>Account__c.Id</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Account</displayNameOverride>
+            <field>Account__c.Name</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Account Owner</displayNameOverride>
+            <field>Account__c.Owner</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Account Record Type</displayNameOverride>
+            <field>Account__c.RecordType</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Agency</displayNameOverride>
+            <field>Account__c.Agency__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>A: Number of Contracts</displayNameOverride>
+            <field>Account__c.Number_of_Contracts__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>A: Number of Open Opportunities</displayNameOverride>
+            <field>Account__c.Number_of_Open_Opportunities__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>A: Parent Account</displayNameOverride>
+            <field>Account__c.Parent</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>A: Phone</displayNameOverride>
+            <field>Account__c.Phone</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Region</displayNameOverride>
+            <field>Account__c.Region__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Xero Contact</displayNameOverride>
+            <field>Account__c.Xero_Contact__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Xero Id</displayNameOverride>
+            <field>Account__c.Xero_Id__c</field>
+            <table>Payment__c</table>
+        </columns>
+        <masterLabel>Account</masterLabel>
+    </sections>
+</ReportType>

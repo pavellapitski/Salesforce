@@ -1,0 +1,32 @@
+<apex:component controller="ContractPostLaunchCSRepNotifyCtrl" access="global">
+    
+    <apex:attribute name="clientServiceId" type="String" assignTo="{!clientService}" description="Client Service Id"/>
+    
+    <html>
+        <body>
+            <p>
+                Hello,
+                <br/>
+            </p>
+            
+            <apex:outputPanel rendered="{!launchedContracts.size > 0}">
+                <p>
+                    Following campaigns started on &nbsp; <apex:outputField value="{!launchedContracts[0].Start_Date__c}"/>.
+                    <br/>
+                    Please remember to send pre-campaign email to client and save IO on Google Drive.
+                </p>
+                
+                <c:ContractLaunchTable contracts="{!launchedContracts}" instanceUrl="{!instanceUrl}"/>
+                
+            </apex:outputPanel>
+            
+            <p>
+                <br/>
+                Kind regards,
+                <br/>
+                Administration
+            </p>
+        </body>
+    </html>
+    
+</apex:component>

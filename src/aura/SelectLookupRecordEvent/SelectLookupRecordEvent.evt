@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" description="Event fires when a record is being selected from picklist">
+    <aura:attribute name="record" type="sObject"/>
+</aura:event>

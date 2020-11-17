@@ -1,0 +1,207 @@
+<apex:page standardController="Payment__c" tabStyle="Payment__c" 
+           lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}"
+           showHeader="true" sidebar="true" title="{!$objectType.Payment__c.Label}: {!Payment__c.Name}">
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"/>
+    
+    <style type="text/css">
+        .customPopup{
+            background-color:    white;
+            border:                  1px #aaa solid;
+            left:                    50%;
+            padding:                 20px;
+            position:                fixed;
+            z-index:                 9999;
+            /* These are the 3 css properties you will need to tweak so the pop
+            up displays in the center of the screen. First set the width. Then set
+            margin-left to negative half of what the width is. You can also add
+            the height property for a fixed size pop up.*/
+            width:                   30%;
+            margin-left:             -250px;
+            top:                     150px;
+            border-radius:           10px;
+            font-size:               14px;
+            line-height:             1.6;
+        }
+        
+        .customPopup .popupHeader {
+            border-bottom: 1px solid #aaa;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .btn-popup {
+            text-align:         center;
+            margin-top:         10px;
+        }
+        
+        .btn-popup input {
+            background-color:   #FFF;
+            padding:            4px 8px !important;
+            border:             1px #aaa solid;
+            font-family:        inherit;
+        }
+        
+        .customPopup li {
+            list-style-type: none;
+            font-weight: bold;
+        }
+        
+        html, body {
+            min-height: 100%;
+        }
+        
+        body {
+            position: relative;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.5);
+            /*dim the background*/
+        }
+        
+        td.expected {
+            font-style: italic;
+        }
+        
+        .italicField {
+            font-style: italic;
+        }
+        
+        .labelCol.vfLabelColTextWrap label {
+            width: 18% !important;
+        }
+    </style>
+    
+    <script>
+        jQuery.noConflict();
+    </script>
+    
+    <p id="removeInlineEditFocus"/>
+    
+    
+    <apex:actionStatus id="statusSection" startText="Please Wait..." StopText="" >
+        <apex:facet name="start">
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                &nbsp;
+            </div>
+            <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                    <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                    <span style="display: inline-block; padding: 10px 0px;">Please Wait...</span>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+    
+    <!-- Define Tab panel .css styles -->
+    <style>
+        .activeTab {
+            background-color: #236FBD;
+            color: white;
+            background-image: none
+        }
+        
+        .inactiveTab {
+            background-color: lightgrey;
+            color: black;
+            background-image: none
+        }
+    </style>
+    
+    <apex:sectionHeader title="Project" subtitle="{!Payment__c.Name}"/>
+    <apex:form >
+        <apex:pageBlock mode="mainDetail">
+            <apex:pageMessages escape="false" id="projectMessage" />
+            
+            <apex:pageBlockButtons location="top" >
+                <!-- Inline Edit buttons -->
+                <apex:commandButton value="Save" id="saveButton" action="{!save}" onclick="jQuery('#removeInlineEditFocus').trigger('click');" status="projectStatus"/>
+                <apex:commandButton value="Cancel" id="cancelButton" action="{!cancel}" reRender="mainForm"/>
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection title="Information" collapsible="false">                
+                <apex:outputField value="{!Payment__c.Name}"/>
+                <apex:outputField value="{!Payment__c.Client_Spend__c}"/>
+                <apex:outputField value="{!Payment__c.StrikeId__c}"/>
+                <apex:outputField value="{!Payment__c.SuggestedSpend__c}"/>
+                <apex:outputField value="{!Payment__c.Campaign_Status__c}"/>
+                <apex:outputField value="{!Payment__c.Days_Running__c}"/>
+                <apex:outputField value="{!Payment__c.IsOverlapping__c}"/>
+                <apex:outputField value="{!Payment__c.Start_Date__c}"/> 
+                <apex:outputField value="{!Payment__c.VariableUnitCost__c}"/>
+                <apex:outputField value="{!Payment__c.End_Date__c}"/>
+                <apex:outputField value="{!Payment__c.Media_Buyer__c}"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Invoice Information" collapsible="false">
+                <apex:outputField value="{!Payment__c.Margin__c}"/>
+                <apex:outputField value="{!Payment__c.Media_Order__c}"/>
+                <apex:outputField value="{!Payment__c.CostStructure__c}"/>
+                <apex:outputField value="{!Payment__c.AdWordsSpend__c}"/>
+                <apex:outputField value="{!Payment__c.UnitCost__c}"/> 
+                <apex:outputField value="{!Payment__c.Quantity__c}"/>
+                <apex:outputField value="{!Payment__c.PaymentType__c}"/>
+                <apex:outputField value="{!Payment__c.AmountDelivered__c}"/>
+                <apex:outputLabel />
+                <apex:outputField value="{!Payment__c.InvoiceAmount__c}"/>     
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Related Records" collapsible="false">
+                <apex:outputField value="{!Payment__c.Opportunity__c}"/>
+                <apex:outputField value="{!Payment__c.Account__c}"/>
+                <apex:outputField value="{!Payment__c.Project__c}"/>
+                <apex:outputField value="{!Payment__c.Payment__c}"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Brief Campaign Overview" collapsible="false">
+                <apex:outputField value="{!Payment__c.KPI__c}"/>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Distribution & Targeting" collapsible="false">
+                <apex:outputField value="{!Payment__c.Age__c}" rendered="{!OR(Payment__c.Platform_Prefix__c='AV',Payment__c.Platform_Prefix__c='DR',
+                                                                         Payment__c.Platform_Prefix__c='DT',Payment__c.Platform_Prefix__c='AS',Payment__c.Platform_Prefix__c='LN',
+                                                                         Payment__c.Platform_Prefix__c='TV')}"/>
+                <apex:outputField value="{!Payment__c.Companion_Banner__c}" rendered="{!OR(Payment__c.PlatformPrefix__c='AV',Payment__c.PlatformPrefix__c='DT',Payment__c.PlatformPrefix__c='TV')}"/>
+                <apex:outputField value="{!Payment__c.Age_Min__c}" rendered="{!OR(Payment__c.Platform_Prefix__c='FB',Payment__c.Platform_Prefix__c='IG',Payment__c.Platform_Prefix__c='TW',
+                                                                             Payment__c.Platform_Prefix__c='SN')}"/>
+                <apex:outputField value="{!Payment__c.Age_Max__c}" rendered="{!OR(Payment__c.Platform_Prefix__c='FB', Payment__c.Platform_Prefix__c='IG', Payment__c.Platform_Prefix__c='TW',
+                                                                             Payment__c.Platform_Prefix__c='SN')}"/>
+                <apex:outputField value="{!Payment__c.Pixel_Tracking__c}" rendered="{!OR(Payment__c.PlatformPrefix__c='AV', Payment__c.PlatformPrefix__c='DR', Payment__c.PlatformPrefix__c='DT',
+                                                                             Payment__c.PlatformPrefix__c='IG', Payment__c.PlatformPrefix__c='FB', Payment__c.PlatformPrefix__c='TV')}"/>
+                <apex:outputField value="{!Payment__c.Objectives__c}" rendered="{!OR(Payment__c.PlatformPrefix__c='FB', Payment__c.PlatformPrefix__c='IG', Payment__c.PlatformPrefix__c='PN',
+                                                                             Payment__c.PlatformPrefix__c='SN', Payment__c.PlatformPrefix__c='TW')}"/>
+                <apex:outputField value="{!Payment__c.Gender__c}"/>
+                <apex:outputField value="{!Payment__c.CTA_Overlay_Text__c}" label="CTA Overlay" rendered="{!OR(Payment__c.PlatformPrefix__c='AV',Payment__c.PlatformPrefix__c='DR',Payment__c.PlatformPrefix__c='DT',Payment__c.PlatformPrefix__c='TV')}"/>
+                <apex:outputField value="{!Payment__c.Action_Type__c}" rendered="{!OR(Payment__c.PlatformPrefix__c='FB', Payment__c.PlatformPrefix__c='IG')}"/>
+                <apex:outputField value="{!Payment__c.Brand_Lift_Study__c}"/>
+                <apex:outputPanel style="display:none">
+                    <apex:outputField value="{!Payment__c.Platform_Prefix__c}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock> 
+    </apex:form> 
+    <apex:relatedList list="ContractMediaSpends__r"/>
+    <script type="text/javascript">
+    //Will resize each VF page embedded in detail section
+    var jquery = jQuery.noConflict();
+    
+    jquery("iframe").each(function(){
+        jquery(this).load(function() {
+            jquery(this).height(jquery(this).contents().find("body").height());
+        });
+    });
+    
+    //Called from inside IFrame when resize is needed
+    function resizeIFrames() {
+        jquery("iframe").each(function(){
+            jquery(this).height(jquery(this).contents().find("body").height());
+        });
+    }
+    </script>
+</apex:page>

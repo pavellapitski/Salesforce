@@ -1,0 +1,42 @@
+<apex:page standardController="CreditNote__c" 
+           lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}" extensions="CreditNoteEditCtrl" tabStyle="CreditNote__c">
+    
+    <apex:actionStatus id="myStatus2" startText="Please Wait..." StopText="" >
+        <apex:facet name="start">
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                &nbsp;
+            </div>
+            <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                    <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                    <span style="display: inline-block; padding: 10px 0px;">Please Wait...</span>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+    
+    <apex:form id="mainForm">
+        <apex:sectionHeader title="{!$objectType.CreditNote__c.Label}" subtitle="{!creditNote.Name}"/>
+        
+        <apex:pageMessages ></apex:pageMessages>
+        
+        <apex:pageBlock title="Credit Note Edit">
+        	<apex:pageBlockSection title="Information" collapsible="false" rendered="{!ISBLANK(CreditNote.XeroId__c)}">
+                <apex:inputField value="{!CreditNote.Payment__c}"/>
+                <apex:inputField value="{!CreditNote.Amount__c}"/>
+                <apex:inputField value="{!CreditNote.Description__c}" required="true"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Information" collapsible="false" rendered="{!NOT(ISBLANK(CreditNote.XeroId__c))}">
+                <apex:outputField value="{!CreditNote.XeroCreditNote__c}"/> 
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!saveCreditNote}" value="Save" status="myStatus2" oncomplete="{!IF(isSuccess, 'sendCreditNote();', '')}" rendered="{!ISBLANK(CreditNote.XeroId__c)}"/>
+                <apex:commandButton action="{!Cancel}" value="Cancel" status="myStatus2"/>
+            </apex:pageBlockButtons>
+            
+            <apex:actionFunction action="{!sendCreditNote}" name="sendCreditNote" rerender="mainForm" status="myStatus2"/>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

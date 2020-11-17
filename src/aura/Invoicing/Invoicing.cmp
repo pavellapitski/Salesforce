@@ -1,0 +1,70 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:lightningQuickActionWithoutHeader,force:hasRecordId" access="global"  controller="InvoicingCtrl">
+    <aura:html tag="style">
+        .cuf-content {
+            padding: 0 0 !important;
+        }
+        .slds-p-around--medium {
+            padding: 0 !important;
+        }
+        .slds-modal__content {
+            overflow-y:hidden !important;
+            height:unset !important;
+            max-height:unset !important;
+        }
+        .padding-1rem {
+            padding: 1rem !important;
+        }
+        .padding-0rem {
+            padding: 0rem;
+        }
+    </aura:html>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <aura:attribute name="showInvoiceBtn" type="Boolean" description="" default="false"/>
+    <aura:attribute name="showSpinner" type="Boolean" description="" default="false"/>
+    <aura:attribute name="isInvoiceSubmitted" type="Boolean" description="" default="false"/>
+    <aura:attribute name="errorDetails" type="String[]" />
+    <aura:attribute name="invoice" type="Invoice__C" description=""/>
+
+    <!--<div class="slds-col modal-header slds-modal__header">
+        <h2 class="title slds-text-heading&#45;&#45;medium">Xero Invoicing</h2>
+    </div>-->
+    <div class="slds-col modal-body scrollable padding-1rem slds-is-relative" style="height-min: 8em; height: 8em; max-height: 8em; overflow-y: auto !important">
+        <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner aura:id="mySpinner" variant="brand" size="large" alternativeText="Loading..." />
+        </aura:if>
+        <div class="slds-card">
+            <aura:if isTrue="{!not(empty(v.errorDetails))}">
+                <div aura:id="errors" class="pageLevelErrors forceRecordEdit" data-aura-class="forceRecordEdit" tabindex="-1">
+                    <div class="desktop forcePageError" aria-live="assertive" data-aura-class="forcePageError">
+                        <div class="genericNotification" style="border-radius: 0">
+                            <span class="genericError uiOutputText" data-aura-class="uiOutputText">Review the errors on this page.</span>
+                        </div>
+                        <ul class="errorsList"><aura:iteration items="{!v.errorDetails}" var="error"><li>{!error}</li></aura:iteration> </ul>
+                    </div>
+                </div>
+            </aura:if>
+            <div class="slds-text-heading_large slds-text-align_center" aura:id="text-id">
+                <aura:if isTrue="{!v.showInvoiceBtn}">
+                    Are you sure?
+                    <aura:set attribute="else">
+                        <aura:if isTrue="{!v.isInvoiceSubmitted}">
+                                <a href="{!'https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=' + v.invoice.Xero_Invoice_Id__c}" > {!v.invoice.Xero_Invoice_Name__c} </a>
+                            <aura:set attribute="else">
+                                NO XERO CONNECTION ESTABLISHED
+                            </aura:set>
+                        </aura:if>
+                    </aura:set>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+    <div class="slds-col modal-footer slds-modal__footer">
+        <div class="slds-button-group" role="group">
+            <lightning:button variant="brand" label="Invoice" onclick="{!c.invoiceClick}" class="{!if(v.showInvoiceBtn, 'slds-show', 'slds-hide')}" aura:id="invoice-btn" />
+            <lightning:button variant="neutral" label="Close" onclick="{!c.closeClick}"  />
+        </div>
+    </div>
+
+</aura:component>

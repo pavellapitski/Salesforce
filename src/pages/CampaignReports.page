@@ -1,0 +1,32 @@
+<apex:page controller="CampaignReportsController" showHeader="true" sidebar="true" readOnly="true" contentType="application/vnd.ms-excel#CampaignMembers.xls">
+    <apex:pageBlock >
+        <table cellspacing="0" cellpadding="0" border="0" id="searchResults" class="list">
+             <thead class="rich-table-thead">
+                 <tr class="headerRow">
+                     <th>{!$ObjectType.Contact.Fields.Id.Label}</th>                    
+                     <th>{!$ObjectType.Contact.Fields.FirstName.Label}</th>
+                     <th>{!$ObjectType.Contact.Fields.LastName.Label}</th>
+                     <th>{!$ObjectType.Contact.Fields.Email.Label}</th>
+                     <th>{!$ObjectType.Account.Label}</th>
+                     <th>{!$ObjectType.Contact.Fields.Mailingcity.Label}</th>                     
+                     <th>{!$ObjectType.Contact.Fields.Mailingstate.Label}</th>
+                     <th>{!$ObjectType.Campaign.Fields.Status.Label}</th>
+                 </tr>
+             </thead>
+             <tbody>
+                 <apex:repeat value="{!CampaignMembers}" var="c">
+                     <tr class="dataRow even  first">
+                         <td class="dataCell">{!c.Id}</td>
+                         <td class="dataCell">{!c.Contact.FirstName}</td>
+                         <td class="dataCell">{!c.Contact.LastName}</td>
+                         <td class="dataCell">{!c.Contact.Email}</td>
+                         <td class="dataCell">{!c.Contact.Account.Name}</td>
+                         <td class="dataCell">{!c.Contact.Mailingcity}</td>
+                         <td class="dataCell">{!c.Contact.Mailingstate}</td>
+                         <td class="dataCell">{!c.Status}</td>                        
+                     </tr>
+                 </apex:repeat>
+             </tbody>
+         </table>
+     </apex:pageBlock> 
+</apex:page>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>PopulateCSemailFromContract</fullName>
+        <ccEmails>salesforce@strikesocial.com</ccEmails>
+        <description>UnableToAssignMMspendings</description>
+        <protected>false</protected>
+        <recipients>
+            <field>CSemailFromContract__c</field>
+            <type>email</type>
+        </recipients>
+        <senderAddress>salesforce@strikesocial.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Contract_Templates/UnableAssignMMspendToProject</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>FillUpCSemailFromContract</fullName>
+        <field>CSemailFromContract__c</field>
+        <formula>Contract__r.ClientServicesRep__r.Email</formula>
+        <name>FillUpCSemailFromContract</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <rules>
+        <fullName>UnableAssignMMspendToProject</fullName>
+        <actions>
+            <name>PopulateCSemailFromContract</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>FillUpCSemailFromContract</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>Info__c == &quot;Unable to assign spend to project.&quot; &amp;&amp;  ISPICKVAL(Type__c,&quot;MM data log&quot;) &amp;&amp;  ISPICKVAL(Status__c,&quot;Error&quot;) &amp;&amp;  MMSpending__r.Date__c &gt;= Contract__r.Start_Date__c &amp;&amp;  MMSpending__r.Date__c &lt;= Contract__r.End_Date__c &amp;&amp;  (MMSpending__r.Delivered__c &gt;0 || MMSpending__r.Media_Spend__c &gt; 0)</formula>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+</Workflow>

@@ -1,0 +1,28 @@
+<apex:component access="global">
+    
+    <apex:attribute name="contracts" type="Project__c[]" description="Contracts"/>
+    <apex:attribute name="instanceUrl" type="String" description="Instance Url"/>
+    
+    <table border="1" style="width:60%; border-collapse: collapse;" cellpadding="3">
+        <tr>
+            <th>{!$objectType.Project__c.Fields.Name.Label}</th>
+            <th>{!$objectType.Project__c.Fields.End_Date__c.Label}</th>
+            <th>{!$objectType.Project__c.Fields.Account__c.Label}</th>
+            <th>{!$objectType.Project__c.Fields.Brand__c.Label}</th>
+            <th>{!$objectType.Project__c.Fields.Client_Spend__c.Label}</th>
+            <th>{!$objectType.Project__c.Fields.Margin__c.Label}</th> 
+            <th>Billing</th>
+        </tr> 
+        <apex:repeat value="{!contracts}" var="contract">
+            <tr>
+                <td><a href='{!instanceUrl}/{!contract.Id}' target="_blank">{!contract.Name}</a></td>
+                <td><apex:outputField value="{!contract.End_Date__c}"/></td>
+                <td><a href='{!instanceUrl}/{!contract.Account__c}' target="_blank">{!contract.Account__r.Name}</a></td>
+                <td><a href='{!instanceUrl}/{!contract.Brand__c}' target="_blank">{!contract.Brand__r.Name}</a></td>
+                <td>{!contract.CurrencyIsoCode} {!contract.Client_Spend__c}</td>
+                <td>{!contract.Margin__c}</td>
+                <td>{!contract.Account_Type__c} - {!contract.BillingConditionName__c}</td>
+            </tr>                
+        </apex:repeat>
+    </table>
+</apex:component>

@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AllTimeClientSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>All Time Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Notes</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Verticals__c</fullName>
+        <externalId>false</externalId>
+        <label>Company Verticals</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Adult Beverage</fullName>
+                    <default>false</default>
+                    <label>Adult Beverage</label>
+                </value>
+                <value>
+                    <fullName>Automotive</fullName>
+                    <default>false</default>
+                    <label>Automotive</label>
+                </value>
+                <value>
+                    <fullName>B2B</fullName>
+                    <default>false</default>
+                    <label>B2B</label>
+                </value>
+                <value>
+                    <fullName>Baby &amp; Child Care (CPG)</fullName>
+                    <default>false</default>
+                    <label>Baby &amp; Child Care (CPG)</label>
+                </value>
+                <value>
+                    <fullName>Beverages (CPG)</fullName>
+                    <default>false</default>
+                    <label>Beverages (CPG)</label>
+                </value>
+                <value>
+                    <fullName>Business &amp; Finance</fullName>
+                    <default>false</default>
+                    <label>Business &amp; Finance</label>
+                </value>
+                <value>
+                    <fullName>Consumer App</fullName>
+                    <default>false</default>
+                    <label>Consumer App</label>
+                </value>
+                <value>
+                    <fullName>Education</fullName>
+                    <default>false</default>
+                    <label>Education</label>
+                </value>
+                <value>
+                    <fullName>Electronics</fullName>
+                    <default>false</default>
+                    <label>Electronics</label>
+                </value>
+                <value>
+                    <fullName>Energy &amp; Industrial Services</fullName>
+                    <default>false</default>
+                    <label>Energy &amp; Industrial Services</label>
+                </value>
+                <value>
+                    <fullName>Entertainment</fullName>
+                    <default>false</default>
+                    <label>Entertainment</label>
+                </value>
+                <value>
+                    <fullName>Fashion</fullName>
+                    <default>false</default>
+                    <label>Fashion</label>
+                </value>
+                <value>
+                    <fullName>Fitness</fullName>
+                    <default>false</default>
+                    <label>Fitness</label>
+                </value>
+                <value>
+                    <fullName>Food (CPG)</fullName>
+                    <default>false</default>
+                    <label>Food (CPG)</label>
+                </value>
+                <value>
+                    <fullName>Gambling</fullName>
+                    <default>false</default>
+                    <label>Gambling</label>
+                </value>
+                <value>
+                    <fullName>Gaming</fullName>
+                    <default>false</default>
+                    <label>Gaming</label>
+                </value>
+                <value>
+                    <fullName>Government &amp; Advocacy</fullName>
+                    <default>false</default>
+                    <label>Government &amp; Advocacy</label>
+                </value>
+                <value>
+                    <fullName>Health &amp; Beauty (CPG)</fullName>
+                    <default>false</default>
+                    <label>Health &amp; Beauty (CPG)</label>
+                </value>
+                <value>
+                    <fullName>Healthcare &amp; Insurance</fullName>
+                    <default>false</default>
+                    <label>Healthcare &amp; Insurance</label>
+                </value>
+                <value>
+                    <fullName>Home &amp; Garden (CPG)</fullName>
+                    <default>false</default>
+                    <label>Home &amp; Garden (CPG)</label>
+                </value>
+                <value>
+                    <fullName>Household Appliances (CPG)</fullName>
+                    <default>false</default>
+                    <label>Household Appliances (CPG)</label>
+                </value>
+                <value>
+                    <fullName>Music</fullName>
+                    <default>false</default>
+                    <label>Music</label>
+                </value>
+                <value>
+                    <fullName>News &amp; Politics</fullName>
+                    <default>false</default>
+                    <label>News &amp; Politics</label>
+                </value>
+                <value>
+                    <fullName>Pets (CPG)</fullName>
+                    <default>false</default>
+                    <label>Pets (CPG)</label>
+                </value>
+                <value>
+                    <fullName>Photography, Publishing &amp; Art</fullName>
+                    <default>false</default>
+                    <label>Photography, Publishing &amp; Art</label>
+                </value>
+                <value>
+                    <fullName>QSR</fullName>
+                    <default>false</default>
+                    <label>QSR</label>
+                </value>
+                <value>
+                    <fullName>Restaurants</fullName>
+                    <default>false</default>
+                    <label>Restaurants</label>
+                </value>
+                <value>
+                    <fullName>Retail</fullName>
+                    <default>false</default>
+                    <label>Retail</label>
+                </value>
+                <value>
+                    <fullName>Science &amp; Technology</fullName>
+                    <default>false</default>
+                    <label>Science &amp; Technology</label>
+                </value>
+                <value>
+                    <fullName>Sports</fullName>
+                    <default>false</default>
+                    <label>Sports</label>
+                </value>
+                <value>
+                    <fullName>Telecommunications</fullName>
+                    <default>false</default>
+                    <label>Telecommunications</label>
+                </value>
+                <value>
+                    <fullName>Toys</fullName>
+                    <default>false</default>
+                    <label>Toys</label>
+                </value>
+                <value>
+                    <fullName>Travel</fullName>
+                    <default>false</default>
+                    <label>Travel</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>9</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Website__c</fullName>
+        <externalId>false</externalId>
+        <label>Website</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>X2013ClientSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>2013 Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>X2014ClientSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>2014 Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>X2015ClientSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>2015 Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>X2016ClientSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>2016 Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>X2017ClientSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>2017 Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>X2018ClientSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>2018 Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>X2019ClientSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>2019 Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>X2020ClientSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>2020 Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>Brand</label>
+    <listViews>
+        <fullName>All_Brands</fullName>
+        <columns>NAME</columns>
+        <columns>AllTimeClientSpend__c</columns>
+        <columns>Verticals__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Brands</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Clients</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AllTimeClientSpend__c</field>
+            <operation>greaterThan</operation>
+            <value>USD 0</value>
+        </filters>
+        <label>All Clients</label>
+    </listViews>
+    <listViews>
+        <fullName>QSR</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Verticals__c</field>
+            <operation>equals</operation>
+            <value>QSR</value>
+        </filters>
+        <filters>
+            <field>AllTimeClientSpend__c</field>
+            <operation>greaterThan</operation>
+            <value>USD 0</value>
+        </filters>
+        <label>QSR Clients</label>
+    </listViews>
+    <nameField>
+        <label>Brand Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Brands</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Verticals__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>AllTimeClientSpend__c</customTabListAdditionalFields>
+        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>Verticals__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>AllTimeClientSpend__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Verticals__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>AllTimeClientSpend__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Verticals__c</searchFilterFields>
+        <searchFilterFields>AllTimeClientSpend__c</searchFilterFields>
+        <searchResultsAdditionalFields>Verticals__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>AllTimeClientSpend__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>CantEditBrandName</fullName>
+        <active>true</active>
+        <description>Lock edition of brand name for all except admins</description>
+        <errorConditionFormula>$User.ProfileId !=&apos;00eU0000000iVp4&apos; &amp;&amp; ischanged(Name)</errorConditionFormula>
+        <errorMessage>You cannot change the Brand Name. If this is required please contact Adminiastration</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

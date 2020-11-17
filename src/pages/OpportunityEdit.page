@@ -1,0 +1,837 @@
+<apex:page standardController="Opportunity" lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}"
+           extensions="OpportunityEditExt" tabStyle="Opportunity">
+    
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"/>
+    <apex:variable value="{!$User.UIThemeDisplayed == 'Theme4d'}" var="isLightningTheme" />
+    
+    <script>
+        jQuery.noConflict();
+    </script>
+    
+    <apex:pageMessages id="messages"/>
+    <apex:actionStatus id="myStatus2" startText="Please Wait..." StopText="" >
+        <apex:facet name="start">
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                &nbsp;
+            </div>
+            <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                    <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                    <span style="display: inline-block; padding: 10px 0px;">Please Wait...</span>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+    
+    <apex:outputPanel id="accountPanel">
+        <apex:form rendered="{!createAccount}" onkeypress="return handleAccountFormKeyPressed(event.keyCode);">
+            <apex:pageBlock title="New Account">
+                <apex:pageBlockButtons location="top">
+                    <apex:commandButton action="{!saveAccount}" value="Save Account" rerender="messages,accountPanel,createNewAccountPanel,createNewAccountPanelBD,accountField,accountFieldBD,createNewBrandPanel,brandFieldPanel" status="myStatus2"/>  
+                    <apex:commandButton action="{!CancelCreateAccount}" rerender="accountPanel,createNewAccountPanel,createNewAccountPanelBD,accountField,accountFieldBD" value="Cancel" immediate="true" status="myStatus2"/> 
+                </apex:pageBlockButtons>
+                
+                <apex:pageBlockSection title="Account Information" collapsible="false">
+                    <apex:inputField value="{!newAccount.Name}"/>
+                    <apex:inputField value="{!newAccount.Phone}"/>
+                    <apex:inputField value="{!newAccount.ParentId}"/>
+                    <apex:inputField value="{!newAccount.Fax}"/>
+                    <apex:inputField value="{!newAccount.Agency__c}" rendered="{!NOT(CONTAINS(LOWER($Label.Opportunity_Record_Type_Brand_Direct), LOWER(LEFT(opp.recordtypeid,15))))}"/>
+                    <apex:inputField value="{!newAccount.Region__c}" required="true" rendered="{!CONTAINS(LOWER($Label.Opportunity_Record_Type_Brand_Direct), LOWER(LEFT(opp.recordtypeid,15)))}"/>
+                    <apex:inputField value="{!newAccount.Website}"/>
+                    <apex:inputField value="{!newAccount.Region__c}" required="true" rendered="{!NOT(CONTAINS(LOWER($Label.Opportunity_Record_Type_Brand_Direct), LOWER(LEFT(opp.recordtypeid,15))))}"/>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            
+            <apex:actionFunction name="saveAccount" action="{!saveAccount}" rerender="messages,accountPanel" status="myStatus2"/>
+        </apex:form>
+    </apex:outputPanel>
+    
+    <apex:form id="mainForm" onkeypress="return handleFormKeyPressed(event.keyCode);">
+        <apex:pageBlock title="New Opportunity" rendered="{!NOT(CONTAINS(LOWER($Label.Opportunity_Record_Type_SaaS), LOWER(LEFT(opp.recordtypeid,15))))
+                                                          && NOT(CONTAINS(LOWER($Label.Opportunity_Record_Type_Brand_Direct), LOWER(LEFT(opp.recordtypeid,15))))}" id="newOpportunity">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!saveOpportunity}" value="Save" rerender="messages,mainForm" status="myStatus2"/>  
+                <apex:commandButton action="{!Cancel}" value="Cancel"/> 
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Opportunity Information" collapsible="false" id="oppInfoSection">
+                <apex:inputField value="{!opp.Name}"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.StageName.Label}"/>
+                    <apex:actionRegion >
+                        <apex:inputField value="{!opp.StageName}">
+                            <apex:actionSupport event="onchange" action="{!inputUpdated}" status="myStatus2"
+                                rerender="billingConditionInput, billingProfileInput, clientSpendInput, closedLostReasonInput, closedLostReasonLabel, meetingNotesInput,
+                                            rfpDueDateInput, brandField, ioInput, endDateInput, startDateInput, meetingDateInput, meetingStatusInput, meetingNotesLabel"
+                            />
+                        </apex:inputField>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel id="createNewAccountPanel">
+                        <apex:outputPanel >
+                            <apex:actionRegion >
+                                <apex:outputPanel styleClass="btn">
+                                    Create New &nbsp;
+                                    <apex:actionSupport event="onclick" action="{!createAccount}" rerender="accountPanel, createNewAccountPanel, accountField" status="myStatus2"/>
+                                </apex:outputPanel>
+                            </apex:actionRegion>
+                            <apex:outputLabel value="Account"/>                            
+                        </apex:outputPanel>  
+                    </apex:outputPanel>
+                    <apex:outputPanel id="accountField">
+                        <apex:outputPanel >
+                            <apex:actionRegion >
+                                <apex:inputField value="{!opp.AccountId}" required="true">
+                                    <apex:actionSupport event="onchange" action="{!accountUpdated}" rerender="accountPanel,paymentTypeInput,xeroCampNameInput" status="myStatus2"/>
+                                </apex:inputField> 
+                            </apex:actionRegion>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel id="closedLostReasonLabel">
+                        <apex:outputLabel value="{!$objectType.Opportunity.Fields.Closed_Lost_Reason__c.Label}" rendered="{!OR(CONTAINS(opp.StageName, 'Closed Lost'),CONTAINS(opp.StageName, 'No Opportunity'))}"/>
+                        <apex:outputLabel rendered="{!IF(CONTAINS(opp.StageName, 'Closed Lost'), false, true)}"/>
+                    </apex:outputPanel>     
+                    <apex:outputPanel id="closedLostReasonInput">  
+                        <apex:outputPanel rendered="{!OR(CONTAINS(opp.StageName, 'Closed Lost'),CONTAINS(opp.StageName, 'No Opportunity'))}">
+                            <apex:actionRegion >
+                                <apex:inputField value="{!opp.Closed_Lost_Reason__c}" required="{!OR(CONTAINS(opp.StageName, 'Closed Lost'),CONTAINS(opp.StageName, 'No Opportunity'))}">
+                                    <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="closedLostReasonInput" status="myStatus2"/>
+                                </apex:inputField>
+                            </apex:actionRegion>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel id="createNewPanel">
+                        <apex:outputPanel rendered="{!NOT(createBrand)}" >
+                            <apex:actionRegion >
+                                <apex:outputPanel styleClass="btn">
+                                    Create New &nbsp; 
+                                    <apex:actionSupport event="onclick" action="{!createBrand}" rerender="brandPanel, createNewPanel, brandField" status="myStatus2"/>
+                                </apex:outputPanel>
+                            </apex:actionRegion>
+                            <apex:outputLabel value="{!$objectType.Opportunity.Fields.Brand__c.Label}"/>                           
+                        </apex:outputPanel>  
+                    </apex:outputPanel>
+                    <apex:outputPanel id="brandField">
+                        <apex:outputPanel rendered="{!NOT(createBrand)}" >
+                            <apex:actionRegion >
+                                <apex:inputField value="{!opp.Brand__c}" required="{!IF(isAfterProposal, true, false)}">
+                                    <apex:actionSupport event="onchange" action="{!brandUpdated}" rerender="brandPanel"/>
+                                </apex:inputField> 
+                            </apex:actionRegion>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!opp.Media_Process_Type__c}"/>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.Account_Type__c.Label}"/>
+                    <apex:outputPanel id="billingProfileInput">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!opp.Account_Type__c}" required="{!IF(isAfterProposal, true, false)}">
+                                <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="billingProfileInput" status="myStatus2"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.Amount.Label}"/>
+                    <apex:outputPanel id="clientSpendInput">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!opp.Amount}" required="{!CONTAINS(opp.StageName, 'Closed Won')}">
+                                <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="clientSpendInput" status="myStatus2"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.BillingCondition__c.Label}"/>
+                    <apex:outputPanel id="billingConditionInput">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!opp.BillingCondition__c}" required="{!isAfterProposal}">
+                                <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="billingConditionInput,paymentTypeInput" status="myStatus2"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!opp.Percent_Margin__c}"/>
+                <apex:inputField value="{!opp.InvoicingType__c}"/>
+                <apex:inputField value="{!opp.Margin_Type__c}"/>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.CustomXeroCampaignName__c.Label}"/>
+                    <apex:outputPanel id="xeroCampNameInput" >
+                        <apex:inputField value="{!opp.CustomXeroCampaignName__c}" rendered="{!showCustomCampaignName}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.Flight_Start__c.Label}"/>
+                    <apex:outputPanel id="startDateInput">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!opp.Flight_Start__c}" required="{!CONTAINS(opp.StageName, 'Closed Won')}">
+                                <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="startDateInput" status="myStatus2"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!opp.Email_Notifications_Off__c}" rendered="{!OR($Profile.Name ='System Administrator', $User.Alias = 'thelf')}"/>
+                <apex:outputLabel rendered="{!AND(NOT($Profile.Name ='System Administrator'), NOT($User.Alias = 'thelf'))}"/>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.Flight_End__c.Label}"/>
+                    <apex:outputPanel id="endDateInput">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!opp.Flight_End__c}" required="{!CONTAINS(opp.StageName, 'Closed Won')}">
+                                <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="endDateInput" status="myStatus2"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:inputField value="{!opp.CurrencyIsoCode}"/>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.IO__c.Label}"/>
+                    <apex:outputPanel id="ioInput">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!opp.IO__c}" required="{!IF(CONTAINS(opp.StageName, 'Closed Won'), true, false)}">
+                                <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="ioInput" status="myStatus2"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!opp.Order_Type__c}"/>
+                <apex:outputLabel />
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel styleClass="btn" onclick="addNewContactRole();">Add Contact</apex:outputLabel>
+                    <apex:actionRegion >
+                        <apex:outputPanel id="contactroles">
+                            <table class="list" border="1" cellpadding="0" cellspacing="0" id="mainTable_Contact_Opportunity__c">
+                                <tr class="headerRow" >
+                                    <th>{!$objectType.Contact_Opportunity__c.Fields.Contact__c.Label}</th>
+                                    <th>{!$objectType.Contact_Opportunity__c.Fields.Role__c.Label}</th>
+                                    <th></th>
+                                </tr>
+                                <apex:variable var="contactRoleRow" value="{!0}"/>
+                                <apex:repeat value="{!contactRoles}" var="contactRole">
+                                <tr class="dataRow">
+                                    <td><apex:inputField value="{!contactRole.Contact__c}" required="false"/></td>
+                                       <td><apex:inputField value="{!contactRole.Role__c}"/></td>
+                                       <td>
+                                           <apex:outputLabel onclick="deleteContactRole('{!contactRoleRow}');" styleClass="btn">
+                                               <a>Del</a>
+                                           </apex:outputLabel>
+                                       </td>
+                                   </tr>
+                                   <apex:variable var="contactRoleRow" value="{!contactRoleRow+1}"/>
+                               </apex:repeat>
+                           </table>                                                              
+                       </apex:outputPanel>  
+                       <apex:actionFunction name="addNewContactRole" action="{!addNewContactRole}" reRender="contactroles" status="myStatus2"/>
+                   </apex:actionRegion>
+               </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Sales Process Information" collapsible="true" id="oppSalesSection">
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.MeetingDate__c.Label}"/>
+                    <apex:outputPanel id="meetingDateInput">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!opp.MeetingDate__c}" required="{!CONTAINS(opp.StageName, 'Meeting')}">
+                                <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="meetingDateInput" status="myStatus2"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!opp.CloseDate}"/>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.MeetingStatus__c.Label}"/>
+                    <apex:outputPanel id="meetingStatusInput">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!opp.MeetingStatus__c}" required="{!opp.StageName == 'Meeting'}">
+                                <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="meetingStatusInput" status="myStatus2"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.RFP_Due_Date__c.Label}"/>
+                    <apex:outputPanel id="rfpDueDateInput">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!opp.RFP_Due_Date__c}" required="{!CONTAINS(opp.StageName, 'Proposal/Price Quote')}">
+                                <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="rfpDueDateInput" status="myStatus2"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel id="meetingNotesLabel">
+                        <apex:outputLabel value="{!$objectType.Opportunity.Fields.MeetingNotes__c.Label}"/>
+                        <apex:outputLabel rendered="{!IF(opp.StageName == 'Meeting', false, true)}"/>
+                    </apex:outputPanel>     
+                    <apex:outputPanel id="meetingNotesInput">  
+                        <apex:outputPanel >
+                            <apex:actionRegion >
+                                <apex:inputField value="{!opp.MeetingNotes__c}" required="{!IF(opp.StageName == 'Meeting', true, false)}" onkeypress="event.stopPropagation();">
+                                    <apex:actionSupport event="onchange" action="{!inputUpdated}" rerender="meetingNotesInput" status="myStatus2"/>
+                                </apex:inputField>
+                            </apex:actionRegion>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:outputPanel id="brandPanel">
+                <apex:pageBlockSection title="{!$objectType.Brand__c.Label}" collapsible="false" rendered="{!createBrand}">
+                    <apex:inputField value="{!brand.Name}" required="true"/>
+                    <apex:inputField value="{!brand.Verticals__c}"/>
+                    <apex:pageBlockSectionitem >
+                        <apex:outputLabel />
+                        <apex:actionRegion >
+                            <apex:outputPanel styleClass="btn">
+                                Cancel
+                                <apex:actionSupport event="onclick" action="{!cancelCreateBrand}" rerender="brandPanel, createNewPanel, brandField" status="myStatus2"/>
+                            </apex:outputPanel>
+                        </apex:actionRegion>
+                    </apex:pageBlockSectionitem>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+            <apex:pageBlockSection title="Reps Information" collapsible="true" id="reps">
+                
+                <apex:inputField value="{!opp.OwnerId}"/>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.Payment_Type__c.Label}"/>
+                    <apex:outputPanel id="paymentTypeInput">
+                        <apex:inputField value="{!opp.Payment_Type__c}" rendered="{!CanEditPaymentType}"/>
+                        <apex:outputField value="{!opp.Payment_Type__c}" rendered="{!NOT(CanEditPaymentType)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!opp.Additional_Rep__c}"/>
+                <apex:outputLabel />
+                <apex:inputField value="{!opp.Non_Salesforce_Rep__c}"/>
+                <apex:outputLabel />
+                <apex:inputField value="{!opp.InsideSalesRep__c}"/>
+                <apex:outputLabel />
+                <apex:inputField value="{!opp.ClientServicesRep__c}"/>
+            </apex:pageBlockSection>
+            
+            <apex:outputText >
+                <script> 
+                twistSection(document.getElementById('{!$Component.newOpportunity.reps}').getElementsByTagName('img')[0]) 
+                </script>
+            </apex:outputText>
+            
+            <apex:pageBlockSection title="Platforms" collapsible="true" columns="3" id="platforms">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Platform__c.Label}"/>
+                    <apex:outputPanel >
+                        <apex:repeat value="{!platforms}" var="platform">
+                            <apex:inputCheckbox value="{!platform.isSelected}" onclick="platformUpdated();"/>
+                            <apex:outputLabel value="{!platform.oppPlatform.Platform__r.Name}"/>
+                            <br/>
+                        </apex:repeat>
+                        <apex:actionFunction name="platformUpdated" action="{!platformUpdated}" rerender="platformSections,messages" status="myStatus2"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <br/>
+            </apex:pageBlockSection>
+            
+            <apex:outputText >
+                <script> 
+                twistSection(document.getElementById('{!$Component.newOpportunity.platforms}').getElementsByTagName('img')[0]) 
+                </script>
+            </apex:outputText>
+            
+            <apex:actionRegion >
+                <apex:outputPanel id="platformSections">
+                    <apex:repeat value="{!platforms}" var="platform">
+                        <c:PlatformSection platform="{!platform}"/>
+                    </apex:repeat>
+                </apex:outputPanel>
+            </apex:actionRegion>
+            
+            <apex:pageBlockSection title="Distribution & Targeting" collapsible="true" id="targeting">
+                <apex:inputField value="{!opp.Geo__c}" onkeypress="event.stopPropagation();"/>
+                <apex:inputField value="{!opp.Targeting__c}" onkeypress="event.stopPropagation();"/> 
+                <apex:inputField value="{!opp.Verticals__c}"/>
+                <apex:inputField value="{!opp.Video_Length__c}"/>
+                <apex:inputField value="{!opp.Language__c}"/>
+                <apex:inputField value="{!opp.KPI__c}" onkeypress="event.stopPropagation();"/>
+                <apex:inputField value="{!opp.Gender__c}"/> 
+                <apex:inputField value="{!opp.More_Info__c}" onkeypress="event.stopPropagation();"/> 
+            </apex:pageBlockSection>
+            
+            <apex:outputText >
+                <script> 
+                twistSection(document.getElementById('{!$Component.newOpportunity.targeting}').getElementsByTagName('img')[0]) 
+                </script>
+            </apex:outputText>
+            
+            <apex:pageBlockSection title="Creatives" collapsible="true" columns="1" id="creatives">
+                <apex:pageBlockSectionItem >  
+                    <apex:outputLabel styleClass="btn" onclick="addNewVideoUrl();">Add Creative</apex:outputLabel>                    
+                    <apex:actionRegion >
+                        <apex:outputPanel id="videoUrls">                            
+                            <table class="list" border="1" cellpadding="0" cellspacing="0" id="mainTable_VideoUrl__c">
+                                <tr class="headerRow" >
+                                    <th>{!$objectType.VideoUrl__c.Fields.Name.Label}</th> 
+                                    <th>{!$objectType.VideoUrl__c.Fields.Platform__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.Format__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.Url__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.IsPlaceholder__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.clickthroughURL__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.Text__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.StartDate__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.EndDate__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.Rotation__c.Label}</th>
+                                    <th></th>
+                                </tr>                                    
+                                <apex:variable var="videoUrlRow" value="{!0}"/>                                    
+                                <apex:repeat value="{!videoURLs}" var="videoUrl">
+                                    <tr class="dataRow">
+                                        <td><apex:inputField value="{!videoUrl.Name}" required="true"/></td>
+                                        <td><apex:inputField value="{!videoUrl.Platform__c}" required="true"/></td>
+                                        <td><apex:inputField value="{!videoUrl.Format__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.Url__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.IsPlaceholder__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.ClickThroughURL__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.Text__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.StartDate__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.EndDate__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.Rotation__c}"/></td>
+                                        <td>
+                                            <apex:outputLabel onclick="deleteVideoUrl('{!videoUrlRow}');" styleClass="btn">
+                                                <a>Del</a>
+                                            </apex:outputLabel>
+                                        </td>
+                                    </tr>
+                                    <apex:variable var="videoUrlRow" value="{!videoUrlRow+1}"/>
+                                </apex:repeat>
+                            </table>                                                             
+                        </apex:outputPanel>  
+                        <apex:actionFunction name="addNewVideoUrl" action="{!addNewVideoUrl}" reRender="videoUrls" status="myStatus2"/>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:outputText >
+                <script> 
+                twistSection(document.getElementById('{!$Component.newOpportunity.creatives}').getElementsByTagName('img')[0]) 
+                </script>
+            </apex:outputText>
+       </apex:pageBlock>
+       
+        <apex:actionRegion >
+            <apex:actionFunction action="{!deleteContactRole}" name="deleteContactRole" rerender="contactroles" status="myStatus2">
+                <apex:param name="contactRoleRow" assignTo="{!contactRoleRow}" value=""/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!deleteVideoUrl}" name="deleteVideoUrl" rerender="videoUrls" status="myStatus2">
+                <apex:param name="videoUrlRow" assignTo="{!videoUrlRow}" value=""/>
+            </apex:actionFunction>
+        </apex:actionRegion>
+
+        <apex:pageBlock title="New Brand Direct Opportunity" rendered="{!CONTAINS(LOWER($Label.Opportunity_Record_Type_Brand_Direct), LOWER(LEFT(opp.recordtypeid,15)))}" id="newBrandDirectBlock">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!saveOpportunity}" value="Save" rerender="messages,mainForm" status="myStatus2"/>  
+                <apex:commandButton action="{!Cancel}" value="Cancel"/> 
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Qualification" collapsible="false" id="bd_qualification">
+                <apex:inputField value="{!opp.Name}"/>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Opportunity.Fields.StageName.Label}"/>
+                    <apex:actionRegion >
+                        <apex:inputField value="{!opp.StageName}">
+                            <apex:actionSupport event="onchange" action="{!inputUpdated}" status="myStatus2"
+                                rerender="billingConditionInput, billingProfileInput, clientSpendInput, closedLostReasonInput, closedLostReasonLabel, rfpDueDateInput,
+                                        brandField, ioInput, endDateInput, startDateInput, meetingDateInput, meetingStatusInput, meetingNotesLabel, meetingNotesInput"
+                            />
+                        </apex:inputField>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel id="createNewAccountPanelBD">
+                        <apex:actionRegion >
+                            <apex:outputPanel styleClass="btn">
+                                Create New &nbsp;
+                                <apex:actionSupport event="onclick" action="{!createAccount}" rerender="accountPanel, createNewAccountPanelBD, accountFieldBD" status="myStatus2"/>
+                            </apex:outputPanel>
+                        </apex:actionRegion>
+                        <apex:outputLabel value="Account"/>                            
+                    </apex:outputPanel>
+                    <apex:outputPanel id="accountFieldBD">
+                        <apex:actionRegion >
+                            <apex:inputField value="{!opp.AccountId}" required="true">
+                                <apex:actionSupport event="onchange" action="{!accountUpdated}" rerender="messages,createNewBrandPanel,brandFieldPanel,accountPanel,paymentTypeInput,xeroCampNameInput" status="myStatus2"/>
+                            </apex:inputField> 
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:inputField value="{!opp.OwnerId}"/>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel id="createNewBrandPanel">
+                        <apex:actionRegion rendered="{!NOT(hideBrand)}">
+                            <apex:outputPanel styleClass="btn">
+                                Create New &nbsp;
+                                <apex:actionSupport event="onclick" action="{!createBrand}" rerender="brandPanel, createNewBrandPanel, brandFieldPanel" status="myStatus2"/>
+                            </apex:outputPanel>
+                        </apex:actionRegion>
+                        <apex:outputLabel value="{!$objectType.Opportunity.Fields.Brand__c.Label}" rendered="{!NOT(hideBrand)}"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="brandFieldPanel">
+                        <apex:actionRegion rendered="{!NOT(hideBrand)}" >
+                            <apex:inputField value="{!opp.Brand__c}" required="true">
+                                <apex:actionSupport event="onchange" action="{!brandUpdated}" rerender="brandFieldPanel, createNewBrandPanel"/>
+                            </apex:inputField>
+                        </apex:actionRegion>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Expected Close Date"/>
+                    <apex:inputField value="{!opp.CloseDate}"/>
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!opp.Amount}"/>
+                <apex:inputField value="{!opp.CurrencyIsoCode}"/>
+                <apex:inputField value="{!opp.Order_Type__c}"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Notes"/>
+                    <apex:inputField value="{!opp.Qualification_Notes__c}" style="width: 155px;"/>
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!opp.Email_Notifications_Off__c}" rendered="{!OR($Profile.Name ='System Administrator', $User.Alias = 'thelf')}"/>
+
+
+                <apex:outputLabel rendered="{!OR($Profile.Name ='System Administrator', $User.Alias = 'thelf')}"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel styleClass="btn" onclick="addNewContactRole();">Add Contact</apex:outputLabel>
+                    <apex:actionRegion >
+                        <apex:outputPanel id="contactroles">
+                            <table class="list" border="1" cellpadding="0" cellspacing="0" id="mainTable_Contact_Opportunity__c">
+                                <tr class="headerRow" >
+                                    <th>{!$objectType.Contact_Opportunity__c.Fields.Contact__c.Label}</th>
+                                    <th>{!$objectType.Contact_Opportunity__c.Fields.Role__c.Label}</th>
+                                    <th></th>
+                                </tr>
+                                <apex:variable var="contactRoleRow" value="{!0}"/>
+                                <apex:repeat value="{!contactRoles}" var="contactRole">
+                                    <tr class="dataRow">
+                                        <td><apex:inputField value="{!contactRole.Contact__c}" required="false"/></td>
+                                        <td><apex:inputField value="{!contactRole.Role__c}"/></td>
+                                        <td>
+                                            <apex:outputLabel onclick="deleteContactRole('{!contactRoleRow}');" styleClass="btn">
+                                                <a>Del</a>
+                                            </apex:outputLabel>
+                                        </td>
+                                    </tr>
+                                    <apex:variable var="contactRoleRow" value="{!contactRoleRow+1}"/>
+                                </apex:repeat>
+                            </table>
+                        </apex:outputPanel>
+                        <apex:actionFunction name="addNewContactRole" action="{!addNewContactRole}" reRender="contactroles" status="myStatus2"/>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Discovery Call" collapsible="true" id="bd_discoveryCall">
+                <apex:inputField value="{!opp.InsideSalesRep__c}"/>
+                <apex:inputField value="{!opp.MeetingDate__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Additional_Rep__c}"/>
+                <apex:inputField value="{!opp.MeetingNotes__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Non_Salesforce_Rep__c}"/>
+                <apex:inputField value="{!opp.Competitor_Description__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.ClientServicesRep__c}"/>
+            </apex:pageBlockSection>
+            
+            <apex:outputText >
+                <script> 
+                twistSection(document.getElementById('{!$Component.newBrandDirectBlock.bd_discoveryCall}').getElementsByTagName('img')[0]) 
+                </script>
+            </apex:outputText>
+            
+            <apex:pageBlockSection title="Evaluation" collapsible="true" id="bd_evaluation">
+                <apex:inputField value="{!opp.Client_s_Top_Priority__c}"/>
+                <apex:inputField value="{!opp.Client_s_Top_Priority_Details__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Client_s_Biggest_Challenge__c}"/>
+                <apex:inputField value="{!opp.Client_s_Biggest_Challenge_Details__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Platform__c}"/>
+                <apex:inputField value="{!opp.Client_s_Ad_Account_Numbers__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Audit__c}"/>
+                <apex:inputField value="{!opp.Proposal__c}"/>
+                <apex:inputField value="{!opp.RFP_Due_Date__c}"/>
+                <apex:inputField value="{!opp.KPI__c}" onkeypress="event.stopPropagation();" style="width: 155px;"/>
+            </apex:pageBlockSection>
+            
+            <apex:outputText >
+                <script> 
+                twistSection(document.getElementById('{!$Component.newBrandDirectBlock.bd_evaluation}').getElementsByTagName('img')[0]) 
+                </script>
+            </apex:outputText>
+            
+            <apex:pageBlockSection title="Validating Benefits" collapsible="true" id="bd_validatingBenefits">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Next Meeting Date"/>
+                    <apex:inputField value="{!opp.MeetingDate__c}" style="width: 155px;"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:outputText >
+                <script> 
+                twistSection(document.getElementById('{!$Component.newBrandDirectBlock.bd_validatingBenefits}').getElementsByTagName('img')[0]) 
+                </script>
+            </apex:outputText>
+            
+            <apex:pageBlockSection title="Negotiating & Mutual Plan" collapsible="true" id="bd_negotiating">
+                <apex:inputField value="{!opp.Account_Type__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Final_Negotiating_Considerations__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.BillingCondition__c}" style="width: 155px;"/>
+                <apex:outputLabel />
+                <apex:inputField value="{!opp.Payment_Type__c}" style="width: 155px;"/>
+                <apex:outputLabel />
+                <apex:inputField value="{!opp.InvoicingType__c}" style="width: 155px;"/>
+                <apex:outputLabel />
+                <apex:inputField value="{!opp.CustomXeroCampaignName__c}" rendered="{!opp.Account.Custom_Xero_Naming__c}"/>
+            </apex:pageBlockSection>
+                
+            <apex:outputText >
+                <script> 
+                twistSection(document.getElementById('{!$Component.newBrandDirectBlock.bd_negotiating}').getElementsByTagName('img')[0]) 
+                </script>
+            </apex:outputText>
+            
+            <apex:pageBlockSection title="Finalizing Closure" collapsible="true" id="bd_finalizingClosure">
+                <apex:inputField value="{!opp.Flight_Start__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Amount}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Flight_End__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Percent_Margin__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Language__c}"/>
+                <apex:inputField value="{!opp.Margin_Type__c}" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Video_Length__c}"/>
+                <apex:inputField value="{!opp.Targeting__c}" onkeypress="event.stopPropagation();" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Gender__c}"/>
+                <apex:inputField value="{!opp.Geo__c}" onkeypress="event.stopPropagation();" style="width: 155px;"/>
+                <apex:inputField value="{!opp.Verticals__c}"/>                
+                <apex:inputField value="{!opp.More_Info__c}" onkeypress="event.stopPropagation();" style="width: 155px;"/> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.Platform__c.Label}"/>
+                    <apex:outputPanel >
+                        <apex:repeat value="{!platforms}" var="platform">
+                            <apex:inputCheckbox value="{!platform.isSelected}" onclick="platformUpdated();"/>
+                            <apex:outputLabel value="{!platform.oppPlatform.Platform__r.Name}"/>
+                            <br/>
+                        </apex:repeat>
+                        <apex:actionFunction name="platformUpdated" action="{!platformUpdated}" rerender="platformSections,messages" status="myStatus2"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:outputText >
+                <script> 
+                twistSection(document.getElementById('{!$Component.newBrandDirectBlock.bd_finalizingClosure}').getElementsByTagName('img')[0]) 
+                </script>
+            </apex:outputText>
+            
+            <apex:pageBlockSection title="Closed" collapsible="true" id="closed" columns="1">
+                <apex:inputField value="{!opp.IO__c}"/>
+                <apex:inputField value="{!opp.Closed_Lost_Reason__c}"/>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel styleClass="btn" onclick="addNewVideoUrl();">Add Creative</apex:outputLabel>                    
+                    <apex:actionRegion >
+                        <apex:outputPanel id="videoUrls">                            
+                            <table class="list" border="1" cellpadding="0" cellspacing="0" id="mainTable_VideoUrl__c">
+                                <tr class="headerRow" >
+                                    <th>{!$objectType.VideoUrl__c.Fields.Name.Label}</th> 
+                                    <th>{!$objectType.VideoUrl__c.Fields.Platform__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.Format__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.Url__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.IsPlaceholder__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.clickthroughURL__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.Text__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.StartDate__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.EndDate__c.Label}</th>
+                                    <th>{!$objectType.VideoUrl__c.Fields.Rotation__c.Label}</th>
+                                    <th></th>
+                                </tr>                                    
+                                <apex:variable var="videoUrlRow" value="{!0}"/>                                    
+                                <apex:repeat value="{!videoURLs}" var="videoUrl">
+                                    <tr class="dataRow">
+                                        <td><apex:inputField value="{!videoUrl.Name}" required="true"/></td>
+                                        <td><apex:inputField value="{!videoUrl.Platform__c}" required="true"/></td>
+                                        <td><apex:inputField value="{!videoUrl.Format__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.Url__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.IsPlaceholder__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.ClickThroughURL__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.Text__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.StartDate__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.EndDate__c}"/></td>
+                                        <td><apex:inputField value="{!videoUrl.Rotation__c}"/></td>
+                                        <td><apex:outputLabel onclick="deleteVideoUrl('{!videoUrlRow}');" styleClass="btn"><a>Del</a></apex:outputLabel></td>
+                                    </tr>
+                                    <apex:variable var="videoUrlRow" value="{!videoUrlRow+1}"/>
+                                </apex:repeat>
+                            </table>                                                             
+                        </apex:outputPanel>  
+                        <apex:actionFunction name="addNewVideoUrl" action="{!addNewVideoUrl}" reRender="videoUrls" status="myStatus2"/>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+                
+            <apex:outputText rendered="{!OR(opp.StageName != 'Closed Won', opp.StageName != 'Closed Lost')}">
+                <script> 
+                twistSection(document.getElementById('{!$Component.newBrandDirectBlock.closed}').getElementsByTagName('img')[0]) 
+                </script>
+            </apex:outputText>
+            
+            <apex:outputPanel id="brandPanel">
+                <apex:pageBlockSection title="{!$objectType.Brand__c.Label}" collapsible="false" rendered="{!createBrand}">
+                    <apex:inputField value="{!brand.Name}" required="true"/>
+                    <apex:inputField value="{!brand.Verticals__c}"/>
+                    <apex:pageBlockSectionitem >
+                        <apex:outputLabel />
+                        <apex:actionRegion >
+                            <apex:outputPanel styleClass="btn">
+                                Cancel
+                                <apex:actionSupport event="onclick" action="{!cancelCreateBrand}" rerender="brandPanel, createNewBrandPanel, brandFieldPanel" status="myStatus2"/>
+                            </apex:outputPanel>
+                        </apex:actionRegion>
+                    </apex:pageBlockSectionitem>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+            <apex:actionRegion >
+                <apex:outputPanel id="platformSections">
+                    <apex:repeat value="{!platforms}" var="platform">
+                        <c:PlatformSection platform="{!platform}"/>
+                    </apex:repeat>
+                </apex:outputPanel>
+            </apex:actionRegion>
+        </apex:pageBlock>
+        
+        <apex:actionRegion >
+            <apex:actionFunction action="{!deleteVideoUrl}" name="deleteVideoUrl" rerender="videoUrls" status="myStatus2">
+                <apex:param name="videoUrlRow" assignTo="{!videoUrlRow}" value=""/>
+            </apex:actionFunction>
+        </apex:actionRegion>
+        
+        <apex:actionFunction name="saveOpportunity" action="{!saveOpportunity}" rerender="messages,mainForm" status="myStatus2"/>
+    </apex:form>
+    
+    <script type="text/javascript">
+	jQuery(document).ready(function() {
+        PageBlockSection.setHelpHint("bd_qualification", "In the Qualification stage the prospect has identified themselves as interested and an opportunity is " +
+                                     "created to record this. SDR’s create the opportunity and track the account until an initial discovery call can be scheduled " +
+                                     "with an AE.");
+        
+        PageBlockSection.setHelpHint("bd_discoveryCall", "In the Discovery Call stage, a hand-off from a Sales Development Representative to an Account Executive " +
+                                     "occurs here. In this stage Meeting date is set and a Google Doc with notes for the team to view and collaborate on is " +
+                                     "generated. SDR’s please be specific on who will be attending the meeting, their titles, and how you came across this account " +
+                                     "in the first place.");
+        
+        PageBlockSection.setHelpHint("bd_evaluation", "In the Evaluation stage an automatic email can be generated to communicate the need for an audit or proposal " +
+                                     "to Strike Social teams members. A salesperson should ensure the next steps are very clear and your ask of the strategy and " +
+                                     "client service teams is focused and specific.");
+        
+        PageBlockSection.setHelpHint("bd_validatingBenefits", "In the Validating Benefits stage we present our findings and plan for moving forward. Lastly, " +
+                                     "we confirm the benefit that Strike Social will bring to their unique KPI’s.");
+        
+        PageBlockSection.setHelpHint("bd_negotiating", "In this stage the final touches are being place on our client agreement. The platforms, campaign goals, " +
+                                     "and budget should be well understood when we are in this stage.");
+        
+        PageBlockSection.setHelpHint("bd_finalizingClosure", "In this stage an automated email is sent to clientservices@strikesocial.com to tell them to generate " +
+                                     "an IO and send it to the client.");
+        
+    });
+
+    var PageBlockSection = (function(isLightningTheme) {
+        let isFirefox = typeof InstallTrigger !== 'undefined';
+        
+        let setHelpHint = function(sectionId, hint) {
+            let randomId = Math.random().toString(36).substr(2, 9);
+
+            let img = document.createElement("img");
+            if (isLightningTheme === false) {
+                img.style.position = "absolute";
+                img.style.width = "2em";
+                img.style.height = "1.5em";
+                if (isFirefox) {
+                    img.style.top = "-1.1em";
+                } else {
+                    img.style.top = "-0.3em";
+                }
+                img.style.background = "url('/img/help_orange.png') top right no-repeat";
+            } else {
+                img.style.position = "relative";
+            }
+            img.src = "/img/s.gif"
+            img.className = "helpOrb";
+
+            let span = document.createElement("span");
+            span.className = "helpButton";
+            span.id = randomId  + "-_help"; // "-_help" is required to run sfdcPage.setHelp
+
+            span.appendChild(img);
+
+            let $sectionHeaderDiv = jQuery('div[id$="' + sectionId + '"]').children().first();
+            $sectionHeaderDiv.append(span);
+
+            // when element is created, hint popup needs to be defined
+            if (sfdcPage && typeof sfdcPage.setHelp === "function") {
+                sfdcPage.setHelp(randomId, hint);
+            }
+        }
+
+        return {
+            setHelpHint: function(sectionId, hint) {
+                setHelpHint(sectionId, hint);
+            }
+        }
+    })({!isLightningTheme});
+
+    function handleFormKeyPressed(ev)  {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            saveOpportunity();
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    function handleAccountFormKeyPressed(ev)  {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            saveAccount();
+            return false;
+        } else {
+            return true;
+        }
+    }
+    </script>
+</apex:page>

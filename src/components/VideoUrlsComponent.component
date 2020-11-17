@@ -1,0 +1,108 @@
+<apex:component controller="VideoUrlsComponentCtrl" allowDML="true">
+
+    <apex:includeScript value="{!$Resource.sorttable}"/>
+    
+    <apex:attribute name="contractId" description="" assignTo="{!contract}" type="String"/>
+    <apex:attribute name="opportunityId" description="" assignTo="{!opportunity}" type="String"/>
+
+    <apex:form >
+        <apex:outputPanel id="videoUrlsComponent">
+            <p id="videoUrlRemoveInlineEditFocus"/>
+            
+            <apex:pageBlock title="{!$objectType.VideoUrl__c.LabelPlural}" mode="inlineEdit" id="mainBlock">
+                <!-- Buttons -->
+                <apex:pageBlockButtons location="top">
+                    <apex:commandButton value="Save" onclick="onVideoUrlSaveClick(this)" id="saveVideoUrlsButton" style="display:none;" styleClass="videoUrlsSaveBtn" rerender="none"/> 
+                    <apex:outputPanel styleClass="btn" onclick="addNewVideoUrl()" style="padding: 4px 3px;">Add New</apex:outputPanel>                 
+                </apex:pageBlockButtons> 
+                
+                <apex:pageBlockSection columns="4"> 
+                    <apex:commandLink target="_blank" action="{!getCSVTemplate_Redirect}" value="Download Creatives Upload Template"/>
+                </apex:pageBlockSection>
+                
+                <apex:pageMessages id="videoUrlsMessages"/>
+
+                <!-- Table for Payments -->
+                <apex:outputPanel id="videoUrlsTable">
+                    <table border="1" bordercolor="grey"  cellpadding="0" cellspacing="0" class="list" id="creativesTable">
+                        <tr class="headerRow" >
+                            <th></th>
+                            <th>{!$objectType.VideoUrl__c.Fields.Name.Label}</th> 
+                            <th>{!$objectType.VideoUrl__c.Fields.Platform__c.Label}</th> 
+                            <th>{!$objectType.VideoUrl__c.Fields.Format__c.Label}</th>                       
+                            <th>{!$objectType.VideoUrl__c.Fields.Url__c.Label}</th>
+                            <th>{!$objectType.VideoUrl__c.Fields.IsPlaceholder__c.Label}</th>  
+                            <th>{!$objectType.VideoUrl__c.Fields.ClickThroughURL__c.Label}</th>
+                            <th>{!$objectType.VideoUrl__c.Fields.Text__c.Label}</th>
+                            <th>{!$objectType.VideoUrl__c.Fields.StartDate__c.Label}</th> 
+                            <th>{!$objectType.VideoUrl__c.Fields.EndDate__c.Label}</th>
+                            <th>{!$objectType.VideoUrl__c.Fields.Rotation__c.Label}</th>
+                        </tr>
+                        
+                        <apex:variable var="videoUrlRow" value="{!0}" />
+                        <apex:repeat value="{!videoUrls}" var="videoUrl" id="theRepeat">
+                            <tr class="dataRow" onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}" onmouseout="if(window.hiOff){hiOff(this);}" onmouseover="if (window.hiOn){hiOn(this);}" >
+                                <apex:inlineEditSupport showOnEdit="saveVideoUrlsButton, cancelButton" hideOnEdit="editButton" event="ondblclick" 
+                                                        resetFunction="resetInlineEdit" id="inlineElement"/>
+                                <td>
+                                    <apex:outputLabel rendered="{!ISBLANK(videoUrl.Id)}" onclick="cancelNewVideoUrl('{!videoUrlRow}');" styleClass="actionLink">
+                                        <a href="">Cancel</a>
+                                    </apex:outputLabel>
+                                </td>
+                                <apex:outputLabel >
+                                    <td> <apex:outputField value="{!videoUrl.Name}"/> </td>
+                                    <td>
+                                        <apex:selectList value="{!videoUrl.Platform__c}" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!availablePlatforms}"/>
+                                        </apex:selectList>
+                                    </td>
+                                    <td> <apex:outputField value="{!videoUrl.Format__c}"/> </td>
+                                    <td> <apex:outputField value="{!videoUrl.Url__c}"/> </td>
+                                    <td> <apex:outputField value="{!videoUrl.IsPlaceholder__c}"/> </td>
+                                    <td> <apex:outputField value="{!videoUrl.ClickThroughURL__c}"/> </td>
+                                    <td> <apex:outputField value="{!videoUrl.Text__c}"/> </td>
+                                    <td> <apex:outputField value="{!videoUrl.StartDate__c}"/> </td>
+                                    <td> <apex:outputField value="{!videoUrl.EndDate__c}"/> </td>
+                                    <td> <apex:outputField value="{!videoUrl.Rotation__c}"/> </td>
+                                </apex:outputLabel>
+                            </tr>
+                            <apex:variable var="videoUrlRow" value="{!videoUrlRow+1}"/>
+                        </apex:repeat>
+                    </table>
+                </apex:outputPanel>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        
+        <apex:actionFunction name="saveVideoUrlRecords" action="{!saveVideoUrls}" rerender="videoUrlsMessages, videoUrlsTable" status="statusSection" onComplete="reRenderPaymentPlant();"/>
+        <apex:actionFunction name="addNewVideoUrl" action="{!addNewVideoUrl}" reRender="videoUrlsComponent" status="statusSection" oncomplete="showVideoUrlsSaveButton();"/> 
+        
+        <apex:actionFunction action="{!cancelNewVideoUrl}" name="cancelNewVideoUrl" rerender="videoUrlsComponent" status="statusSection">
+            <apex:param name="videoUrlRow" assignTo="{!videoUrlRow}" value="" />
+        </apex:actionFunction>
+    </apex:form>
+    
+    <apex:form >
+        <apex:inputFile value="{!csvFileBody}"  filename="{!csvAsString}"/>
+        <apex:commandButton value="Import Creatives" action="{!importCSVFile}" rerender="" />
+    </apex:form>
+    
+    <script>
+        jQuery(document).ready(function() {
+            jQuery(".list").addClass('js-sort-table');
+        });
+
+        function showVideoUrlsSaveButton() {
+            jQuery(".videoUrlsSaveBtn").show();
+        }
+
+        function onVideoUrlSaveClick() {
+            jQuery("#videoUrlRemoveInlineEditFocus").trigger("click");
+            saveVideoUrlRecords();
+        }
+
+        function reRenderPaymentPlant() {
+            // because, creatives might be shown in project Creatives picklist
+            // TODO: complete rerender
+        }
+    </script>
+</apex:component>

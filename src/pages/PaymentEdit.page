@@ -1,0 +1,114 @@
+<apex:page standardController="Sub_Project__c" extensions="PaymentCtrl" 
+           lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}"
+           showHeader="true" sidebar="true" action="{!onEditReady}">
+
+	<style type="text/css">
+		.customPopup{
+		  background-color:    		white;
+		  border:                  1px #aaa solid;
+		  left:                    50%;
+		  padding:                 20px;
+		  position:                fixed;
+		  z-index:                 9999;
+		  /* These are the 3 css properties you will need to tweak so the pop 
+		  up displays in the center of the screen. First set the width. Then set 
+		  margin-left to negative half of what the width is. You can also add 
+		  the height property for a fixed size pop up.*/
+		  width:                   30%;
+		  margin-left:             -250px;
+		  top:                     150px;
+		  border-radius:       		10px;
+		  font-size:               14px;
+	 		line-height:            1.6;
+		}
+
+		.customPopup .popupHeader {
+			border-bottom: 1px solid #aaa;
+			margin-bottom: 10px;
+			font-weight: bold;
+		}
+
+     	.btn-popup {
+        	text-align: 		center;
+        	margin-top: 		10px;
+     	}
+
+     	.btn-popup input {
+        	background-color: 	#FFF;
+		    padding: 			4px 8px !important;
+		    border: 			1px #aaa solid;
+		    font-family: 		inherit;
+		    margin: 			0 4px;
+		    min-width: 			50px;
+     	}
+
+     	.customPopup li {
+    	    list-style-type: none;
+    	    font-weight: bold;
+     	}
+
+     	html, body{
+		  min-height: 100%;
+		}
+		body{
+		  position: relative;
+		}
+		.overlay{
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+		  z-index: 10;
+		  background-color: rgba(0,0,0,0.5); /*dim the background*/
+		}
+ 	</style>
+
+	<apex:form id="mainForm">
+
+		<apex:sectionHeader title="Payment Edit" subtitle="{!Sub_Project__c.Name}"/>
+
+		<apex:pageBlock mode="edit" title="Contract Edit">
+			<apex:pageMessages />
+
+			<apex:pageBlockButtons >
+				<apex:commandButton value="Save" action="{!save}" reRender="mainForm, popupForm"/>
+				<apex:commandButton value="Save & New" action="{!save}" reRender="mainForm, popupForm">
+					<apex:param assignTo="{!saveAndNew}" name="saveAndNew" value="true"/>
+				</apex:commandButton>
+				<apex:commandButton value="Cancel" action="{!cancel}"/>
+			</apex:pageBlockButtons>
+
+			<apex:repeat value="{!fsList}" var="fs">
+				<apex:pageBlockSection title="{!fs.label}" collapsible="false" columns="{!IF(fs.fields.size > 6, 2, 1)}" >
+					<apex:repeat value="{!fs.fields}" var="field">
+						<apex:pageBlockSectionItem rendered="{!IF(AND(payment['RecordType.Name'] = 'TrueView', field.name != 'AdWords_Impressions__c', field.name != 'Impression_Order__c'), true, IF(AND(payment['RecordType.Name'] != 'TrueView', field.name != 'AdWords_Views__c', field.name != 'View_Order__c'), true, false))}">
+							<apex:outputLabel value="{!field.label}"/>
+							<apex:inputField value="{!payment[field.name]}" required="{!field.required}"/>
+						</apex:pageBlockSectionItem>
+					</apex:repeat>
+				</apex:pageBlockSection>
+			</apex:repeat>
+
+		</apex:pageBlock>
+	</apex:form>
+
+	<!-- popup -->
+	<apex:form id="popupForm">
+		<div class="overlay" style="{!IF(showEditPopUpMessage = false, "display: none;","display: block;")}"></div>
+		<apex:outputPanel id="popup">			
+		 	<apex:outputPanel styleClass="customPopup" layout="block" rendered="{!showEditPopUpMessage}">
+		 	 	<div class="popupHeader">
+		          	WARNING
+		        </div>
+		        <div>
+		          	Client Spend was defined on IO. Do you wish to adjust the value?
+		        </div>
+			 	<div class="btn-popup">
+			    	<apex:commandButton value="Yes" action="{!submitClientSpend}" rerender="mainForm, popup, popupForm"/>
+			    	<apex:commandButton value="No" action="{!cancelUpdate}" rerender="mainForm, popup, popupForm"/>
+				</div>
+			</apex:outputPanel>
+	  </apex:outputPanel>
+	</apex:form>
+</apex:page>

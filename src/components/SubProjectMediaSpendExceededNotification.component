@@ -1,0 +1,52 @@
+<apex:component controller="SubProjectMediaSpendExceededNotifyCtrl" access="global">
+    
+    <apex:attribute name="clientServiceId" type="String" assignTo="{!clientService}" description="Client Service Id"/>
+    
+    <html>
+        <body>
+            <p>
+                Hello,
+                <br/>
+            </p>
+            
+            <apex:outputPanel rendered="{!MediaSpendExceededExtechPayments.size > 0}">
+                <p>
+                    The following Extech campaigns have a final Media Spend greater than their Media Order. 
+                    <br/>
+                    Please double check the Google Invoices to ensure we can Invoice in full, and request a manual override.
+                </p>
+                
+                <table border="1" style="width:60%; border-collapse: collapse;" cellpadding="3">
+                    <tr>
+                        <th>{!$objectType.Sub_Project__c.Fields.Name.Label}</th>
+                        <th>{!$objectType.Sub_Project__c.Fields.Project__c.Label}</th>
+                        <th>{!$objectType.Sub_Project__c.Fields.AdWordsSpend__c.Label}</th>
+                        <th>{!$objectType.Sub_Project__c.Fields.Media_Order__c.Label}</th>
+                        <th>{!$objectType.Sub_Project__c.Fields.Start_Date__c.Label}</th>
+                        <th>{!$objectType.Sub_Project__c.Fields.End_Date__c.Label}</th>
+                        
+                    </tr> 
+                    <apex:repeat value="{!MediaSpendExceededExtechPayments}" var="payment">
+                        <tr>
+                            <td><a href='{!instanceUrl}/{!payment.Id}' target="_blank">{!payment.Name}</a></td>
+                            <td><a href='{!instanceUrl}/{!payment.Project__c}' target="_blank">{!payment.Project__r.Name}</a></td>
+                            <td><apex:outputField value="{!payment.AdWordsSpend__c}"/></td>
+                            <td><apex:outputField value="{!payment.Media_Order__c}"/></td>
+                            <td><apex:outputField value="{!payment.Start_Date__c}"/></td>
+                            <td><apex:outputField value="{!payment.End_Date__c}"/></td> 
+                        </tr>                
+                    </apex:repeat>
+                </table>
+                
+            </apex:outputPanel>
+            
+            <p>
+                <br/>
+                Kind regards,
+                <br/>
+                Administration
+            </p>
+        </body>
+    </html>
+    
+</apex:component>

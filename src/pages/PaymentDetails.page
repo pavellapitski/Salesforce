@@ -1,0 +1,193 @@
+<apex:page standardController="Sub_Project__c" extensions="PaymentCtrl" 
+           lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}"
+           action="{!onEditReady}" tabStyle="Sub_Project__c" showHeader="true" sidebar="true">
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    
+    <style type="text/css">
+        td.expected {
+            font-style: italic;
+        }
+        
+        .customPopup{
+          background-color:         white;
+          border:                  1px #aaa solid;
+          left:                    50%;
+          padding:                 20px;
+          position:                fixed;
+          z-index:                 9999;
+          /* These are the 3 css properties you will need to tweak so the pop 
+          up displays in the center of the screen. First set the width. Then set 
+          margin-left to negative half of what the width is. You can also add 
+          the height property for a fixed size pop up.*/
+          width:                   30%;
+          margin-left:             -250px;
+          top:                     150px;`
+          border-radius:            10px;
+          font-size:               14px;
+            line-height:            1.6;
+        }
+
+        .customPopup .popupHeader {
+            border-bottom: 1px solid #aaa;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .btn-popup {
+            text-align:         center;
+            margin-top:         10px;
+        }
+
+        .btn-popup input {
+            background-color:   #FFF;
+            padding:            4px 8px !important;
+            border:             1px #aaa solid;
+            font-family:        inherit;
+        }
+
+        .customPopup li {
+            list-style-type: none;
+            font-weight: bold;
+        }
+
+        html, body{
+          min-height: 100%;
+        }
+        body{
+          position: relative;
+        }
+        .overlay{
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: rgba(0,0,0,0.5); /*dim the background*/
+        }
+    </style>
+
+    <p id="removeInlineEditFocus"/>
+
+    <apex:form id="mainForm">
+
+        <apex:actionStatus id="paymentStatus" startText="Please Wait..." StopText="" >
+            <apex:facet name="start">
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+                &nbsp;
+            </div>
+            <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                    <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                    <span style="display: inline-block; padding: 10px 0px;">Please Wait...</span>
+                </div>
+            </div>
+            </apex:facet>
+        </apex:actionStatus>
+
+        <apex:sectionHeader title="Payment" subtitle="{!Sub_Project__c.Name}"/>
+
+        <apex:pageBlock mode="maindetail">
+            <apex:pageMessages id="messages" />
+
+            <apex:pageBlockButtons >
+                <!-- Inline Edit buttons -->
+                <apex:commandButton value="Save" id="saveButton" reRender="{!IF(savedSuccessfully == true, 'mainForm, popupForm', 'popupForm, messages')}" style="display:none;" action="{!save}" onclick="jQuery('#removeInlineEditFocus').trigger('click');" status="paymentStatus"/>
+                <apex:commandButton value="Cancel" id="cancelButton" action="{!cancel}" style="display:none;" reRender="mainForm"/>
+                <!-- Detail buttons -->
+                <apex:commandButton value="Edit" id="editButton" action="{!URLFOR($Action.Sub_Project__c.Edit, Sub_Project__c.Id, [retURL=URLFOR('/' + Sub_Project__c.Id)])}"/>
+                <apex:commandButton value="Delete" id="deleteButton" action="{!URLFOR($Action.Sub_Project__c.Delete, Sub_Project__c.Id)}"/>
+            </apex:pageBlockButtons>
+
+            <apex:inlineEditSupport showOnEdit="saveButton, cancelButton" 
+                                    hideOnEdit="editButton, deleteButton, mmButton, xeroButton" 
+                                    event="ondblclick" 
+                                    resetFunction="resetInlineEdit" id="inlineElement"/>
+
+            <apex:repeat value="{!fsList}" var="fs">
+                <apex:pageBlockSection title="{!fs.label}" collapsible="true" columns="{!IF(fs.fields.size > 6, 2, 1)}">
+                    <apex:repeat value="{!fs.fields}" var="field">
+
+                        <apex:pageBlockSectionItem rendered="{!IF(AND(payment['RecordType.Name'] = 'TrueView', field.name != 'AdWordsImpressions__c', field.name != 'Impression_Order__c'), true, IF(AND(payment['RecordType.Name'] != 'TrueView', field.name != 'AdWordsViews__c', field.name != 'View_Order__c'), true, false))}">
+                            <apex:outputLabel value="{!field.label}"/>
+                            <apex:outputField value="{!payment[field.name]}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem rendered="{!field.name = 'Synced_with_Xero__c'}"/>
+                        <apex:pageBlockSectionItem rendered="{!OR(field.name = 'Synced_with_Xero__c', field.name = 'Payment_Date__c')}"/>
+                    </apex:repeat>
+                </apex:pageBlockSection>
+            </apex:repeat>
+
+            <apex:pageBlockSection collapsible="true" title="System Information" columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Created By"/>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!payment['CreatedById']}"/>,&nbsp; 
+                        <apex:outputField value="{!payment['CreatedDate']}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Last Modified By"/>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!payment['LastModifiedById']}"/>,&nbsp;
+                        <apex:outputField value="{!payment['LastModifiedDate']}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+    </apex:form>
+
+    <!-- popup -->
+    <apex:form id="popupForm">
+        <div class="overlay" style="{!IF(showEditPopUpMessage = false, "display: none;","display: block;")}"></div>
+        <apex:outputPanel id="popup">           
+            <apex:outputPanel styleClass="customPopup" layout="block" rendered="{!showEditPopUpMessage}">
+                <div class="popupHeader">
+                    WARNING
+                </div>
+                <div>
+                    Client Spend was defined on IO. Do you wish to adjust the value?
+                </div>
+                <div class="btn-popup">
+                    <apex:commandButton value="Yes" action="{!submitClientSpend}" rerender="{!IF(savedSuccessfully == true, 'mainForm, popup, popupForm', 'messages, popup, popupForm')}"/>
+                    <apex:commandButton value="No" action="{!cancelUpdate}" rerender="mainForm, popup, popupForm"/>
+                </div>
+            </apex:outputPanel>
+      </apex:outputPanel>
+
+    </apex:form>
+    <apex:relatedList list="Projects__r"/>
+    <apex:relatedList list="CreditNotes__r" rendered="{!$objectType.CreditNote__c.Fields.Name.Accessible}"/>  
+    <apex:relatedList list="EventLogs__r" rendered="{!$objectType.EventLog__c.Fields.Name.Accessible}"/>  
+
+    <script type="text/javascript">
+
+        document.onreadystatechange = function(){
+            if(document.readyState == "complete"){
+                var currency    = '{!Sub_Project__c.CurrencyIsoCode}';
+                var labels      = document.getElementsByClassName('labelCol');
+                var isActual    = {!Sub_Project__c.Synced_with_Xero__c};
+
+                var prevValue;
+
+                for(i = 0; i < labels.length; i++) {
+                    if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
+                    {f
+                        if ((labels[i].textContent.contains('Actual Gross Profit') || labels[i].textContent.contains('Actual Revenue')) && isActual == false) {
+                            var rec = labels[i].nextSibling;
+                            rec.classList.add('expected');
+                        }
+                    } else {
+                        if ((labels[i].innerText == 'Actual Gross Profit' || labels[i].innerText == 'Actual Revenue') && isActual == false) {
+                            var rec = labels[i].nextSibling;
+                            rec.classList.add('expected');
+                        }
+                    }
+                }
+            }
+        }
+        
+    </script>
+</apex:page>

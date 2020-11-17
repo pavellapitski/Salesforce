@@ -1,0 +1,180 @@
+<apex:component allowDML="true" controller="PlatformSectionCtrl">
+    <style>
+        /* style hack
+        * https://developer.salesforce.com/forums/?id=906F000000097NXIAY
+        */
+        .tableStyle { border-collapse: collapse; border-spacing: 0px 0px; }
+        .colStyle1 { width: 16%; text-align:right !important;  padding-top:3px; padding-bottom:5px }
+        .colStyle2 { width: 15%; padding-left:20px; padding-top:5px; padding-bottom:5px }
+        .colStyle3 { width: 10%; text-align:right !important; padding-top:5px; padding-bottom:5px }
+        .colStyle4 { width: 10%%; padding-left:20px; padding-top:5px; padding-bottom:5px }
+        .colStyle5 { width: 10%; text-align:right !important; padding-top:5px; padding-bottom:5px }
+        .colStyle6 { width: 32%; padding-left:20px; padding-top:5px; padding-bottom:4px }
+        .rowStyle { border-bottom-style:solid; border-bottom-width:1px;border-bottom-color:#E8E8E8 }
+    </style>
+
+    <apex:attribute name="platform" description="" type="PlatformWrapper" assignTo="{!platformInfo}"/>
+
+    <apex:outputPanel rendered="{!platform.isSelected}">
+        <apex:pageBlockSection title="{!platform.oppPlatform.Platform__r.Name}" collapsible="false" id="oppNameId" columns="1">
+            <apex:pageBlockSection columns="3">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.AdPlacement__c.LabelPlural}" styleClass="fieldLabel"/>
+                    <apex:repeat value="{!platform.adPlacements}" var="adPlacement">
+                        <apex:outputPanel layout="inline">
+                            <apex:inputCheckbox value="{!adPlacement.isSelected}" styleClass="margin5rem"/>
+                            <apex:outputLabel value="{!adPlacement.oppAdPlacement.AdPlacement__r.Name}" styleClass="slds-checkbox__label"/>
+                        </apex:outputPanel>
+                        <br/>
+                    </apex:repeat>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Gender" styleClass="fieldLabel" />
+                    <apex:inputField value="{!platform.oppPlatform.Gender__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ><!--multiselect picklist hack for styling purposes--></apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$objectType.OpportunityPlatform__c.Fields.NoCostStructure__c.Label}" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.NoCostStructure__c}">
+                        <apex:actionSupport event="onchange" action="{!noCostStructureUpdated}" rerender="costStructureInput, costsPanel, costMetricsPanel" status="statusSection"/>
+                    </apex:inputField>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem />
+            </apex:pageBlockSection>
+
+            <apex:outputPanel id="costsPanel">
+                <apex:pageBlockSection columns="2" rendered="{!!platform.oppPlatform.NoCostStructure__c}">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$objectType.OpportunityPlatform__c.Fields.CostStructure__c.Label}" styleClass="fieldLabel"/>
+                        <apex:selectCheckboxes value="{!selectedItems}" >
+                            <apex:actionSupport event="onchange" action="{!costStructureUpdated}"  reRender="costMetricsPanel" status="statusSection"/>
+                            <apex:selectOptions value="{!items}" />
+                        </apex:selectCheckboxes>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+
+            <apex:outputPanel id="costMetricsPanel">
+                <apex:pageBlockSection columns="1" rendered="{!!platform.oppPlatform.NoCostStructure__c}">
+                    <apex:repeat value="{!stringItems}" var="costStructure">
+                        <apex:variable value="{!costStructureToMetrics[costStructure]}"  var="ccMap" />
+                        <apex:panelGrid columns="6" border="0" styleClass="tableStyle" width="100%" columnClasses="colStyle1,colStyle2,colStyle3,colStyle4,colStyle5,colStyle6" rowClasses="rowStyle">
+                            <apex:outputLabel value="{!$objectType.OpportunityPlatform__c.Fields[costStructure + '__c'].Label}" styleClass="labStyle, fieldLabel"/>
+                            <apex:inputField value="{!platform.oppPlatform[costStructure + '__c']}"/>
+
+                            <apex:outputLabel value="{!$objectType.OpportunityPlatform__c.Fields['Variable' + costStructure + '__c'].Label}" styleClass="labStyle, fieldLabel"/>
+                            <apex:inputField value="{!platform.oppPlatform['Variable' + costStructure + '__c']}"/>
+
+                            <apex:outputLabel value="Metrics" styleClass="labStyle, fieldLabel" rendered="{!!ccMap.empty}"/>
+                            <apex:selectList value="{!platform.selectedMetrics[costStructure]}" multiselect="false" size="1" rendered="{!!ccMap.empty}">
+                                <apex:selectOptions value="{!costStructureToMetrics[costStructure]}" />
+                            </apex:selectList>
+
+                            <!-- style hack -->
+                            <apex:outputLabel value="" rendered="{!ccMap.empty}"/>
+                            <apex:outputLabel value="" rendered="{!ccMap.empty}"/>
+                        </apex:panelGrid>
+                    </apex:repeat>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+
+            <apex:pageBlockSection columns="2" >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="KPI" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.KPI__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!platform.oppPlatform.Platform_Selected__c == 'AdWords CPM'
+                            || platform.oppPlatform.Platform_Selected__c == 'TrueView'
+                            || platform.oppPlatform.Platform_Selected__c == 'DBM TrueView'}" >
+                    <apex:outputLabel value="Companion Banner" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.Companion_Banner__c}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="2" >
+                <apex:pageBlockSectionItem rendered="{!platform.oppPlatform.Platform_Selected__c == 'AdWords CPM'
+                            || platform.oppPlatform.Platform_Selected__c == 'TrueView'
+                            || platform.oppPlatform.Platform_Selected__c == 'DBM TrueView'
+                            || platform.oppPlatform.Platform_Selected__c == 'DBM RTB'}" >
+                    <apex:outputLabel value="CTA Overlay" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.CTA_Overlay_Text__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!platform.oppPlatform.Platform_Selected__c == 'AdWords CPM'
+                            || platform.oppPlatform.Platform_Selected__c == 'DBM TrueView'
+                            || platform.oppPlatform.Platform_Selected__c == 'DBM RTB'
+                            || platform.oppPlatform.Platform_Selected__c == 'Google Display Network'
+                            || platform.oppPlatform.Platform_Selected__c == 'TrueView'
+                            || platform.oppPlatform.Platform_Selected__c == 'Instagram'
+                            || platform.oppPlatform.Platform_Selected__c == 'Facebook'
+                            || platform.oppPlatform.Platform_Selected__c == 'TikTok'}">
+                    <apex:outputLabel value="Tags" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.Pixel_Tracking__c}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="3" >
+                <apex:pageBlockSectionItem rendered="{!NOT(platform.oppPlatform.Platform_Selected__c == 'TikTok')}">
+                    <apex:outputLabel value="Brand Lift Study" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.Brand_Lift_Study__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!NOT(platform.oppPlatform.Platform_Selected__c == 'Facebook')
+                            && NOT(platform.oppPlatform.Platform_Selected__c == 'Instagram')
+                            && NOT(platform.oppPlatform.Platform_Selected__c == 'Twitter')
+                            && NOT(platform.oppPlatform.Platform_Selected__c == 'Pinterest')
+                            && NOT(platform.oppPlatform.Platform_Selected__c == 'Snapchat')}">
+                    <apex:outputLabel value="Age" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.Age__c}" style="min-width: 7rem; width: auto;"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ><!--multiselect picklist hack for styling purposes--></apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="2" rendered="{!platform.oppPlatform.Platform_Selected__c == 'Facebook'
+                            || platform.oppPlatform.Platform_Selected__c == 'Instagram'
+                            || platform.oppPlatform.Platform_Selected__c == 'Snapchat'
+                            || platform.oppPlatform.Platform_Selected__c == 'Twitter'}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Min Age" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.Age_min__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Max Age" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.Age_max__c}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="3" >
+                <apex:pageBlockSectionItem rendered="{!platform.oppPlatform.Platform_Selected__c == 'Facebook' || platform.oppPlatform.Platform_Selected__c == 'Instagram'}">
+                    <apex:outputLabel value="Facebook Page" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.Facebook_page__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!platform.oppPlatform.Platform_Selected__c == 'Facebook'
+                            || platform.oppPlatform.Platform_Selected__c == 'Instagram'
+                            || platform.oppPlatform.Platform_Selected__c == 'Pinterest'
+                            || platform.oppPlatform.Platform_Selected__c == 'Twitter'
+                            || platform.oppPlatform.Platform_Selected__c == 'Snapchat'
+                            || platform.oppPlatform.Platform_Selected__c == 'TikTok'}">
+                    <apex:outputLabel value="Objectives" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.Objectives__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ><!--multiselect picklist hack for styling purposes--></apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="2" >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Platform Account" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.PlatformAccount__c}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!platform.oppPlatform.Platform_Selected__c == 'Facebook' || platform.oppPlatform.Platform_Selected__c == 'Instagram'}">
+                    <apex:outputLabel value="Account Entity" styleClass="fieldLabel"/>
+                    <apex:inputField value="{!platform.oppPlatform.Account_Entity__c}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:inputField value="{!platform.oppPlatform.Platform_Selected__c}" style="visibility: hidden" label=""/>
+        </apex:pageBlockSection>
+    </apex:outputPanel>
+</apex:component>

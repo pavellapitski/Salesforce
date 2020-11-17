@@ -1,0 +1,783 @@
+<apex:page controller="PodDashboardCtrl" showHeader="true" standardStylesheets="false" sidebar="false" applyBodyTag="false" docType="html-5.0">
+
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+
+        <head>
+          <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+          <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-sanitize.js"></script>
+            
+          <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/>
+          <apex:stylesheet value="{!URLFOR($Resource.LightningDesignSystem, '/assets/styles/salesforce-lightning-design-system-vf.min.css')}" /> 
+        </head> 
+        <apex:form >
+        <body>
+            <div ng-app="myApp"> 
+                <div ng-controller="podDashboardController" id="podDashboardController">
+                    <div class="slds">
+                        
+                        <div ng-show="showSpinner">
+                            <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">                    
+                                <div class="slds-modal__container">   
+                                    <center>
+                                        <div class="slds-col slds-size--3-of-12">
+                                            <img src="/resource/LighteningDS/assets/images/spinners/slds_spinner_inverse.gif" />
+                                        </div>  
+                                    </center>  
+                                </div>
+                            </div>
+                            <div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+                        </div>
+                        
+                        <div class="slds-scrollable--x">
+                            <div class="slds-grid slds-wrap">                                
+                                <nav class="slds-col slds-size--1-of-1">  
+                                    <div class="slds-card">
+                                        <div class="slds-card__header slds-grid">
+                                            <div class="slds-col slds-media slds-media--center">                                          
+                                                <div class="slds-media__body">  
+                                                    <div class="slds-p-bottom--medium">
+                                                        <apex:outputPanel rendered="{!IF($Profile.Name == 'System Administrator', true, false)}">
+                                                            <c:Autocomplete allowClear="true" importJquery="false" labelField="Name" SObject="User" valueField="Id" 
+                                                                            targetField="{!selectedClientServicesRep}" minimumInputLength="0" noValueLabel="{!$objectType.Project__c.Fields.ClientServicesRep__c.Label}"
+                                                                            onSelectCallback="clientServicesRepSelected" syncManualEntry="false" whereClause=" Client_Services_Rep__c = true ORDER BY LastName "
+                                                                            style="width:25%"/>
+                                                        </apex:outputPanel>
+                                                        <c:Autocomplete allowClear="true" importJquery="false" labelField="Name" SObject="Account" valueField="Id" 
+                                                                        targetField="{!selectedAccount}" minimumInputLength="0" noValueLabel="{!$objectType.Project__c.Fields.Account__c.Label}"
+                                                                        onSelectCallback="accountSelected" syncManualEntry="false" whereClause=" Name != NULL ORDER BY Name "
+                                                                        style="width:25%"/>
+                                                        <c:Autocomplete allowClear="true" importJquery="false" labelField="Name" SObject="Brand__c" valueField="Id" 
+                                                                        targetField="{!selectedBrand}" minimumInputLength="0" noValueLabel="{!$objectType.Project__c.Fields.Brand__c.Label}"
+                                                                        onSelectCallback="brandSelected" syncManualEntry="false" whereClause=" Name != NULL ORDER BY Name "
+                                                                        style="width:25%"/>
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                        </div>    
+                                    </div>
+                                </nav>
+                                                                
+                                <div class="slds-tabs--default slds-m-top--large">
+                                      <ul class="slds-tabs--default__nav" role="tablist">
+                                         <li class="slds-tabs--default__item slds-text-heading--label " title="My Contracts" role="presentation"
+                                            ng-click="setActiveTab('myContractsTab')" ng-class="{'slds-active': ActiveTab == 'myContractsTab'}">
+                                            <a class="slds-tabs--default__link slds-text-heading--small" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="myContractsTab" id="myContractsTab">
+                                                My Contracts
+                                            </a>
+                                        </li>
+                                         <li class="slds-tabs--default__item slds-text-heading--label" title="My Opportunities" role="presentation"
+                                            ng-click="setActiveTab('myOpportunitiesTab')" ng-class="{'slds-active': ActiveTab == 'myOpportunitiesTab'}">
+                                            <a class="slds-tabs--default__link slds-text-heading--small" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="myOpportunitiesTab" id="myOpportunitiesTab">
+                                                My Opportunities
+                                            </a>
+                                        </li>
+                                         <li class="slds-tabs--default__item slds-text-heading--label" title="Payments" role="presentation"
+                                            ng-click="setActiveTab('awaitingPaymentsTab')" ng-class="{'slds-active': ActiveTab == 'awaitingPaymentsTab'}">
+                                            <a class="slds-tabs--default__link slds-text-heading--small" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="awaitingPaymentsTab" id="awaitingPaymentsTab">
+                                                Payments
+                                            </a>
+                                        </li>
+                                        <li class="slds-tabs--default__item slds-text-heading--label" title="My Clients" role="presentation"
+                                            ng-click="setActiveTab('myClientsTab')" ng-class="{'slds-active': ActiveTab == 'myClientsTab'}">
+                                            <a class="slds-tabs--default__link slds-text-heading--small" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="myClientsTab" id="myClientsTab">
+                                                My Clients
+                                            </a>
+                                        </li>
+                                      </ul>
+                                      <div id="myContractsTab" class="slds-tabs--default__content" role="tabpanel" aria-labelledby="myContractsTab" ng-show="ActiveTab == 'myContractsTab'">
+                                            <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                                                <thead>
+                                                    <tr class="slds-text-heading--label">                                              
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Project__c.Fields.Name.Label}</span>                                               
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Account.Label}</span>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Project__c.Fields.Project_ID__c.Label}</span>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Project__c.Fields.Start_Date__c.Label}</span>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Project__c.Fields.End_Date__c.Label}</span>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Project__c.Fields.Client_Spend__c.Label}</span>
+                                                        </th>   
+                                                        <th scope="col">
+                                                            &nbsp;
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="slds-hint-parent" ng-repeat="contract in myContracts">                                              
+                                                        <td>
+                                                            <a href="/{{contract.Id}}" target="_blank">
+                                                                <span ng-bind-html="contract.Name"></span>
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/{{contract.Account__c}}" target="_blank">
+                                                                <span ng-bind-html="contract.Account__r.Name"></span>
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            {{contract.Project_ID__c}}
+                                                        </td>
+                                                        <td>
+                                                            {{contract.Start_Date__c | date}}
+                                                        </td>
+                                                        <td>
+                                                            {{contract.End_Date__c | date}}
+                                                        </td>
+                                                        <td>
+                                                            <span ng-show="contract.Client_Spend__c != NULL">{{contract.CurrencyIsoCode}}</span> {{contract.Client_Spend__c | number:2}}
+                                                        </td>  
+                                                        <td>
+                                                            <span class="slds-badge slds-theme--inverse slds-float--right" ng-show="contract.IsRunning__c">Running</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <footer class="slds-card__footer">
+                                                <span class="slds-button slds-button--brand slds-button--small" ng-disabled="!showMoreMyContracts" ng-click="showMoreMyContracts && readMoreContracts()">More</span>
+                                            </footer>
+                                      </div>
+                                      
+                                      <div id="myOpportunitiesTab" class="slds-tabs--default__content" role="tabpanel" aria-labelledby="myOpportunitiesTab" ng-show="ActiveTab == 'myOpportunitiesTab'">
+                                            <table class="slds-table slds-table--bordered">
+                                                <thead>
+                                                    <tr class="slds-text-heading--label">                                              
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.Name.Label}</span>                                               
+                                                        </th>
+                                                         <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Account.Label}</span>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.Flight_Start__c.Label}</span>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.Flight_End__c.Label}</span>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.StageName.Label}</span>
+                                                        </th>   
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.CloseDate.Label}</span>
+                                                        </th> 
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.Amount.Label}</span>
+                                                        </th> 
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="slds-hint-parent" ng-repeat="opp in myOpportunities">                                              
+                                                        <td>
+                                                            <a href="/{{opp.Id}}" target="_blank">
+                                                                <span ng-bind-html="opp.Name"></span>
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/{{opp.AccountId}}" target="_blank">
+                                                                <span ng-bind-html="opp.Account.Name"></span>
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            {{opp.Flight_Start__c | date}}
+                                                        </td>
+                                                        <td>
+                                                            {{opp.Flight_End__c | date}}
+                                                        </td>
+                                                         <td>
+                                                            {{opp.StageName}}
+                                                        </td>
+                                                        <td>
+                                                            {{opp.CloseDate | date}}
+                                                        </td>
+                                                        <td>
+                                                            <span ng-show="opp.Amount != NULL">{{opp.CurrencyIsoCode}}</span> {{opp.Amount | number:2}}
+                                                        </td>  
+                                                    </tr>
+                                                </tbody>
+                                            </table> 
+                                            <footer class="slds-card__footer">
+                                                <span class="slds-button slds-button--brand slds-button--small" ng-disabled="!showMoreMyOpportunities" ng-click="showMoreMyOpportunities && readMoreOpportunities()">More</span>
+                                            </footer>
+                                      </div>
+                                      
+                                      <div id="awaitingPaymentsTab" class="slds-tabs--default__content" role="tabpanel" aria-labelledby="awaitingPaymentsTab" ng-show="ActiveTab == 'awaitingPaymentsTab'">
+                                            <table class="slds-table slds-table--bordered">
+                                                <thead>
+                                                    <tr class="slds-text-heading--label">                                              
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Sub_Project__c.Fields.Name.Label}</span>                                               
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Project__c.Label}</span>
+                                                        </th>
+                                                         <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Account.Label}</span>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Project__c.Fields.Start_Date__c.Label}</span>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Project__c.Fields.End_Date__c.Label}</span>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <span class="slds-truncate">{!$ObjectType.Sub_Project__c.Fields.Invoice_Amount__c.Label}</span>
+                                                        </th>  
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="slds-hint-parent" ng-repeat="payment in awaitingPayments">                                              
+                                                        <td>
+                                                            <a href="/{{payment.Id}}" target="_blank">
+                                                                <span ng-bind-html="payment.Name"></span>
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/{{payment.Project__c}}" target="_blank">
+                                                                <span ng-bind-html="payment.Project__r.Name"></span>
+                                                            </a>
+                                                        </td>
+                                                         <td>
+                                                            <a href="/{{payment.Project__r.Account__c}}" target="_blank">
+                                                                <span ng-bind-html="payment.Project__r.Account__r.Name"></span>
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            {{payment.Start_Date__c | date}}
+                                                        </td>
+                                                        <td>
+                                                            {{payment.End_Date__c | date}}
+                                                        </td>
+                                                        <td>
+                                                            <span ng-show="payment.Invoice_Amount__c != NULL">{{payment.CurrencyIsoCode}}</span> {{payment.Invoice_Amount__c | number:2}}
+                                                        </td>  
+                                                    </tr>
+                                                </tbody>
+                                            </table> 
+                                            <footer class="slds-card__footer">
+                                                <span class="slds-button slds-button--brand slds-button--small" ng-disabled="!showMoreAwaitingPayments" ng-click="showMoreAwaitingPayments && readMorePayments()">
+                                                    More
+                                                </span>
+                                            </footer>
+                                      </div>
+                                      
+                                      <div id="myClientsTab" class="slds-tabs--default__content" role="tabpanel" aria-labelledby="myClientsTab" ng-show="ActiveTab == 'myClientsTab'">
+                                        <div class="slds-grid">
+                                            <nav class="slds-col slds-size--1-of-3">
+                                            <div class="slds-card">
+                                                <div class="slds-card__header slds-grid">
+                                                    <div class="slds-col slds-media slds-media--center">
+                                                        <div class="slds-media__figure">
+                                                            <svg aria-hidden="true" class="slds-icon slds-icon-standard-contact slds-icon--small">
+                                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.LighteningDS, 'assets/icons/standard-sprite/svg/symbols.svg#account')}"></use>
+                                                            </svg>
+                                                        </div>
+                                                        <div class="slds-media__body">
+                                                            <div class="slds-text-heading--medium">My Clients</div>
+                                                        </div>
+                                                        <div class="slds-no-flex">
+                                                            <div class="slds-form-element">
+                                                              <label class="slds-checkbox" for="showInactiveCheckbox">
+                                                                <input name="checkbox" type="checkbox" id="showInactiveCheckbox" ng-model="showInactive"/>
+                                                                <span class="slds-checkbox--faux"></span>
+                                                                <span class="slds-form-element__label">Show Inactive</span>
+                                                              </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>    
+                                            </div>
+                                        </nav>
+                                        <nav class="slds-col slds-size--2-of-3">
+                                            <div class="slds-card">
+                                                <div class="slds-card__header slds-grid">
+                                                    <div class="slds-col slds-media slds-media--center">                                          
+                                                        <div class="slds-media__body">
+                                                            <a href="/{{selectedClient.client.Id}}" ng-show="selectedClient.client.Accounts__r.Name" target="_blank">
+                                                                <span ng-bind-html="selectedClient.client.Accounts__r.Name + ' - ' + selectedClient.client.Brand__r.Name" class="slds-text-heading--medium"></span>
+                                                            </a>
+                                                            <div ng-hide="selectedClient.client.Accounts__r.Name" class="slds-text-heading--medium">Select Client</div>
+                                                        </div>
+                                                    </div>
+                                                </div>    
+                                            </div>
+                                        </nav> 
+                                        </div>
+                                        <div class="slds-grid">
+                                            <div class="slds-col slds-size--1-of-3">
+                                                <div style="height: 700px;">
+                                                    <div class="slds-scrollable--y">                             
+                                                        <div class="slds-card">                                          
+                                                            <div class="slds-card__body">
+                                                                <table class="slds-table slds-table--bordered">                                                        
+                                                                    <tbody>
+                                                                        <tr class="slds-hint-parent" ng-repeat="client in clients" ng-show="showInactive || client.isActive">                                              
+                                                                            <td>
+                                                                                <a href="#" ng-click="readContracts(client.client.Id)">
+                                                                                    <span ng-bind-html="client.client.Accounts__r.Name + ' - ' + client.client.Brand__r.Name"></span>
+                                                                                </a>                                                                   
+                                                                                &nbsp;<span class="slds-badge slds-theme--inverse slds-float--right" ng-hide="{{client.isActive}}">Inactive</span>
+                                                                            </td>                                                                                                      
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>                                                    
+                                                            </div>
+                                                            <footer class="slds-card__footer">
+                                                                <span class="slds-button slds-button--brand slds-button--small" ng-disabled="!showMoreClients" ng-click="showMoreClients && readMoreClients()">More</span>
+                                                            </footer>
+                                                        </div>  
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-col slds-size--2-of-3">
+                                                <div class="slds-card">
+                                                    <div class="slds-tabs--default">
+                                                        <div class="slds-card__header slds-grid">
+                                                            <ul class="slds-tabs--default__nav" role="tablist">
+                                                                <li class="slds-tabs--default__item slds-text-heading--label" title="{!$ObjectType.Project__c.LabelPlural}" role="presentation"
+                                                                    ng-click="setActiveClientsTab('contractsTab')" ng-class="{'slds-active': ActiveClientsTab == 'contractsTab'}">
+                                                                    <a class="slds-tabs--default__link" href="#void" role="tab" tabindex="0" aria-selected="true" aria-controls="contractsTab" id="contractsTab">
+                                                                        {!$ObjectType.Project__c.Label}
+                                                                    </a>
+                                                                </li>
+                                                                <li class="slds-tabs--default__item slds-text-heading--label" title="{!$ObjectType.Opportunity.LabelPlural}" role="presentation"
+                                                                    ng-click="setActiveClientsTab('opportunitiesTab')" ng-class="{'slds-active': ActiveClientsTab == 'opportunitiesTab'}">
+                                                                    <a class="slds-tabs--default__link" href="#void" role="tab" tabindex="-1" aria-selected="false" aria-controls="opportunitiesTab" id="opportunitiesTab">
+                                                                        {!$ObjectType.Opportunity.Label}
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="slds-card__body">
+                                                            <div id="contractsTab" class="slds-tabs--default__content" role="tabpanel" aria-labelledby="contractsTab" ng-show="ActiveClientsTab == 'contractsTab'">
+                                                                <table class="slds-table slds-table--bordered">
+                                                                    <thead>
+                                                                        <tr class="slds-text-heading--label">                                              
+                                                                            <th scope="col">
+                                                                                <span class="slds-truncate">{!$ObjectType.Project__c.Fields.Name.Label}</span>                                               
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                <span class="slds-truncate">{!$ObjectType.Project__c.Fields.Project_ID__c.Label}</span>
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                <span class="slds-truncate">{!$ObjectType.Project__c.Fields.Start_Date__c.Label}</span>
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                <span class="slds-truncate">{!$ObjectType.Project__c.Fields.End_Date__c.Label}</span>
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                <span class="slds-truncate">{!$ObjectType.Project__c.Fields.Client_Spend__c.Label}</span>
+                                                                            </th>                                             
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr class="slds-hint-parent" ng-repeat="contract in selectedClient.contracts">                                              
+                                                                            <td>
+                                                                                <a href="/{{contract.Id}}" target="_blank">
+                                                                                    <span ng-bind-html="contract.Name"></span>
+                                                                                </a>
+                                                                            </td>
+                                                                            <td>
+                                                                                {{contract.Project_ID__c}}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{contract.Start_Date__c | date}}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{contract.End_Date__c | date}}
+                                                                            </td>
+                                                                            <td>
+                                                                                <span ng-show="contract.Client_Spend__c != NULL">{{contract.CurrencyIsoCode}}</span> {{contract.Client_Spend__c | number:2}}
+                                                                            </td>                                              
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table> 
+                                                            </div>
+                                                        </div>
+                                                        <div id="opportunitiesTab" class="slds-tabs--default__content" role="tabpanel" aria-labelledby="opportunitiesTab" ng-show="ActiveClientsTab == 'opportunitiesTab'">
+                                                            <table class="slds-table slds-table--bordered">
+                                                                <thead>
+                                                                    <tr class="slds-text-heading--label">                                              
+                                                                        <th scope="col">
+                                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.Name.Label}</span>                                               
+                                                                        </th>
+                                                                        <th scope="col">
+                                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.CloseDate.Label}</span>
+                                                                        </th>
+                                                                        <th scope="col">
+                                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.Flight_Start__c.Label}</span>
+                                                                        </th>
+                                                                        <th scope="col">
+                                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.Flight_End__c.Label}</span>
+                                                                        </th>
+                                                                        <th scope="col">
+                                                                            <span class="slds-truncate">{!$ObjectType.Opportunity.Fields.Amount.Label}</span>
+                                                                        </th>                                             
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="slds-hint-parent" ng-repeat="opportunity in selectedClient.opportunities">                                              
+                                                                        <td>
+                                                                            <a href="/{{opportunity.Id}}" target="_blank">
+                                                                                <span ng-bind-html="opportunity.Name"/>
+                                                                            </a>
+                                                                        </td>
+                                                                        <td>
+                                                                            {{opportunity.CloseDate | date}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{opportunity.Flight_Start__c | date}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{opportunity.Flight_End__c | date}}
+                                                                        </td>
+                                                                        <td>
+                                                                            <span ng-show="opportunity.Amount != NULL">{{opportunity.CurrencyIsoCode}}</span> {{opportunity.Amount | number:2}}
+                                                                        </td>                                              
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table> 
+                                                        </div>                                  
+                                                    </div> 
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
+                                
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            
+        </body>        
+    </apex:form>
+    </html>
+    
+    <script>
+    
+        var accountSelected = function(accountId) {
+            var contr = angular.element(document.getElementById('podDashboardController')).scope();
+            
+            if (accountId){        
+                contr.contractsFilter.Account__c = 'Account__c    = \'' + accountId + '\' ';
+                contr.opportunitiesFilter.AccountId = 'AccountId    = \'' + accountId + '\' ';
+            } else {
+                delete contr.contractsFilter.Account__c;
+                delete contr.opportunitiesFilter.AccountId;
+            }
+            
+            refreshData(contr);
+        }
+        
+        var brandSelected = function(brandId) {
+            var contr = angular.element(document.getElementById('podDashboardController')).scope();
+            
+            if (brandId){   
+                var filter = 'Brand__c    = \'' + brandId + '\' ';
+                contr.contractsFilter.Brand__c = filter;
+                contr.opportunitiesFilter.Brand__c = filter;
+            } else {
+                delete contr.contractsFilter.Brand__c ;
+                delete contr.opportunitiesFilter.Brand__c ;
+            }
+            
+            refreshData(contr);
+        }
+    
+        var clientServicesRepSelected = function(userId) {
+            var contr = angular.element(document.getElementById('podDashboardController')).scope();
+            
+            if (userId){        
+                var filter = 'ClientServicesRep__c   = \'' + userId + '\' ';
+                contr.contractsFilter.ClientServicesRep__c = filter;
+                contr.opportunitiesFilter.ClientServicesRep__c = filter;
+            } else {
+                delete contr.contractsFilter.ClientServicesRep__c;
+                delete contr.opportunitiesFilter.ClientServicesRep__c;
+            }
+            
+            refreshData(contr);
+        }
+        
+        var refreshData = function(contr)
+        {
+            contr.getClients();
+            contr.readMyContracts();
+            contr.readMyOpportunities();
+            contr.readAwaitingPayments();
+        }
+    
+        var myApp = angular.module('myApp', ['ngSanitize']);
+    
+        myApp.controller('podDashboardController', ['$scope', function($scope) {
+            $scope.ActiveTab = 'myContractsTab';
+            $scope.ActiveClientsTab = 'contractsTab'; 
+            $scope.clients = []; 
+            $scope.myContracts = []; 
+            $scope.myOpportunities = []; 
+            $scope.awaitingPayments = []; 
+            $scope.contractsOffset = 0;
+            $scope.myContractsOffset = 0;
+            $scope.myOpportunitiesOffset = 0;
+            $scope.awaitingPaymentsOffset = 0;
+            $scope.contractsFilter = {};
+            $scope.opportunitiesFilter = {};
+            $scope.pageSize = 20;
+            $scope.selectedClient = {};
+            $scope.showInactive = false;
+            $scope.showMoreClients = false;
+            $scope.showMoreMyContracts = false;
+            $scope.showMoreMyOpportunities = false;
+            $scope.showMoreAwaitingPayments = false;
+            $scope.showSpinner = false;
+            
+            $scope.init = function () {
+                
+                if ('{!$Profile.Name}' != 'System Administrator')
+                {
+                    clientServicesRepSelected('{!$User.Id}');
+                }
+                
+                $scope.getClients(); 
+                $scope.readMyContracts();
+                $scope.readMyOpportunities();
+                $scope.readAwaitingPayments();
+            }   
+            
+            $scope.readMoreClients = function readMoreClients() {         
+                  $scope.showSpinner = true;
+                  $scope.contractsOffset += $scope.pageSize;
+                  
+                  $scope.getClientsCallout();
+             }
+            
+            $scope.getClients = function getClients(){     
+                $scope.showSpinner = true;
+                $scope.contractsOffset = 0;
+
+                $scope.getClientsCallout();
+             }
+            
+             $scope.readContracts = function readContracts(clientId){ 
+                $scope.showSpinner = true; 
+                 
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.PodDashboardCtrl.readContracts}',
+                    clientId,
+                    function(result, event)
+                    {
+                        if (event.status) 
+                        {                 
+                            $scope.selectedClient = result;
+                            $scope.showSpinner = false;
+                            $scope.$apply();
+                        }                 
+                        else 
+                        {
+                            $scope.showSpinner = false;
+                            console.log(event);
+                        }
+                    }, 
+                    {escape: true}
+                );
+             }   
+             
+             $scope.readMyContracts = function readMyContracts(){     
+                $scope.showSpinner = true;
+                $scope.myContractsOffset = 0;
+
+                $scope.getMyContractsCallout();
+             }
+             
+             $scope.readMoreContracts = function readMoreContracts() {         
+                  $scope.showSpinner = true;
+                  $scope.myContractsOffset += $scope.pageSize;
+                  
+                  $scope.getMyContractsCallout();
+             }
+             
+             $scope.readMyOpportunities = function readMyOpportunities(){     
+                $scope.showSpinner = true;
+                $scope.myOpportunitiesOffset = 0;
+                
+                $scope.getMyOpportunitiesCallout();
+             }
+             
+             $scope.readMoreOpportunities = function readMoreOpportunities() {         
+                  $scope.showSpinner = true;
+                  $scope.myOpportunitiesOffset += $scope.pageSize;
+                  
+                  $scope.getMyOpportunitiesCallout();
+             }
+             
+             $scope.readAwaitingPayments = function readAwaitingPayments(){     
+                $scope.showSpinner = true;
+                $scope.awaitingPaymentsOffset = 0;
+                
+                $scope.getAwaitingPaymentsCallout();
+             }
+             
+             $scope.readMorePayments = function readMorePayments(){     
+                $scope.showSpinner = true;
+                $scope.awaitingPaymentsOffset += $scope.pageSize;
+                
+                $scope.getAwaitingPaymentsCallout();
+             }
+             
+             $scope.setActiveTab = function setActiveTab(tabName) {
+                 $scope.ActiveTab = tabName;
+             }
+             
+             $scope.setActiveClientsTab = function setActiveClientsTab(tabName) {
+                 $scope.ActiveClientsTab = tabName;
+             }
+             
+             $scope.getClientsCallout = function getClientsCallout() {
+                 Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.PodDashboardCtrl.getClients}',
+                    $scope.pageSize,
+                    $scope.contractsOffset,
+                    JSON.stringify($scope.contractsFilter),
+                    function(result, event)
+                    {
+                        if (event.status) 
+                        {                 
+                            $scope.clients = ($scope.contractsOffset > 0) ? $scope.clients.concat(result) : result;
+                            
+                            if (result.length < $scope.pageSize)
+                            {
+                              $scope.showMoreClients = false;
+                            }
+                            else
+                            {
+                              $scope.showMoreClients = true;  
+                            }
+                            
+                            $scope.showSpinner = false;
+                            $scope.$apply();
+                        }                 
+                        else 
+                        {
+                            $scope.showSpinner = false;
+                            console.log(event);
+                        }
+                    }, 
+                    {escape: true}
+                );
+             }
+             
+             $scope.getMyContractsCallout = function getMyContractsCallout() {
+                 Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.PodDashboardCtrl.readMyContracts}',
+                    $scope.pageSize,
+                    $scope.myContractsOffset,
+                    JSON.stringify($scope.contractsFilter),
+                    function(result, event)
+                    {
+                        if (event.status) 
+                        {  
+                            $scope.myContracts = ($scope.myContractsOffset > 0) ? $scope.myContracts.concat(result) : result;
+                            
+                            if (result.length < $scope.pageSize)
+                            {
+                              $scope.showMoreMyContracts = false;
+                            }
+                            else
+                            {
+                              $scope.showMoreMyContracts = true;  
+                            }
+                            
+                            $scope.showSpinner = false;
+                            $scope.$apply();
+                        }                 
+                        else 
+                        {
+                            $scope.showSpinner = false;
+                            console.log(event);
+                        }
+                    }, 
+                    {escape: true}
+                );
+             }
+             
+             $scope.getMyOpportunitiesCallout = function getMyOpportunitiesCallout() {
+                 Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.PodDashboardCtrl.readMyOpportunities}',
+                    $scope.pageSize,
+                    $scope.myOpportunitiesOffset,
+                    JSON.stringify($scope.opportunitiesFilter),
+                    function(result, event)
+                    {
+                        if (event.status) 
+                        {      
+                            $scope.myOpportunities = ($scope.myOpportunitiesOffset > 0) ? $scope.myOpportunities.concat(result) : result;
+                            
+                            if (result.length < $scope.pageSize)
+                            {
+                              $scope.showMoreMyOpportunities = false;
+                            }
+                            else
+                            {
+                              $scope.showMoreMyOpportunities = true;  
+                            }
+                            
+                            $scope.showSpinner = false;
+                            $scope.$apply();
+                        }                 
+                        else 
+                        {
+                            $scope.showSpinner = false;
+                            console.log(event);
+                        }
+                    }, 
+                    {escape: true}
+                );
+            }
+            
+            $scope.getAwaitingPaymentsCallout = function getAwaitingPaymentsCallout() {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.PodDashboardCtrl.readAwaitingPayments}',
+                    $scope.pageSize,
+                    $scope.awaitingPaymentsOffset,
+                    JSON.stringify($scope.contractsFilter),
+                    function(result, event)
+                    {
+                        if (event.status) 
+                        {                 
+                            $scope.awaitingPayments = ($scope.awaitingPaymentsOffset > 0) ? $scope.awaitingPayments.concat(result) : result;
+                            
+                            if (result.length < $scope.pageSize)
+                            {
+                              $scope.showMoreAwaitingPayments = false;
+                            }
+                            else
+                            {
+                              $scope.showMoreAwaitingPayments = true;  
+                            }
+                            
+                            $scope.showSpinner = false;
+                            $scope.$apply();
+                        }                 
+                        else 
+                        {
+                            $scope.showSpinner = false;
+                            console.log(event);
+                        }
+                    }, 
+                    {escape: true}
+                );
+            }
+        
+            $scope.init();
+        }]);
+    </script>
+</apex:page>

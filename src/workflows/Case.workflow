@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>All_Cases_created_Notify_Queue</fullName>
+        <description>All Cases created Notify Queue</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>jstefaniak@strikesocial.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>mshore@strikesocial.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>pskotnicki@strikesocial.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Case_Templates/Case_created_General</template>
+    </alerts>
+    <alerts>
+        <fullName>Case_Closed_PP_Update</fullName>
+        <description>Case Closed PP Update</description>
+        <protected>false</protected>
+        <recipients>
+            <field>ContactId</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderAddress>salesforce@strikesocial.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Case_Templates/Case_Closed_PP_Update</template>
+    </alerts>
+    <alerts>
+        <fullName>Case_creation_confirmation</fullName>
+        <description>Case creation confirmation</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <senderAddress>salesforce@strikesocial.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Case_Templates/Case_Creation_confirmation</template>
+    </alerts>
+    <alerts>
+        <fullName>PP_update_Case_Created_notify_queue</fullName>
+        <description>PP update Case Created notify queue</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>fbrucelas@strikesocial.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>jnesbitt@strikesocial.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>pskotnicki@strikesocial.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Case_Templates/Case_Created_Payment_Plan_Update</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>AllCasesQueue</fullName>
+        <field>OwnerId</field>
+        <lookupValue>All_Cases</lookupValue>
+        <lookupValueType>Queue</lookupValueType>
+        <name>All Cases Queue</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>LookupValue</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Case_Closed_PP_EmailSent</fullName>
+        <field>ClosedEmailSent__c</field>
+        <literalValue>1</literalValue>
+        <name>Case Closed PP EmailSent</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <rules>
+        <fullName>Case Closed PP Update</fullName>
+        <actions>
+            <name>Case_Closed_PP_Update</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Case_Closed_PP_EmailSent</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Case.Type</field>
+            <operation>equals</operation>
+            <value>Payment Plan Update/Deletion</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Status</field>
+            <operation>equals</operation>
+            <value>Escalated,Closed</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.ClosedEmailSent__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>General Case Created</fullName>
+        <actions>
+            <name>All_Cases_created_Notify_Queue</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Case_creation_confirmation</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>AllCasesQueue</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Case.Type</field>
+            <operation>notEqual</operation>
+            <value>Payment Plan Update/Deletion</value>
+        </criteriaItems>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+</Workflow>

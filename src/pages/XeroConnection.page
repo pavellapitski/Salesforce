@@ -1,0 +1,187 @@
+<apex:page controller="XeroConnectionCtrl" standardStylesheets="true" 
+           lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}"
+           tabStyle="Project__c">
+    
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/>
+    <apex:includeScript value="{!URLFOR($Resource.Select2, 'select2-3.5.4/select2.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.Select2, 'select2-3.5.4/select2.css')}"/>
+    
+    <apex:actionStatus id="myStatus2" startText="Please Wait..." StopText="" >
+      <apex:facet name="start">
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">
+            &nbsp;
+        </div>
+        <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+            <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                <span style="display: inline-block; padding: 10px 0px;">Please Wait...</span>
+            </div>
+        </div>
+      </apex:facet>
+    </apex:actionStatus>
+
+    <apex:sectionHeader subtitle="Xero Connection"/>    
+
+    <apex:form id="mainForm">        
+        <apex:pageBlock title="{!IF(selectedContract != null, 'Contract', IF(selectedAccount != null, 'Account', ''))}">
+            <apex:pageMessages id="msgs"/>
+            
+            <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel >{!IF(selectedCOntract != null, 'Contract Name', 'Account Name')}</apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:outputPanel rendered="{!selectedContract != null }">
+                            <a href="/{!selectedContract.Id}" target="_blank">{!selectedContract.Name}</a>   
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!selectedAccount != null && selectedContract == null}">
+                            <a href="/{!selectedAccount.Id}" target="_blank">{!selectedAccount.Name}</a>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!selectedAccount == null && selectedContract == null}">
+                            <c:Autocomplete allowClear="true" importJquery="false" labelField="Name" SObject="Account" valueField="Id" targetField="{!accountId}" 
+                                            style="width:200px" minimumInputLength="0" onSelectCallback="accountSelected();" syncManualEntry="false"
+                                            whereClause=" Name != NULL ORDER BY Name "/>
+                            <apex:actionFunction name="accountSelected" action="{!getAccount}" rerender="conBlock, mainForm" status="myStatus2"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Is synced with Xero"></apex:outputLabel>
+                    <apex:outputPanel >
+                         <apex:outputPanel rendered="{!selectedContract != null }">
+                            {!IF(selectedContract != null && selectedContract.Xero_ID__c != null && selectedContract.Xero_ID__c != '', 'Yes', 'No')}
+                        </apex:outputPanel>                    
+                        <apex:outputPanel rendered="{!selectedAccount != null && selectedContract == null}">
+                             {!IF(selectedAccount != null && selectedAccount.Xero_Id__c != null && selectedAccount.Xero_Id__c != '', 'Yes', 'No')}
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockButtons location="bottom">
+                   <apex:commandButton value="Disconnect" action="{!disconnect}" status="myStatus2" rerender="mainForm"
+                                        rendered="{!IF(OR(AND(selectedAccount != null, selectedAccount.Xero_Id__c != null), AND(selectedContract != null, selectedContract.Xero_ID__c != null)), true, false)}"/>    
+                   <apex:commandButton value="Connect with Xero" action="{!connectWithXero}" status="myStatus2" rerender="xeroEntitiesBlock, mainForm"
+                                       disabled="{!IF(selectedAccount != null || selectedContract != null, false, true)}"
+                                       rendered="{!IF(OR(AND(selectedAccount != null, selectedAccount.Xero_Id__c == null), AND(selectedContract != null, selectedContract.Xero_ID__c == null)), true, false)}"/>
+                   <apex:commandButton value="Display Xero Contact" action="{!displayRelatedContact}" status="myStatus2" rerender="conDetails, mainForm"
+                                       disabled="{!IF((selectedAccount != null && selectedAccount.Xero_Id__c != null && selectedAccount.Xero_Id__c != '') || (selectedContract != null && selectedContract.Xero_ID__c != null && selectedContract.Xero_ID__c != ''), false, true)}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock> 
+        
+       <apex:outputPanel id="xeroEntitiesBlock" rendered="{!displayXeroEntities}">
+           <apex:pageBlock title="Xero Entity">
+               <apex:pageBlockSection >
+                   <apex:pageBlockSectionItem >
+                       <apex:outputLabel value="Xero Entity"></apex:outputLabel>
+                       <apex:selectList label="Xero Entities" value="{!xeroId}" multiselect="false" size="1" disabled="{!IF(processIntegration == true, false, true)}">
+                            <apex:selectOptions value="{!xeroEntities}"/>
+                            <apex:actionSupport event="onchange" action="{!getContacts}" rerender="newInvoiceBlock, mainForm" status="myStatus2" />
+                        </apex:selectList>
+                   </apex:pageBlockSectionItem>
+                   
+                   <apex:outputLabel ></apex:outputLabel>
+                   
+                   <apex:pageBlockSectionItem rendered="{!displayXeroContacts}">
+                            <apex:outputLabel value="Choose existing Xero Contact"></apex:outputLabel>
+                            <apex:outputPanel >
+                                <c:Autocomplete allowClear="true" importJquery="false" labelField="XeroName__c" SObject="XeroEntity__c" valueField="XeroId__c" 
+                                                targetField="{!selectedXeroContact}" style="width:200px" minimumInputLength="0" onSelectCallback="xeroContactSelected();"
+                                                syncManualEntry="false" whereClause="XeroSettings__c = '{!xeroId}' ORDER BY XeroName__c "/>
+                                <apex:actionFunction name="xeroContactSelected" action="{!selectXeroContact}" rerender="contactDetailsParent, createNewButton, msgs" status="myStatus2"/>
+                            </apex:outputPanel>
+                   </apex:pageBlockSectionItem>
+                   <apex:outputLabel id="createNewButton">
+                       <apex:pageBlockSectionItem rendered="{!AND(displayXeroContacts, selectedContact == null)}">
+                                <apex:outputLabel value="or create new Contact in Xero "></apex:outputLabel> 
+                                <apex:inputCheckbox value="{!createNewXeroContact}" onclick="createNewXeroContactChanged();"/>                                                               
+                       </apex:pageBlockSectionItem>
+                       <apex:actionFunction name="createNewXeroContactChanged" action="{!createNewXeroContactChanged}" rerender="newXeroContactPanel" status="myStatus2"/>
+                   </apex:outputLabel>
+               </apex:pageBlockSection>
+            </apex:pageBlock>  
+            <apex:outputPanel id="newXeroContactPanel">
+                <apex:pageBlock title="Xero Contact" rendered="{!createNewXeroContact}">
+                    <apex:pageBlockSection >                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Xero Contact Name"/>
+                             <apex:outputPanel layout="block" styleClass="requiredInput">
+                                 <div class="requiredBlock"></div>
+                                 <apex:inputText value="{!xeroContactName}" required="true" label="Xero Contact Name"/>
+                             </apex:outputPanel>
+                        </apex:pageBlockSectionItem>                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Xero Contact Email"/>
+                             <apex:outputPanel layout="block" styleClass="requiredInput">
+                                 <div class="requiredBlock"></div>
+                                 <apex:inputText value="{!xeroContactEmail}" required="true" label="Xero Contact Email"/>
+                             </apex:outputPanel>
+                        </apex:pageBlockSectionItem>                        
+                    </apex:pageBlockSection>  
+                    <apex:pageBlockButtons location="bottom">
+                        <apex:commandButton value="Create" action="{!createXeroAccount}" reRender="mainForm" status="myStatus2"/>
+                    </apex:pageBlockButtons>                      
+                </apex:pageBlock> 
+            </apex:outputPanel>       
+        </apex:outputPanel>
+       
+        <apex:outputPanel id="contactDetailsParent">
+            <apex:outputPanel id="conDetails" rendered="{!displayContactInfo}" layout="block">
+                <apex:outputPanel rendered="{!selectedContact != null}" layout="block">
+                    <apex:pageBlock title="Xero Contact Details">
+                        <apex:pageBlockSection >
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Name"></apex:outputLabel>
+                                <apex:outputLabel value="{!selectedContact.Name}"></apex:outputLabel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Currency"></apex:outputLabel>
+                                <apex:outputLabel value="{!selectedContact.DefaultCurrency}"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Discount"></apex:outputLabel>
+                                <apex:outputLabel value="{!selectedContact.Discount}"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Email"></apex:outputLabel>
+                                <apex:outputLabel value="{!selectedContact.EmailAddress}"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel rendered="{!IF($Profile.Name == 'System Administrator', true, false)}" value="Contact ID"></apex:outputLabel>
+                                <apex:outputLabel value="{!selectedContact.ContactID}"/>
+                            </apex:pageBlockSectionItem>
+                            
+                        </apex:pageBlockSection>
+                        
+                        <apex:pageBlockSection title="Addresses" columns="1" collapsible="false">                       
+                            <apex:repeat value="{!selectedContact['Addresses']}" var="addr">
+                                <apex:pageBlockSection title="{!addr.AddressType}" collapsible="false">
+                                    <apex:pageBlockSectionItem >                          
+                                        <apex:outputLabel value="Address"></apex:outputLabel>
+                                        <apex:outputLabel value="{!addr.AddressLine1}"></apex:outputLabel>
+                                    </apex:pageBlockSectionItem>      
+                                        
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel value="City"></apex:outputLabel>
+                                        <apex:outputLabel value="{!addr.City}"/>
+                                    </apex:pageBlockSectionItem>
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel value="Country"></apex:outputLabel>
+                                        <apex:outputLabel value="{!addr.Country}"/>
+                                    </apex:pageBlockSectionItem>
+                               </apex:pageBlockSection>
+                            </apex:repeat>
+                        </apex:pageBlockSection>   
+                        
+                        <apex:pageBlockButtons location="bottom">
+                            <apex:commandButton value="Connect" action="{!connectWithXeroContact}" reRender="mainForm" rendered="{!processIntegration}"/>
+                        </apex:pageBlockButtons>
+                        
+                    </apex:pageBlock>
+                    
+                </apex:outputPanel>
+           </apex:outputPanel>
+       </apex:outputPanel>
+
+    </apex:form>
+</apex:page>

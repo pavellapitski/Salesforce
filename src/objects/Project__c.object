@@ -1,0 +1,2127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>ContractEdit</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>ContractEdit</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>ContractDetails</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>true</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Billing Profile</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Strike</fullName>
+                    <default>false</default>
+                    <label>Strike</label>
+                </value>
+                <value>
+                    <fullName>Client</fullName>
+                    <default>false</default>
+                    <label>Client</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Projects</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ActualGrossProfit__c</fullName>
+        <externalId>false</externalId>
+        <formula>Actual_Gross_Profit_Social__c + Actual_Gross_Profit_YT__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Actual Gross Profit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Actual_Discount__c</fullName>
+        <externalId>false</externalId>
+        <label>Actual Discount</label>
+        <summarizedField>Sub_Project__c.Discount__c</summarizedField>
+        <summaryFilterItems>
+            <field>Sub_Project__c.Discount_Violation__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Actual_Gross_Profit_Social__c</fullName>
+        <externalId>false</externalId>
+        <label>Actual Gross Profit Social</label>
+        <summarizedField>Sub_Project__c.Actual_Gross_Profit_Social_Rollup__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Actual_Gross_Profit_YT__c</fullName>
+        <externalId>false</externalId>
+        <label>Actual Gross Profit YT</label>
+        <summarizedField>Sub_Project__c.Actual_Gross_Profit_YT_Rollup__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Actual_Gross_Profit__c</fullName>
+        <externalId>false</externalId>
+        <label>Actual Gross Profit No Rebate Rollup</label>
+        <summarizedField>Sub_Project__c.ActualGrossProfitCopy__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Actual_Rebate__c</fullName>
+        <externalId>false</externalId>
+        <label>Actual Rebate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AdWords_Spend__c</fullName>
+        <externalId>false</externalId>
+        <label>Media Spend</label>
+        <summarizedField>Sub_Project__c.AdWordsSpend__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>AddXeroTax__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Add VAT/GST Tax</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AdditionalRep__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(!ISBLANK(Opportunity__r.Additional_Rep__c),
+Opportunity__r.Additional_Rep__r.FirstName &amp; &quot; &quot; &amp;
+Opportunity__r.Additional_Rep__r.LastName,
+NULL)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opp Additional Rep</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Agency__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account__r.Agency__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Agency</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AllInvoicesPaidDate__c</fullName>
+        <externalId>false</externalId>
+        <label>All Invoices Paid Date</label>
+        <summarizedField>Sub_Project__c.Payment_Date__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>BC_Rebate__c</fullName>
+        <externalId>false</externalId>
+        <formula>BillingCondition__r.Rebate_Rate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Rebate Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>BillingConditionName__c</fullName>
+        <externalId>false</externalId>
+        <formula>BillingCondition__r.Name</formula>
+        <label>Billing Condition Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BillingCondition__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Billing Condition</label>
+        <lookupFilter>
+            <active>false</active>
+            <filterItems>
+                <field>BillingCondition__c.Active__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>BillingCondition__c</referenceTo>
+        <relationshipLabel>Contracts</relationshipLabel>
+        <relationshipName>Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>BrandAccount__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Brand/Account</label>
+        <referenceTo>Brand_Account__c</referenceTo>
+        <relationshipLabel>Contracts</relationshipLabel>
+        <relationshipName>Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Brand__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Brand</label>
+        <referenceTo>Brand__c</referenceTo>
+        <relationshipName>Contracts</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>BypassValidationRule__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>BypassValidationRule</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CPM__c</fullName>
+        <externalId>false</externalId>
+        <label>CPM TO BE DELETED</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>4</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>CPV__c</fullName>
+        <externalId>false</externalId>
+        <label>CPV TO BE DELETED</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>6</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>CSEmailFromBrandAccount__c</fullName>
+        <externalId>false</externalId>
+        <label>CSEmailFromBrandAccount</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Campaign_Status__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+AND( Start_Date__c &lt;= TODAY(),TODAY() &lt;= End_Date__c) ,&quot;In Progress&quot;,
+IF(TODAY() &gt; End_Date__c,&quot;Finished&quot;,
+&quot;Planned&quot;)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contract Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ClientServicesRep__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Client Services Rep</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>Please select user with Client Services profile.</errorMessage>
+            <filterItems>
+                <field>User.Client_Services_Rep__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>User</referenceTo>
+        <relationshipName>ClientServiceContracts</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Client_IO__c</fullName>
+        <externalId>false</externalId>
+        <label>IO #</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Client_Spend_Defined_on_IO__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Client Spend Defined on IO</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Client_Spend_Social__c</fullName>
+        <externalId>false</externalId>
+        <label>Client Spend Social</label>
+        <summarizedField>Sub_Project__c.Client_Spend_Social_rollup__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Client_Spend_YT__c</fullName>
+        <externalId>false</externalId>
+        <label>Client Spend YT</label>
+        <summarizedField>Sub_Project__c.Client_Spend_YT_rollup__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Client_Spend__c</fullName>
+        <externalId>false</externalId>
+        <label>Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Commission_Paid_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Commission Paid Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Commission_Paid__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Commission Paid</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ConsultancyFeePaidDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Consultancy Fee Paid Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ConsultancyFeePaid__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Consultancy Fee Paid</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Contract_Ended__c</fullName>
+        <externalId>false</externalId>
+        <formula>Today()&gt;=End_Date__c + 3</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contract End Date+3</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CurrentUser_CS__c</fullName>
+        <externalId>false</externalId>
+        <formula>if( $User.Id = ClientServicesRep__r.Id ,1,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CurrentUser=CS</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Custom_Xero_Campaign_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Custom Xero Campaign Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Days_running__c</fullName>
+        <externalId>false</externalId>
+        <formula>End_Date__c - Start_Date__c +1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Days running</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultBrandAccountCSRepEmail__c</fullName>
+        <externalId>false</externalId>
+        <formula>BrandAccount__r.DefaultClientServicesRep__r.Email</formula>
+        <label>DefaultBrandAccountCSRepEmail</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultClientServicesRep__c</fullName>
+        <externalId>false</externalId>
+        <formula>BrandAccount__r.DefaultClientServicesRep__c</formula>
+        <label>Default Client Services Rep</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Discount_Terms__c</fullName>
+        <externalId>false</externalId>
+        <formula>BillingCondition__r.Discount_Terms__c != 0</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Discount Terms</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EndDateNumber__c</fullName>
+        <externalId>false</externalId>
+        <formula>YEAR(End_Date__c)*100 + MONTH(End_Date__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>EndDateNumber</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ExpectedRebate__c</fullName>
+        <externalId>false</externalId>
+        <formula>BillingCondition__r.Rebate_Rate__c * (
+	IF (CONTAINS(BillingCondition__r.Name, &apos;Instant Rebate&apos;),
+		(Client_Spend__c - Media_Order__c) ,
+    		IF (ISPICKVAL(Margin_Type__c, &apos;% of Media&apos;), Media_Order__c, Client_Spend__c)  
+	)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Expected Rebate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Expected_Gross_Profit__c</fullName>
+        <externalId>false</externalId>
+        <label>Expected Gross Profit</label>
+        <summarizedField>Sub_Project__c.Expected_Gross_Profit__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Final_Margin__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(AND(Client_Spend__c != 0, Invoices_for_Processing__c = 0), 
+ActualGrossProfit__c / Client_Spend__c, 
+NULL)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Final Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Gaps_Exist_Between_Projects__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Gaps Exist Between Projects</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Geo__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Fill in what Geo, Zip Code, etc we need for campaign targeting</inlineHelpText>
+        <label>Geo</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Gross_Profit__c</fullName>
+        <externalId>false</externalId>
+        <formula>Client_Spend__c - Media_Order__c - ExpectedRebate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Expected Gross Profit OLD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>InsideSalesRep__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(!ISBLANK(Opportunity__r.InsideSalesRep__c),
+Opportunity__r.InsideSalesRep__r.FirstName &amp; &quot; &quot; &amp;
+Opportunity__r.InsideSalesRep__r.LastName,
+NULL)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opp Inside Sales Rep</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Invoice_Amount_Roll_Up__c</fullName>
+        <externalId>false</externalId>
+        <label>Invoice Amount Roll Up</label>
+        <summarizedField>Sub_Project__c.Invoice_Amount__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>InvoicesPaid__c</fullName>
+        <externalId>false</externalId>
+        <formula>NoOfIvoicesNotPaid__c = 0</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Invoices Paid</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Invoices_for_Processing__c</fullName>
+        <externalId>false</externalId>
+        <label>Invoices for Processing</label>
+        <summaryFilterItems>
+            <field>Sub_Project__c.Synced_with_Xero__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>InvoicingType__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity__r.InvoicingType__c)</formula>
+        <label>Invoicing Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IsRunning__c</fullName>
+        <externalId>false</externalId>
+        <formula>AND(Start_Date__c &lt;= TODAY(), End_Date__c &gt;= TODAY())</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Running</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>KPI__c</fullName>
+        <externalId>false</externalId>
+        <label>KPI TO BE DELETED</label>
+        <length>50000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Language__c</fullName>
+        <externalId>false</externalId>
+        <label>Language</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Arabic</fullName>
+                    <default>false</default>
+                    <label>Arabic</label>
+                </value>
+                <value>
+                    <fullName>Chinese (simplified)</fullName>
+                    <default>false</default>
+                    <label>Chinese (simplified)</label>
+                </value>
+                <value>
+                    <fullName>Chinese (traditional)</fullName>
+                    <default>false</default>
+                    <label>Chinese (traditional)</label>
+                </value>
+                <value>
+                    <fullName>Danish</fullName>
+                    <default>false</default>
+                    <label>Danish</label>
+                </value>
+                <value>
+                    <fullName>Dutch</fullName>
+                    <default>false</default>
+                    <label>Dutch</label>
+                </value>
+                <value>
+                    <fullName>English</fullName>
+                    <default>false</default>
+                    <label>English</label>
+                </value>
+                <value>
+                    <fullName>Filipino</fullName>
+                    <default>false</default>
+                    <label>Filipino</label>
+                </value>
+                <value>
+                    <fullName>Finnish</fullName>
+                    <default>false</default>
+                    <label>Finnish</label>
+                </value>
+                <value>
+                    <fullName>French</fullName>
+                    <default>false</default>
+                    <label>French</label>
+                </value>
+                <value>
+                    <fullName>German</fullName>
+                    <default>false</default>
+                    <label>German</label>
+                </value>
+                <value>
+                    <fullName>Icelandic</fullName>
+                    <default>false</default>
+                    <label>Icelandic</label>
+                </value>
+                <value>
+                    <fullName>Indonesian</fullName>
+                    <default>false</default>
+                    <label>Indonesian</label>
+                </value>
+                <value>
+                    <fullName>Italian</fullName>
+                    <default>false</default>
+                    <label>Italian</label>
+                </value>
+                <value>
+                    <fullName>Japanese</fullName>
+                    <default>false</default>
+                    <label>Japanese</label>
+                </value>
+                <value>
+                    <fullName>Korean</fullName>
+                    <default>false</default>
+                    <label>Korean</label>
+                </value>
+                <value>
+                    <fullName>Malay</fullName>
+                    <default>false</default>
+                    <label>Malay</label>
+                </value>
+                <value>
+                    <fullName>Norwegian</fullName>
+                    <default>false</default>
+                    <label>Norwegian</label>
+                </value>
+                <value>
+                    <fullName>Portuguese</fullName>
+                    <default>false</default>
+                    <label>Portuguese</label>
+                </value>
+                <value>
+                    <fullName>Spanish</fullName>
+                    <default>false</default>
+                    <label>Spanish</label>
+                </value>
+                <value>
+                    <fullName>Swedish</fullName>
+                    <default>false</default>
+                    <label>Swedish</label>
+                </value>
+                <value>
+                    <fullName>Thai</fullName>
+                    <default>false</default>
+                    <label>Thai</label>
+                </value>
+                <value>
+                    <fullName>Vietnamese</fullName>
+                    <default>false</default>
+                    <label>Vietnamese</label>
+                </value>
+                <value>
+                    <fullName>Russian</fullName>
+                    <default>false</default>
+                    <label>Russian</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>LastModifiedBy__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>LastModifiedBy</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>MM_Spendings_Counter__c</fullName>
+        <externalId>false</externalId>
+        <label>MM Spendings Counter</label>
+        <summaryForeignKey>MM_Spendings__c.Contract__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Margin_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Margin Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>% of Budget</fullName>
+                    <default>true</default>
+                    <label>% of Budget</label>
+                </value>
+                <value>
+                    <fullName>% of Media</fullName>
+                    <default>false</default>
+                    <label>% of Media</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Margin__c</fullName>
+        <externalId>false</externalId>
+        <label>Margin</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>MaxPaymentEndDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Max Payment End Date</label>
+        <summarizedField>Sub_Project__c.End_Date__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>MediaBuyer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Media Buyer</label>
+        <lookupFilter>
+            <active>false</active>
+            <filterItems>
+                <field>Contact.Account.Name</field>
+                <operation>equals</operation>
+                <value>Internal Users</value>
+            </filterItems>
+            <filterItems>
+                <field>Contact.Title</field>
+                <operation>contains</operation>
+                <value>Media Buyer</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Contracts</relationshipLabel>
+        <relationshipName>Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Media_Order_Roll_Up__c</fullName>
+        <externalId>false</externalId>
+        <label>Media Order Roll Up</label>
+        <summarizedField>Sub_Project__c.Media_Order__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Media_Order__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL(Margin_Type__c,&apos;% of Media&apos;),
+Client_Spend__c / (1+Margin__c),
+Client_Spend__c * (1-Margin__c)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Media Order</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>MinPaymentStartDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Min Payment Start Date</label>
+        <summarizedField>Sub_Project__c.Start_Date__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>min</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>More_Info__c</fullName>
+        <externalId>false</externalId>
+        <label>More Info</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>More_Invoicing_Info__c</fullName>
+        <externalId>false</externalId>
+        <label>More Invoicing Info</label>
+        <length>32768</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Net_Profit__c</fullName>
+        <externalId>false</externalId>
+        <formula>ActualGrossProfit__c  - Sales_Commission_rollup__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Net Profit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>NoOfCreatives__c</fullName>
+        <externalId>false</externalId>
+        <label>No Of Creatives</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NoOfIvoicesNotPaid__c</fullName>
+        <externalId>false</externalId>
+        <label>No Of Ivoices Not Paid</label>
+        <summaryFilterItems>
+            <field>Sub_Project__c.Paid__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>NoOfPaymentsWithNoInvoices__c</fullName>
+        <externalId>false</externalId>
+        <label>No Of Payments With No Invoices</label>
+        <summaryFilterItems>
+            <field>Sub_Project__c.Synced_with_Xero__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>No_of_IS_Reps__c</fullName>
+        <externalId>false</externalId>
+        <label>No of IS Reps</label>
+        <summaryFilterItems>
+            <field>Contract_Sales_Rep__c.Commission_Type__c</field>
+            <operation>contains</operation>
+            <value>Inside Sales</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Contract_Sales_Rep__c.Contract__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>No_of_sales_reps__c</fullName>
+        <externalId>false</externalId>
+        <label>No Of Sales Reps</label>
+        <summaryFilterItems>
+            <field>Contract_Sales_Rep__c.Commission_Type__c</field>
+            <operation>notContain</operation>
+            <value>Inside Sales</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Contract_Sales_Rep__c.Contract__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>NumberOfPlatforms__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.NumberOfPlatforms__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>No Of Platforms</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipName>Projects</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Order_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Order Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Budget Order</fullName>
+                    <default>true</default>
+                    <label>Budget Order</label>
+                </value>
+                <value>
+                    <fullName>View Order</fullName>
+                    <default>false</default>
+                    <label>View Order</label>
+                </value>
+                <value>
+                    <fullName>Impression Order</fullName>
+                    <default>false</default>
+                    <label>Impression Order</label>
+                </value>
+                <value>
+                    <fullName>Reach Order</fullName>
+                    <default>false</default>
+                    <label>Reach Order</label>
+                </value>
+                <value>
+                    <fullName>Click Order</fullName>
+                    <default>false</default>
+                    <label>Click Order</label>
+                </value>
+                <value>
+                    <fullName>Link Click Order</fullName>
+                    <default>false</default>
+                    <label>Link Click Order</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>PO__c</fullName>
+        <externalId>false</externalId>
+        <label>PO#</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PaymentMaxEndDateMatches__c</fullName>
+        <externalId>false</externalId>
+        <formula>MaxPaymentEndDate__c == End_Date__c</formula>
+        <label>Payment Max End Date Matches</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PaymentMinStartDateMatches__c</fullName>
+        <externalId>false</externalId>
+        <formula>Start_Date__c == MinPaymentStartDate__c</formula>
+        <label>Payment Min Start Date Matches</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Payment Type</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Net 30</fullName>
+                    <default>false</default>
+                    <label>Net 30</label>
+                </value>
+                <value>
+                    <fullName>Net 45</fullName>
+                    <default>false</default>
+                    <label>Net 45</label>
+                </value>
+                <value>
+                    <fullName>Net 60</fullName>
+                    <default>false</default>
+                    <label>Net 60</label>
+                </value>
+                <value>
+                    <fullName>Net 90</fullName>
+                    <default>false</default>
+                    <label>Net 90</label>
+                </value>
+                <value>
+                    <fullName>Net 120</fullName>
+                    <default>false</default>
+                    <label>Net 120</label>
+                </value>
+                <value>
+                    <fullName>50/50</fullName>
+                    <default>false</default>
+                    <label>50/50</label>
+                </value>
+                <value>
+                    <fullName>100% Upfront</fullName>
+                    <default>false</default>
+                    <label>100% Upfront</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>PaymentsImpressionsSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>Payments Impressions Spend</label>
+        <summarizedField>Sub_Project__c.ProjectsImpressionsSpend__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>PaymentsViewsSpend__c</fullName>
+        <externalId>false</externalId>
+        <label>Payments Views Spend</label>
+        <summarizedField>Sub_Project__c.ProjectsViewsSpend__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>PerformMMSync__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Given contract should be synchronized to MM.</description>
+        <externalId>false</externalId>
+        <label>Perform MM Sync</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Platforms__c</fullName>
+        <externalId>false</externalId>
+        <label>Platforms</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_ID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Strike_ID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Strike ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Number__c</fullName>
+        <displayFormat>{000000}</displayFormat>
+        <externalId>false</externalId>
+        <label>Project Number</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
+        <fullName>Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>text(Account__r.Region__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Region</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sales_Commission_rollup__c</fullName>
+        <externalId>false</externalId>
+        <label>Sales Commission</label>
+        <summarizedField>Contract_Sales_Rep__c.Commission__c</summarizedField>
+        <summaryForeignKey>Contract_Sales_Rep__c.Contract__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>SpendRefreshDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Spend Refresh Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Start_Date_R__c</fullName>
+        <externalId>false</externalId>
+        <formula>Start_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Strike_Final_Margin__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(BEGINS(BillingCondition__r.Name,&quot;Rebate&quot;), BillingCondition__r.Default_Margin__c - BillingCondition__r.Rebate_Rate__c,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Strike Final Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Strike_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Strike ID text</label>
+        <length>8</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Strike_Profit__c</fullName>
+        <externalId>false</externalId>
+        <formula>BillingCondition__r.Strike_Profit__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Strike Profit %</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Sync_with_MM__c</fullName>
+        <externalId>false</externalId>
+        <label>Sync with MM</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Targeting__c</fullName>
+        <externalId>false</externalId>
+        <label>Targeting</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Total_Revenue_RollUp__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Revenue</label>
+        <summarizedField>Sub_Project__c.Total_Revenue_report__c</summarizedField>
+        <summaryForeignKey>Sub_Project__c.Project__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_Revenue__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL(Account_Type__c,&quot;Client&quot;), 
+   Client_Spend__c - Media_Order__c,
+   Client_Spend__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Expected Revenue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Verticals__c</fullName>
+        <externalId>false</externalId>
+        <label>Content Verticals</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Auto</fullName>
+                    <default>false</default>
+                    <label>Auto</label>
+                </value>
+                <value>
+                    <fullName>Banking</fullName>
+                    <default>false</default>
+                    <label>Banking</label>
+                </value>
+                <value>
+                    <fullName>Beauty</fullName>
+                    <default>false</default>
+                    <label>Beauty</label>
+                </value>
+                <value>
+                    <fullName>Beer</fullName>
+                    <default>false</default>
+                    <label>Beer</label>
+                </value>
+                <value>
+                    <fullName>Business</fullName>
+                    <default>false</default>
+                    <label>Business</label>
+                </value>
+                <value>
+                    <fullName>Cooking</fullName>
+                    <default>false</default>
+                    <label>Cooking</label>
+                </value>
+                <value>
+                    <fullName>DIY</fullName>
+                    <default>false</default>
+                    <label>DIY</label>
+                </value>
+                <value>
+                    <fullName>Education</fullName>
+                    <default>false</default>
+                    <label>Education</label>
+                </value>
+                <value>
+                    <fullName>Entertainment</fullName>
+                    <default>false</default>
+                    <label>Entertainment</label>
+                </value>
+                <value>
+                    <fullName>Fashion</fullName>
+                    <default>false</default>
+                    <label>Fashion</label>
+                </value>
+                <value>
+                    <fullName>Fitness</fullName>
+                    <default>false</default>
+                    <label>Fitness</label>
+                </value>
+                <value>
+                    <fullName>Food</fullName>
+                    <default>false</default>
+                    <label>Food</label>
+                </value>
+                <value>
+                    <fullName>Gaming</fullName>
+                    <default>false</default>
+                    <label>Gaming</label>
+                </value>
+                <value>
+                    <fullName>Government</fullName>
+                    <default>false</default>
+                    <label>Government</label>
+                </value>
+                <value>
+                    <fullName>Health</fullName>
+                    <default>false</default>
+                    <label>Health</label>
+                </value>
+                <value>
+                    <fullName>Home &amp; Garden</fullName>
+                    <default>false</default>
+                    <label>Home &amp; Garden</label>
+                </value>
+                <value>
+                    <fullName>Moms</fullName>
+                    <default>false</default>
+                    <label>Moms</label>
+                </value>
+                <value>
+                    <fullName>Movies</fullName>
+                    <default>false</default>
+                    <label>Movies</label>
+                </value>
+                <value>
+                    <fullName>Music</fullName>
+                    <default>false</default>
+                    <label>Music</label>
+                </value>
+                <value>
+                    <fullName>News</fullName>
+                    <default>false</default>
+                    <label>News</label>
+                </value>
+                <value>
+                    <fullName>Pets</fullName>
+                    <default>false</default>
+                    <label>Pets</label>
+                </value>
+                <value>
+                    <fullName>Science</fullName>
+                    <default>false</default>
+                    <label>Science</label>
+                </value>
+                <value>
+                    <fullName>Sports</fullName>
+                    <default>false</default>
+                    <label>Sports</label>
+                </value>
+                <value>
+                    <fullName>Tech</fullName>
+                    <default>false</default>
+                    <label>Tech</label>
+                </value>
+                <value>
+                    <fullName>Toys</fullName>
+                    <default>false</default>
+                    <label>Toys</label>
+                </value>
+                <value>
+                    <fullName>Travel</fullName>
+                    <default>false</default>
+                    <label>Travel</label>
+                </value>
+                <value>
+                    <fullName>TV</fullName>
+                    <default>false</default>
+                    <label>TV</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Video_Length__c</fullName>
+        <externalId>false</externalId>
+        <label>Available Assets</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Static Image</fullName>
+                    <default>false</default>
+                    <label>Static Image</label>
+                </value>
+                <value>
+                    <fullName>6 sec. Video</fullName>
+                    <default>false</default>
+                    <label>6 sec. Video</label>
+                </value>
+                <value>
+                    <fullName>15 sec. Video</fullName>
+                    <default>false</default>
+                    <label>15 sec. Video</label>
+                </value>
+                <value>
+                    <fullName>30 sec. Video</fullName>
+                    <default>false</default>
+                    <label>30 sec. Video</label>
+                </value>
+                <value>
+                    <fullName>60+ sec. Video</fullName>
+                    <default>false</default>
+                    <label>60+ sec. Video</label>
+                </value>
+                <value>
+                    <fullName>60 sec. Video</fullName>
+                    <default>false</default>
+                    <label>60 sec. Video</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>WeeklyReportingSchedule__c</fullName>
+        <externalId>false</externalId>
+        <label>Weekly Reporting Schedule</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Monday</fullName>
+                    <default>false</default>
+                    <label>Monday</label>
+                </value>
+                <value>
+                    <fullName>Tuesday</fullName>
+                    <default>false</default>
+                    <label>Tuesday</label>
+                </value>
+                <value>
+                    <fullName>Wednesday</fullName>
+                    <default>false</default>
+                    <label>Wednesday</label>
+                </value>
+                <value>
+                    <fullName>Thursday</fullName>
+                    <default>false</default>
+                    <label>Thursday</label>
+                </value>
+                <value>
+                    <fullName>Friday</fullName>
+                    <default>false</default>
+                    <label>Friday</label>
+                </value>
+                <value>
+                    <fullName>Saturday</fullName>
+                    <default>false</default>
+                    <label>Saturday</label>
+                </value>
+                <value>
+                    <fullName>Sunday</fullName>
+                    <default>false</default>
+                    <label>Sunday</label>
+                </value>
+                <value>
+                    <fullName>N/A</fullName>
+                    <default>true</default>
+                    <label>N/A</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>8</visibleLines>
+    </fields>
+    <fields>
+        <fullName>XeroObject__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Xero Object</label>
+        <referenceTo>XeroEntity__c</referenceTo>
+        <relationshipName>Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Xero_Contact__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(!isblank(Xero_ID__c),
+     HYPERLINK(&quot;https://go.xero.com/Contacts/View/&quot;&amp;Xero_ID__c, if(!isblank(XeroObject__c), XeroObject__r.XeroName__c ,&quot;View&quot;)) ,
+    if (!isblank(Account__r.Xero_Id__c), 
+         HYPERLINK(&quot;https://go.xero.com/Contacts/View/&quot;&amp;Account__r.Xero_Id__c, if(!isblank(Account__r.XeroObject__c), Account__r.XeroObject__r.XeroName__c             ,&quot;View&quot;)),
+         &quot;Not Synced with Xero&quot;)     
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Xero Contact</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Xero_Entity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Xero Settings</label>
+        <referenceTo>XeroSettings__c</referenceTo>
+        <relationshipName>Contracts</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Xero_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Xero ID</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Contract</label>
+    <listViews>
+        <fullName>APAC</fullName>
+        <columns>NAME</columns>
+        <columns>Project_ID__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Client_IO__c</columns>
+        <columns>Client_Spend__c</columns>
+        <columns>Account_Type__c</columns>
+        <columns>BillingCondition__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>APAC</value>
+        </filters>
+        <label>APAC</label>
+    </listViews>
+    <listViews>
+        <fullName>APAC_DBM</fullName>
+        <columns>NAME</columns>
+        <columns>Project_ID__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Client_IO__c</columns>
+        <columns>Client_Spend__c</columns>
+        <columns>Account_Type__c</columns>
+        <columns>BillingCondition__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>APAC</value>
+        </filters>
+        <filters>
+            <field>Platforms__c</field>
+            <operation>contains</operation>
+            <value>DBM</value>
+        </filters>
+        <label>APAC DBM</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Client</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Client_Spend__c</columns>
+        <columns>Client_IO__c</columns>
+        <columns>Project_ID__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Account_Type__c</field>
+            <operation>equals</operation>
+            <value>Client</value>
+        </filters>
+        <label>All Client</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Strike</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Client_Spend__c</columns>
+        <columns>Client_IO__c</columns>
+        <columns>Project_ID__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Account_Type__c</field>
+            <operation>equals</operation>
+            <value>Strike</value>
+        </filters>
+        <label>All Strike</label>
+    </listViews>
+    <listViews>
+        <fullName>Commission_to_be_paid</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Project_ID__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Client_Spend__c</columns>
+        <columns>Client_IO__c</columns>
+        <columns>Commission_Paid__c</columns>
+        <columns>Commission_Paid_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>InvoicesPaid__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Commission_Paid__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>Commission to be paid</label>
+        <sharedTo>
+            <role>CEO</role>
+            <role>Finance</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Currently_Running</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Brand__c</columns>
+        <columns>Project_ID__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Client_Spend__c</columns>
+        <columns>Client_IO__c</columns>
+        <columns>ClientServicesRep__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Start_Date_R__c</field>
+            <operation>lessOrEqual</operation>
+            <value>TODAY</value>
+        </filters>
+        <filters>
+            <field>End_Date__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>Currently Running</label>
+    </listViews>
+    <listViews>
+        <fullName>Tangible_Rebate</fullName>
+        <columns>Project_ID__c</columns>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Account_Type__c</columns>
+        <columns>Client_Spend__c</columns>
+        <columns>Media_Order__c</columns>
+        <columns>Final_Margin__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>AllInvoicesPaidDate__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Account__c</field>
+            <operation>equals</operation>
+            <value>Tangible Media Inc.</value>
+        </filters>
+        <label>Tangible Rebate</label>
+        <sharedTo>
+            <group>Finance</group>
+        </sharedTo>
+    </listViews>
+    <nameField>
+        <label>Contract Name</label>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Contracts</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Project_ID__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Start_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>End_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Client_Spend__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Project_ID__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Start_Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>End_Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Client_Spend__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Project_ID__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Start_Date__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>End_Date__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Client_Spend__c</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Account__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Project_ID__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Client_IO__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Start_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>End_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Client_Spend__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>BillingConditionRequired</fullName>
+        <active>true</active>
+        <errorConditionFormula>NOT(BypassValidationRule__c) &amp;&amp; 
+!PRIORVALUE(BypassValidationRule__c) &amp;&amp;
+ISBLANK(BillingCondition__c)</errorConditionFormula>
+        <errorMessage>Fill in Billing Conditions</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>CTAoverlayText</fullName>
+        <active>false</active>
+        <errorConditionFormula>not(BypassValidationRule__c) &amp;&amp; 
+!priorvalue(BypassValidationRule__c) &amp;&amp;
+CTA_Overlay__c &amp;&amp; isblank(CTAOverlayText__c)</errorConditionFormula>
+        <errorMessage>Provide CTA Overlay Text when you mark CTA Overlay. If text is embedded on video type in &quot;Embedded on video&quot;</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>CannotEditBrand</fullName>
+        <active>false</active>
+        <description>Brand cannot be updated.</description>
+        <errorConditionFormula>not(BypassValidationRule__c) &amp;&amp; 
+!priorvalue(BypassValidationRule__c) &amp;&amp;
+$User.Id != &apos;005U0000003nBsV&apos; &amp;&amp; 
+NOT(ISBLANK(PRIORVALUE(Brand__c))) &amp;&amp; 
+PRIORVALUE(Brand__c) != Brand__c</errorConditionFormula>
+        <errorDisplayField>Brand__c</errorDisplayField>
+        <errorMessage>Brand cannot be updated.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>CompanionBannerRequired</fullName>
+        <active>false</active>
+        <errorConditionFormula>not(BypassValidationRule__c) &amp;&amp; 
+!priorvalue(BypassValidationRule__c) &amp;&amp; 
+isblank(text(Companion_Banner__c))</errorConditionFormula>
+        <errorMessage>Select Companion Banner value</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>InsertNAifNoReportingSchedule</fullName>
+        <active>true</active>
+        <errorConditionFormula>not(BypassValidationRule__c) &amp;&amp; 
+!priorvalue(BypassValidationRule__c) &amp;&amp;
+isblank(WeeklyReportingSchedule__c)</errorConditionFormula>
+        <errorMessage>Insert N/A if no Weekly Reporting Schedule selected</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Name_cannot_contain_hyphen</fullName>
+        <active>true</active>
+        <description>Name can&apos;t contain &quot;-&quot; character</description>
+        <errorConditionFormula>not(BypassValidationRule__c) &amp;&amp; 
+!priorvalue(BypassValidationRule__c) &amp;&amp; contains(Name,&quot;-&quot;)</errorConditionFormula>
+        <errorDisplayField>Name</errorDisplayField>
+        <errorMessage>You cannot use hyphens (-) in Contract name.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Provide_Commission_Paid_Date</fullName>
+        <active>true</active>
+        <errorConditionFormula>Commission_Paid__c &amp;&amp; isblank(Commission_Paid_Date__c)</errorConditionFormula>
+        <errorDisplayField>Commission_Paid_Date__c</errorDisplayField>
+        <errorMessage>Provide date when commission was paid</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>RemoveNAwhenSelectingReportingSchedule</fullName>
+        <active>true</active>
+        <errorConditionFormula>includes(WeeklyReportingSchedule__c,&quot;N/A&quot;) &amp;&amp; 
+or( 
+includes(WeeklyReportingSchedule__c,&quot;Monday&quot;), 
+includes(WeeklyReportingSchedule__c,&quot;Tuesday&quot;), 
+includes(WeeklyReportingSchedule__c,&quot;Wednesday&quot;), 
+includes(WeeklyReportingSchedule__c,&quot;Thursday&quot;), 
+includes(WeeklyReportingSchedule__c,&quot;Friday&quot;), 
+includes(WeeklyReportingSchedule__c,&quot;Saturday&quot;), 
+includes(WeeklyReportingSchedule__c,&quot;Sunday&quot;) 
+)</errorConditionFormula>
+        <errorMessage>Remove N/A from Weekly Reporting Schedule list	 if you select any other values</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Start_date_cannot_be_after_end_date</fullName>
+        <active>true</active>
+        <errorConditionFormula>not(BypassValidationRule__c) &amp;&amp; 
+!priorvalue(BypassValidationRule__c) &amp;&amp; Start_Date__c &gt; End_Date__c</errorConditionFormula>
+        <errorMessage>Start Date cannot be higher then End Date. Please adjust the dates before saving the record.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>TagsRequired</fullName>
+        <active>false</active>
+        <errorConditionFormula>not(BypassValidationRule__c) &amp;&amp; 
+!priorvalue(BypassValidationRule__c) &amp;&amp; 
+isblank(text(Pixel_Tracking__c))</errorConditionFormula>
+        <errorMessage>Select Tags value</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>Xero_Admin</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Xero Admin</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.open(&apos;/apex/XeroConnection?contractId={!Project__c.Id }&amp;inv=true&apos;);</url>
+    </webLinks>
+</CustomObject>

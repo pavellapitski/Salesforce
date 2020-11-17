@@ -1,0 +1,579 @@
+<apex:page standardController="Project__c" extensions="ContractCtrl" 
+           lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}"
+           tabStyle="Project__c" showHeader="true" sidebar="true" 
+           action="{!onEditReady}" title="{!$objectType.Project__c.Label}: {!Project__c.Name}">
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"/>
+
+    <apex:includeLightning />
+    <apex:variable value="{!$User.UIThemeDisplayed == 'Theme4d'}" var="isLightningTheme"/>
+    <apex:slds rendered="{!isLightningTheme}"/>
+
+    <style type="text/css">
+        html, body { min-height: 100%; }
+        body { position: relative; }
+
+        .fieldLabel { font-size: 91%; font-weight: bold; color: #4a4a56 !important; }
+        td.expected { font-style: italic; }
+        .italicField { font-style: italic; }
+        .fieldLabel { font-size: 91%; font-weight: bold; color: #4a4a56 !important; }
+
+        .activeTab { background-color: #236FBD; color: white; background-image: none }
+        .inactiveTab { background-color: lightgrey; color: black; background-image: none }
+
+        .modal-dialog-pos { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; }
+        .forceMessage.desktopBoxed.strength_3 { padding: 15px 20px; }
+        .forceMessage.desktopBoxed.error { background-color: rgb(194, 57, 52); border-color: rgb(194, 57, 52); }
+        .forceMessage.desktopBoxed { border: 0; border-radius: 3px; margin: 0; color: #fff; }
+        .forceMessage.error { border-color: #f2a199; background-color: #fdedea; }
+        .uiMessage.error { border-color: #f2a199; background-color: #fdedea; }
+        .forceMessage { color: #464646; padding: 5px; margin: 10px; border: 1px solid; border-radius: 5px; font-size: 13px; line-height: 18px; }
+        .uiMessage { color: #464646; padding: 5px; margin: 5px; border-width: 1px; border-style: solid; border-radius: 5px; font-size: 13px; line-height: 18px; border-color: #ccc; background-color: #eee; opacity: 1; -webkit-transition: opacity .2s ease-out; transition: opacity .2s ease-out; }
+        .uiBlock { overflow: hidden; vertical-align: top; }
+        .uiBlock .bLeft { float: left; }
+        .uiBlock .bLeft img { display: block; }
+        .forceMessage.desktopBoxed.error.strength_3 .bLeft .icon { background: url(/relatedlist/images/message/red-error.png) no-repeat; width: 34px; height: 34px; }
+        .forceMessage.desktopBoxed.strength_3 .bLeft .icon { margin-right: 20px; }
+        body .zen-btn, .slds-vf-scope .zen-btn {
+            -webkit-appearance: none;
+            position: relative;
+            display: inline-block;
+            border: 1px solid transparent;
+            padding: 0;
+            margin-top: 1em;
+            font-size: .75rem;
+            line-height: 1.875rem;
+            text-decoration: none;
+            white-space: normal;
+            border-radius: .25rem;
+            background: transparent;
+            background-clip: border-box;
+            color: rgba(27, 82, 151, 1.0);
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-transition: color .05s linear,background-color .05s linear;
+            transition: color .05s linear,background-color .05s linear;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid rgb(221, 219, 218);
+            -webkit-transition: border 0.15s linear;
+            transition: border 0.15s linear;
+            background-color: rgba(27, 82, 151, 1.0);
+            border-color: rgba(27, 82, 151, 1.0);
+            color: rgb(255, 255, 255);
+        }
+        body.slds-scope, .slds-vf-scope.vf-body, .slds-vf-scope.sfdcBody { height: 100%; overflow: auto; padding: .75rem .75rem 0; }
+
+        .vfPopup { background-color: white; border-width: 1px; border-style: solid; z-index: 9999; left: 50%; padding:11px; position: absolute; width: 600px; margin-left: -240px; top:100px; }
+        .vfPopupBackground { background-color:black; opacity: 0.20; filter: alpha(opacity = 20); position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 9998; }
+    </style>
+
+    <script>
+        jQuery.noConflict();
+        var isLightningTheme = {!isLightningTheme};
+    </script>
+
+    <p id="removeInlineEditFocus"></p>
+
+    <apex:actionStatus id="statusSection" startText="Please Wait..." StopText="" >
+        <apex:facet name="start">
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;">&nbsp;</div>
+            <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                    <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                    <span style="display: inline-block; padding: 10px 0px;">Please Wait...</span>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+
+    <apex:sectionHeader title="{!$objectType.Project__c.Label & ': ' & contract.Project_ID__c}" subtitle="{!Project__c.Name}"/>
+    
+    <apex:form >
+        <apex:outputPanel id="spinner-id" style="display:none">
+            <apex:outputPanel layout="block" rendered="{!isLightningTheme}" >
+                <div class="slds-spinner_container">
+                    <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                        <span class="slds-assistive-text">Loading</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+
+            <apex:outputPanel layout="block" rendered="{!NOT(isLightningTheme)}" >
+                <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; z-index: 1000; background-color: black;"></div>
+                <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 15% 50%">
+                    <div style="display: inline-block; padding: 2px; background-color: #fff; width: 125px;">
+                        <img src="/img/loading.gif" style="float: left; margin: 8px;" />
+                        <span style="display: inline-block; padding: 10px 0px;">Please Wait...</span>
+                    </div>
+                </div>
+            </apex:outputPanel>
+        </apex:outputPanel>
+
+        <!-- Dialog Modal popup for Lightning-->
+        <apex:outputPanel rendered="{!isLightningTheme}">
+            <div class="slds-scope">
+                <div class="slds-hide modal-dialog-pos" style="height: 640px;" id="change-owner-dialog">
+                    <section role="dialog" tabindex="-1" aria-labelledby="title-modal-id" aria-modal="true" aria-describedby="modal-content-id" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <h2 class="slds-text-heading_medium slds-hyphenate" id="title-modal-id">TITLE</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id">
+                                <div style="height: 4.5rem; display:none;" id="error-modal-id" >
+                                    <div class="modalError">
+                                        <div class="error strength_3 desktopBoxed uiMessage forceMessage" role="alert" data-aura-class="uiMessage forceMessage">
+                                            <div class="uiBlock">
+                                                <div class="bLeft">
+                                                <span class="uiImage" data-aura-class="uiImage">
+                                                    <img src="/auraFW/resources/aura/s.gif" class="icon" alt="error" style="max-width: 100%;"/>
+                                                </span>
+                                                </div>
+                                                <div class="bRight"/>
+                                                <div class="bBody">
+                                                    <p class="body"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="height: 3rem;">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-text-body_regular" id="msg-modal-id">MESSAGE</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <button class="slds-button slds-button_neutral" onclick="event.preventDefault(); DialogModal.close();">Cancel</button>
+                                <button class="slds-button slds-button_brand" onclick="event.preventDefault(); DialogModal.submit();" id="submit-btn-modal-id">Submit</button>
+                            </footer>
+
+                            <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_large slds-input__spinner" id="os-spinner-large" style="display:none">
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+        <!-- Dialog Modal popup for VisualForce-->
+        <apex:outputPanel rendered="{!NOT(isLightningTheme)}" >
+            <apex:outputPanel layout="block" id="vf-dialog-modal-id" style="display: none;">
+                <apex:outputPanel styleClass="vfPopupBackground" layout="block" />
+                <apex:outputPanel styleClass="vfPopup" layout="block" >
+                    <header >
+                        <h2 id="title-modal-id">TITLE</h2>
+                    </header>
+                    <p>
+                        <div class="slds-text-body_regular" id="msg-modal-id">MESSAGE</div>
+                    </p>
+                    <button class="slds-button slds-button_neutral" onclick="event.preventDefault(); DialogModal.close();">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick="event.preventDefault(); DialogModal.submit();" id="submit-btn-modal-id">Submit</button>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:pageBlock mode="maindetail">
+            <apex:pageMessages escape="false" id="contractMessage" />
+            <apex:pageMessage summary="Sum of Payments Client Spend does not equal Contract’s Client Spend. Please adjust it within Payment Plan." severity="warning" strength="2" rendered="{!showPaymentClientSpendDifferenceMsg}"/>
+            <apex:pageMessage summary="Sum of Projects Client Spend does not equal Payment’s Client Spend. Please adjust it within Payment Plan" severity="warning" strength="2" rendered="{!showProjectClientSpendDifferenceMsg}"/>
+
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Save" onclick="saveClick();" id="saveBtn" styleClass="saveButton" status="statusSection" rendered="{!NOT(isLightningTheme)}" style="display:none;" reRender="contractMessage"/>
+                <apex:commandButton value="Save" onclick="saveClick();" id="saveBtnLtg" style="display:none;" rendered="{!isLightningTheme}" reRender="contractMessage"/>
+
+                <apex:commandButton value="Sync to ReDash" action="{!syncWithDataWarehouse}"  reRender="contractMessage"/>
+                <apex:commandButton value="Cancel" id="cancelBtn" action="{!cancel}" style="display:none;" reRender="mainForm" />
+                <apex:commandButton value="Refresh Spend" action="{!getAllSpends}" rerender="eventLogsPanel,contractMessage,spendingsList,tabPanelId,paymentsSection" status="statusSection" />
+                <apex:commandButton value="Xero Admin" id="xeroButton" action="/apex/XeroConnection?contractId={!Project__c.Id}&inv=true}" />
+                <apex:commandButton value="Delete" id="deleteBtn" action="{!URLFOR($Action.Project__c.Delete, Project__c.Id)}" rendered="{!AND(OR($Profile.Name ='System Administrator', $User.Alias = 'mmaje', $User.CanDeletePPs__c), contract.Opportunity__r.StageName='Closed Lost')}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+
+        <apex:actionFunction name="save" action="{!save}" reRender="mainForm, contractMessage" status="statusSection"/>
+
+        <apex:tabPanel switchType="client" selectedTab="Overview" id="tabPanelId">
+            <apex:tab label="Overview" name="overview" id="tabOverview" ontabenter="tabChanged('overview')">
+                <apex:pageBlock >
+                    <apex:inlineEditSupport showOnEdit="saveBtn, saveBtnLtg, cancelBtn" hideOnEdit="editBtn, deleteBtn, mmButton, xeroButton" event="ondblclick" id="inlineElement" />
+                    <apex:pageBlockSection title="Information" collapsible="false">
+                        <apex:outputField value="{!contract.Name}"/>
+                        <apex:outputField value="{!contract.Opportunity__c}"/>
+                        <apex:outputField value="{!contract.Account__c}"/>
+                        <apex:outputField value="{!contract.Client_Spend__c}" id="clientSpendId"/>
+                        <apex:outputField value="{!contract.Brand__c}"/>
+                        <apex:outputField value="{!contract.Margin__c}"/>
+                        <apex:outputField value="{!contract.Account_Type__c}"/>
+                        <apex:outputField value="{!contract.Margin_Type__c}"/>
+                        <apex:outputField value="{!contract.BillingCondition__c}"/>
+                        <apex:outputField value="{!contract.Media_Order__c}"/>
+                        <apex:outputField value="{!contract.Region__c}"/>
+                        <apex:outputField value="{!contract.Project_ID__c}"/>
+                        <apex:outputField value="{!contract.ClientServicesRep__c}"/>
+                        <apex:outputField value="{!contract.Start_Date__c}"/>
+                        <!--<apex:outputField value="{!contract.MediaBuyer__c}"/>-->
+                        <apex:outputField value="{!contract.End_Date__c}"/>
+                        <apex:outputField value="{!contract.CurrencyISOCode}"/>
+                        <apex:outputField value="{!contract.Order_Type__c}"/>
+                    </apex:pageBlockSection>
+
+                    <apex:pageBlockSection title="Brief Campaign Overview" collapsible="false">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$objectType.Platform__c.LabelPlural}"/>
+                            <apex:outputText value="{!platformString}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:outputField value="{!contract.WeeklyReportingSchedule__c}" />
+                        <apex:outputText value="{!contract.Brand__r.Verticals__c}"/>
+                        <apex:outputField value="{!contract.Verticals__c}"/>
+                    </apex:pageBlockSection>
+
+                    <apex:pageBlockSection title="Distribution & Targeting" collapsible="false">
+                        <apex:outputField value="{!contract.Geo__c}"/>
+                        <apex:outputField value="{!contract.Video_Length__c}"/>
+                        <apex:outputField value="{!contract.Targeting__c}"/>
+                        <apex:outputField value="{!contract.Language__c}"/>
+                        <apex:outputField value="{!contract.More_Info__c}"/>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+
+                <apex:pageBlock title="Sales Reps" mode="inlineEdit" id="salesRepsBlock" >
+                    <apex:pageBlockButtons location="top">
+                        <apex:commandButton value="New Sales Rep" action="/a0f/e?retURL={!contract.id}&CF00NU0000005qrJi={!contract.name}" />
+                        <apex:commandButton action="{!saveSalesReps}" value="Save" id="saveRepsButton" reRender="contractMessage,salesRepsBlock" style="display: none;"/>
+                        <apex:commandButton onclick="resetInlineEdit()" id="cancelRepsButton" value="Cancel" style="display: none;"/>
+                    </apex:pageBlockButtons>
+                    <apex:pageBlockTable value="{!reps}" var="item">
+                        <apex:column headerValue="Action" >
+                            <apex:outputLink value="/{!item.id}/e" target="_parent">Edit
+                            </apex:outputLink>&nbsp;|&nbsp;
+                            <apex:outputLink value="{!URLFOR($Action.Contract_Sales_Rep__c.Delete, item.id)}" target="_parent" onclick="return window.confirm('Are you sure?'); ">Delete
+                            </apex:outputLink>
+                        </apex:column>
+                        <apex:column value="{! item.Commission_Profile__c}" />
+                        <apex:column value="{! item.Commission_Type__c}" />
+                        <apex:column value="{! item.Expected_commission__c}" rendered="{!AND(OR($Profile.Name ='System Administrator', $Profile.Name ='Finance'), contract.Start_Date__c <= DATE(2018,04,01))}"/>
+                        <apex:column value="{! item.Commission__c}" rendered="{!contract.Start_Date__c <= DATE(2018,04,01)}"/>
+
+                        <apex:column headerValue="Percentage of GP allocation" >
+                            <apex:outputField value="{! item.percentage_of_GP_allocation__c}">
+                                <apex:inlineEditSupport showOnEdit="saveRepsButton,cancelRepsButton"
+                                                        hideOnEdit="editButton" event="ondblclick" disabled="{!item.Commission_Profile__r.GP_Bonus__c==false}"
+                                                        changedStyleClass="myBoldClass"/>
+                            </apex:outputField>
+                        </apex:column>
+
+                        <apex:column value="{! item.Notes__c}" />
+                    </apex:pageBlockTable>
+                </apex:pageBlock>
+            </apex:tab>
+
+            <apex:tab label="{!$objectType.Platform__c.LabelPlural}" name="platforms" id="tabPlatforms" ontabenter="tabChanged('platforms')">
+                <apex:pageMessages id="platformMessages" escape="false" />
+
+                <apex:pageBlock >
+                    <apex:pageBlockButtons location="top">
+                        <apex:commandButton value="Save" action="{!savePlatforms}" status="statusSection" reRender="platformMessages,platformSections"/>
+                    </apex:pageBlockButtons>
+                    <apex:pageBlockSection title="{!$objectType.Platform__c.LabelPlural}" columns="2" collapsible="false">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!$objectType.Platform__c.Label}" styleClass="fieldLabel"/>
+                            <!--<apex:actionRegion >-->
+                            <apex:repeat value="{!platforms}" var="platform">
+                                <apex:outputPanel layout="inline">
+                                    <apex:inputCheckbox value="{!platform.isSelected}" disabled="true"/>
+                                    <apex:outputLabel value="{!platform.oppPlatform.Platform__r.Name}"/>
+                                </apex:outputPanel>
+                                <br/>
+                            </apex:repeat>
+                            <!--</apex:actionRegion>-->
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                    <apex:outputPanel id="platformSections">
+                        <apex:repeat value="{!platforms}" var="platform">
+                            <c:PlatformSection platform="{!platform}"/>
+                        </apex:repeat>
+                    </apex:outputPanel>
+                </apex:pageBlock>
+            </apex:tab>
+
+            <apex:tab label="Finance" name="finance" id="tabFinance" ontabenter="tabChanged('finance')">
+                <apex:pageBlock >
+                    <apex:inlineEditSupport showOnEdit="saveBtn, saveBtnLtg, cancelBtn" hideOnEdit="editBtn, deleteBtn, mmButton, xeroButton" event="ondblclick" id="inlineElement" />
+                    <apex:pageBlockSection title="Financial Information" collapsible="false">
+                        <apex:outputField value="{!contract.Client_Spend_Defined_on_IO__c}"/>
+                        <apex:outputField value="{!contract.Total_Revenue_RollUp__c}"/>
+                        <apex:outputField value="{!contract.Client_IO__c}"/>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="{!IF(contract.End_Date__c < TODAY(), 'Actual Gross Profit', 'Gross Profit')}"/>
+                            <apex:outputField value="{!contract.ActualGrossProfit__c}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:outputField value="{!contract.PO__c}"/>
+                        <apex:outputField value="{!contract.Final_Margin__c}"/>
+                        <apex:outputField value="{!contract.Total_Revenue__c}"/>
+                        <apex:outputField value="{!contract.InvoicesPaid__c}"/>
+                        <apex:outputField value="{!contract.Expected_Gross_Profit__c}"/>
+                        <apex:pageBlockSectionItem rendered="{!contract.BillingCondition__r.Rebate_Rate__c != NULL && !contract.Discount_Terms__c}">
+                            <apex:outputLabel value="{!IF(contract.End_Date__c < TODAY(), 'Actual Rebate', 'Rebate')}"/>
+                            <apex:outputField value="{!contract.Actual_Rebate__c}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:outputField value="{!contract.Actual_Discount__c}" rendered="{!contract.BillingCondition__r.Rebate_Rate__c != NULL && contract.Discount_Terms__c}"/>
+                        <apex:pageBlockSectionItem rendered="{!contract.BillingCondition__r.Rebate_Rate__c != NULL}">
+                            <apex:OutputLabel value="{!IF(contract.Discount_Terms__c,"Expected Discount",$objectType.Project__c.Fields.ExpectedRebate__c.Label)}"/>
+                            <apex:outputField value="{!contract.ExpectedRebate__c}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:outputField value="{!contract.ConsultancyFeePaid__c}" rendered="{!contract.BillingCondition__r.Rebate_Rate__c != NULL}"/>
+                        <apex:outputLabel rendered="{!contract.BillingCondition__r.Rebate_Rate__c = NULL}"/>
+                        <apex:outputField value="{!contract.Xero_Contact__c}"/>
+                        <apex:outputLabel rendered="{!contract.BillingCondition__r.Rebate_Rate__c = NULL}"/>
+                        <apex:outputField value="{!contract.ConsultancyFeePaidDate__c}" rendered="{!contract.BillingCondition__r.Rebate_Rate__c != NULL}"/>
+                        <apex:outputField value="{!contract.Payment_Type__c}"/>
+                        <apex:outputLabel />
+                        <apex:outputText value="{!contract.InvoicingType__c}"/>
+                        <apex:outputLabel />
+                        <apex:outputField value="{!contract.Custom_Xero_Campaign_Name__c}" rendered="{!contract.Account__r.Custom_Xero_Naming__c}"/>
+                        <apex:outputLabel rendered="{!contract.BillingCondition__r.Rebate_Rate__c = NULL && contract.Account__r.Custom_Xero_Naming__c}"/>
+                        <apex:outputField value="{!contract.More_Invoicing_Info__c}"/>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+            </apex:tab>
+
+            <apex:tab label="Creatives" name="creative" id="tabCreative" ontabenter="tabChanged('creative')">
+                <apex:pageblock >
+                    <apex:pageBlockSection >
+                        <apex:outputField value="{!contract.Start_Date__c}"/>
+                        <apex:outputField value="{!contract.End_Date__c}"/>
+                    </apex:pageBlockSection>
+                </apex:pageblock>
+            </apex:tab>
+
+            <apex:tab label="History" name="history" id="tabHistory" ontabenter="tabChanged('history')">
+                <apex:pageBlock >
+                    <apex:pageBlockSection collapsible="false" title="System Information" columns="2">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Created By"/>
+                            <apex:outputPanel >
+                                <apex:outputField value="{!contract['CreatedById']}"/>,&nbsp;
+                                <apex:outputField value="{!contract['CreatedDate']}"/>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Last Modified By"/>
+                            <apex:outputPanel >
+                                <apex:outputField value="{!contract['LastModifiedById']}"/>,&nbsp;
+                                <apex:outputField value="{!contract['LastModifiedDate']}"/>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+
+                <apex:pageBlock title="Contract History">
+                    <apex:pageBlockTable value="{!historyOfRecord}" var="item" rows="5">
+                        <apex:column >
+                            <apex:facet name="header">Date</apex:facet>
+                            <apex:outputField value="{!item.history.CreatedDate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">User</apex:facet>
+                            <apex:outputField value="{!item.history.CreatedById}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Action</apex:facet>
+                            <apex:outputText value="{!item.action}" escape="false">
+                                <apex:param value="{!item.history.OldValue}"/>
+                                <apex:param value="{!item.history.NewValue}"/>
+                                <apex:param value="{!item.oldValue}"/>
+                                <apex:param value="{!item.newValue}"/>
+                            </apex:outputText>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                    <apex:outputPanel layout="block" rendered="{!isAllHistoryDisplayed = false}" styleClass="pShowMore">
+                        <a href="/_ui/common/history/ui/EntityHistoryFilterPage?id={!contract.Id}">Go to list &nbsp;»</a>
+                    </apex:outputPanel>
+                </apex:pageBlock>
+            </apex:tab>
+        </apex:tabPanel>
+    </apex:form>
+
+    <apex:outputPanel styleClass="financeTabRelatedLists" style="display: none;">
+        <apex:outputPanel id="paymentsSection">
+            <apex:form >
+                <c:PlanComponent id="Sub_Project__c" contractRecId="{!Project__c.Id}" />
+            </apex:form>
+        </apex:outputPanel>
+        <apex:relatedList list="Goods__r" rendered="{!$objectType.MakeGood__c.Fields.Name.Accessible}" />
+    </apex:outputPanel>
+
+    <apex:outputPanel styleClass="creativeTabRelatedLists" style="display: none;">
+        <c:VideoUrlsComponent contractId="{!Project__c.Id}"/>
+    </apex:outputPanel>
+
+    <apex:outputPanel styleClass="historyTabRelatedLists" style="display: none;">
+        <apex:outputPanel id="spendingsList">
+            <apex:relatedList list="Media_Manager_Spendings__r"/>
+            <apex:relatedList list="CombinedAttachments" />
+        </apex:outputPanel>
+        <apex:outputPanel id="eventLogsPanel">
+            <apex:relatedList list="EventLogs__r" rendered="{!$objectType.EventLog__c.Fields.Name.Accessible}" />
+        </apex:outputPanel>
+    </apex:outputPanel>
+
+    <script type="text/javascript">
+        // will resize each VF page embedded in detail section
+        var $j = jQuery.noConflict();
+
+        $j("iframe").each(function() {
+            $j(this).load(function() {
+                $j(this).height($j(this).contents().find("body").height());
+            });
+        });
+
+        function removeInlineEditFocus() {
+            $j('#removeInlineEditFocus').trigger('click');
+        }
+
+        var initialClientSpend = {!contract.Client_Spend__c},
+            isClientSpendDefinedOnIO = Boolean({!contract.Client_Spend_Defined_on_IO__c}),
+            // currencyISOCode is needed for Lightning Design System value, because it contains Currency signs
+            currencyISOCode = '{!contract.CurrencyIsoCode}';
+
+        function saveClick() {
+            removeInlineEditFocus();
+
+            // get actual client spend value
+            let actualClientSpend = $j('[id$=clientSpendId]').text();
+            if (actualClientSpend.includes(currencyISOCode)) {
+                actualClientSpend = parseFloat( actualClientSpend.split(currencyISOCode)[1].replace(/,/g, '') );
+            } else {
+                actualClientSpend = parseFloat(actualClientSpend.replace(/,/g, ''));
+            }
+
+            if (isClientSpendDefinedOnIO && initialClientSpend != actualClientSpend) {
+                DialogModal.dialog(
+                    'Client Spend Defined on IO',
+                    'WARNING.\nClient Spend was defined on IO. Do you wish to adjust the value?',
+                    save,
+                    true
+                );
+            } else {
+                save();
+            }
+        }
+
+        function tabChanged(tabName) {
+            $j("[class$='TabRelatedLists']").hide();
+            $j('.' + tabName + 'TabRelatedLists').show();
+        }
+
+        var ContractDetails = (function() {
+            let $spinner = $j('[id$=spinner-id]');
+
+            return {
+                showSpinner: function() {
+                    $spinner.show();
+                },
+
+                hideSpinner: function() {
+                    $spinner.hide();
+                },
+
+                resizeIFrames: function() { // called from inside IFrame when resize is needed
+                    $j("iframe").each(function() {
+                        $j(this).height($j(this).contents().find("body").height());
+                    });
+                }
+            }
+        })();
+
+        var DialogModal = (function() {
+            let $dialog = $j('#change-owner-dialog'),
+                $errorModal = $dialog.find('#error-modal-id'),
+                $mainMsg = $dialog.find('#msg-modal-id');
+                $title = $dialog.find('#title-modal-id');
+                $spinner_l = $dialog.find('#os-spinner-large'); // used for whole modal dialog
+                $submitBtn = $dialog.find('#submit-btn-modal-id');
+
+                $dialogVF = $j('[id$=vf-dialog-modal-id]');
+                $mainMsgVF = $dialogVF.find('#msg-modal-id');
+                $titleVF = $dialogVF.find('#title-modal-id');
+                $submitBtnVF = $dialogVF.find('#submit-btn-modal-id');
+
+            let showError = function(errorMsg) {
+                // limit length of the error to look better
+                if (errorMsg.length > 100) {
+                    errorMsg.substring(0, 100);
+                }
+                $errorModal.find('.bBody p').text(errorMsg);
+                $errorModal.show();
+            };
+
+            let hideError = function() {
+                $errorModal.hide();
+            };
+
+            return {
+                dialog: function(title, message, submitFnc, showSubmitButton) {
+                    hideError();
+
+                    if (isLightningTheme) {
+                        $mainMsg.text(message); // set message
+                        $title.text(title);     // set title
+                        $dialog.removeClass('slds-hide'); // remove class that hides dialog
+                        DialogModal.submit = submitFnc; // assign new function on submit button
+
+                        if (showSubmitButton === false) {
+                            $submitBtn.hide();
+                        } else {
+                            $submitBtn.show();
+                        }
+                    } else {
+                        $mainMsgVF.text(message); // set message
+                        $titleVF.text(title);     // set title
+                        $dialogVF.show(); // remove class that hides dialog
+                        DialogModal.submit = submitFnc;
+                        if (showSubmitButton === false) {
+                            $submitBtnVF.hide();
+                        } else {
+                            $submitBtnVF.show();
+                        }
+                    }
+                },
+
+                close: function() {
+                    if (isLightningTheme) {
+                        $dialog.addClass('slds-hide');
+                        hideError();
+                    } else {
+                        $dialogVF.hide();
+                    }
+                },
+
+                submit: function() {
+                    console.log('#SUBMIT FUNCTION');
+                },
+
+                enableDialog: function() {
+                    $dialog.find(":button").removeAttr("disabled","disabled");
+                    $spinner_l.hide();
+                },
+
+                disableDialog: function(showSpinner) {
+                    $dialog.find(":button").attr("disabled","disabled");
+                    if (showSpinner) {
+                        $spinner_l.show();
+                    }
+                },
+            }
+        })();
+
+    </script>
+</apex:page>

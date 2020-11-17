@@ -1,0 +1,830 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>AddAllMatchingRecords</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>AddAllMatchingRecords</shortDescription>
+        <value>Add all matching records</value>
+    </labels>
+    <labels>
+        <fullName>AddOnlySelectedRecords</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>AddOnlySelectedRecords</shortDescription>
+        <value>Add only selected records</value>
+    </labels>
+    <labels>
+        <fullName>BriefCampaignOverview</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Brief Campaign Overview</shortDescription>
+        <value>Brief Campaign Overview</value>
+    </labels>
+    <labels>
+        <fullName>Campaign</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Campaign</shortDescription>
+        <value>Campaign</value>
+    </labels>
+    <labels>
+        <fullName>Cancel</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Cancel</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>CannotFindUrl</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Cannot Find Url</shortDescription>
+        <value>Url cannot be found:</value>
+    </labels>
+    <labels>
+        <fullName>CannotRemoveLastProject</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CannotRemoveLastProject</shortDescription>
+        <value>At least one project is required for payment, cannot remove.</value>
+    </labels>
+    <labels>
+        <fullName>CannotRemoveStartedProject</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Cannot Remove Started Project</shortDescription>
+        <value>This project has already started, cannot be removed.</value>
+    </labels>
+    <labels>
+        <fullName>Commission_Type_Consultancy</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Label for Consultancy Commission</shortDescription>
+        <value>Consultancy</value>
+    </labels>
+    <labels>
+        <fullName>Commission_Type_Default</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Label for Default commission type</shortDescription>
+        <value>Default</value>
+    </labels>
+    <labels>
+        <fullName>Commission_Type_Inside_Sales</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Label for Inside Sales Commission Type</shortDescription>
+        <value>Inside Sales</value>
+    </labels>
+    <labels>
+        <fullName>Commission_Type_No_Commission</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Label for No Commission</shortDescription>
+        <value>No commission</value>
+    </labels>
+    <labels>
+        <fullName>Commission_Type_Shared_Inside_Sales</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Label for Shared Inside Sales Commission Type</shortDescription>
+        <value>Shared Inside Sales</value>
+    </labels>
+    <labels>
+        <fullName>ContractEdit</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Contract Edit</shortDescription>
+        <value>Contract Edit</value>
+    </labels>
+    <labels>
+        <fullName>ContractEndDateLowerThanLastPaymenStartDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Contract End Date Lower Than Last Paymen Start Date</shortDescription>
+        <value>Contract End Date cannot be lower than last Payment Start Date.</value>
+    </labels>
+    <labels>
+        <fullName>ContractHasMultiplePaymentsCannotEditClientSpend</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>ContractHasMultiplePaymentsCannotEditClientSpend</shortDescription>
+        <value>Contract has multiple Payments. In order to change Contract Client Spend, please update their Client Spend values.</value>
+    </labels>
+    <labels>
+        <fullName>ContractStartDateBiggerThanFirstPaymentEndDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Contract Start Date Bigger Than First Payment End Date</shortDescription>
+        <value>Contract Start Date cannot be bigger than first Payment End Date.</value>
+    </labels>
+    <labels>
+        <fullName>DebugDevInfo</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Debug &amp; Dev Info</shortDescription>
+        <value>Debug &amp; Dev Info</value>
+    </labels>
+    <labels>
+        <fullName>DistributionTargeting</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Distribution &amp; Targeting</shortDescription>
+        <value>Distribution &amp; Targeting</value>
+    </labels>
+    <labels>
+        <fullName>EarliestPaymentStartDateNotEqualContractStartDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Earliest Payment Start Date Not Equal Contract Start Date</shortDescription>
+        <value>Earliest payment start date must be equal to contract start date.</value>
+    </labels>
+    <labels>
+        <fullName>EarliestProjectStartDateNotEqualPaymentStartDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>EarliestProjectStartDateNotEqualPaymentStartDate</shortDescription>
+        <value>Earliest project start date must be equal to payment start date.</value>
+    </labels>
+    <labels>
+        <fullName>Field</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Field</shortDescription>
+        <value>Field</value>
+    </labels>
+    <labels>
+        <fullName>First</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>First</shortDescription>
+        <value>First</value>
+    </labels>
+    <labels>
+        <fullName>FollowingPaymentsProjects</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Following payments/projects</shortDescription>
+        <value>Following payments/projects</value>
+    </labels>
+    <labels>
+        <fullName>GetCampaignMembersCSV</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>GetCampaignMembersCSV</shortDescription>
+        <value>Get CSV with list of campaign members</value>
+    </labels>
+    <labels>
+        <fullName>HidePopup</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Hide Popup</shortDescription>
+        <value>Hide Pop up</value>
+    </labels>
+    <labels>
+        <fullName>Inconsistent_Spends</fullName>
+        <categories>Spends</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Inconsistent Spends</shortDescription>
+        <value>Some of the Media Spend records are inconsistent. Please verify the delivery with platform. \nAre you sure you want to proceed?</value>
+    </labels>
+    <labels>
+        <fullName>Information</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Information</shortDescription>
+        <value>Information</value>
+    </labels>
+    <labels>
+        <fullName>Last</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Last</shortDescription>
+        <value>Last</value>
+    </labels>
+    <labels>
+        <fullName>LastContactDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Last Contact Date</shortDescription>
+        <value>Last Contact Date</value>
+    </labels>
+    <labels>
+        <fullName>LatestPaymentEndDateNotEqualContractEndDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Latest Payment End Date Not Equal Contract End Date</shortDescription>
+        <value>Latest payment end date must be equal to contract end date.</value>
+    </labels>
+    <labels>
+        <fullName>LatestProjectEndDateNotEqualPaymentEndDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>LatestProjectEndDateNotEqualPaymentEndDate</shortDescription>
+        <value>Latest project end date must be equal to payment end date.</value>
+    </labels>
+    <labels>
+        <fullName>MMSyncClientServicesRepMissing</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>MM Sync Client Services Rep Missing</shortDescription>
+        <value>Please assign Client Services Rep.</value>
+    </labels>
+    <labels>
+        <fullName>MMSyncYouTubeUrlsMissing</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>MM Sync YouTube Urls  Missing</shortDescription>
+        <value>Please add Creatives before sync.</value>
+    </labels>
+    <labels>
+        <fullName>MailingCity</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Mailing City</shortDescription>
+        <value>Mailing City</value>
+    </labels>
+    <labels>
+        <fullName>MailingPostalCode</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>MailingPostalCode</shortDescription>
+        <value>Mailing Postal Code</value>
+    </labels>
+    <labels>
+        <fullName>MailingState</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Mailing State</shortDescription>
+        <value>Mailing State</value>
+    </labels>
+    <labels>
+        <fullName>MissClientSpendValue</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>MissClientSpendValue</shortDescription>
+        <value>miss Client Spend value. Please, fill them up.</value>
+    </labels>
+    <labels>
+        <fullName>MoreFilters</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>More filters...</shortDescription>
+        <value>more filters...</value>
+    </labels>
+    <labels>
+        <fullName>Next</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Next</shortDescription>
+        <value>Next</value>
+    </labels>
+    <labels>
+        <fullName>NoRelatedPaymentMatchingEndDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Related Payment Matching End Date</shortDescription>
+        <value>There is no related Payment with matching End Date to Contract.</value>
+    </labels>
+    <labels>
+        <fullName>NoRelatedPaymentMatchingStartDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Related Payment Matching Start Date</shortDescription>
+        <value>There is no related Payment with matching Start Date to Contract.</value>
+    </labels>
+    <labels>
+        <fullName>NoRelatedProjectMatchingEndDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Related Project Matching End Date</shortDescription>
+        <value>There is no related Project with matching End Date to Contract.</value>
+    </labels>
+    <labels>
+        <fullName>NoRelatedProjectMatchingStartDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Related Project Matching Start Date</shortDescription>
+        <value>There is no related Project with matching Start Date to Contract.</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_AlertFooter</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator AlertFooter</shortDescription>
+        <value>More info: {0}</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_AlertHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator AlertHeader</shortDescription>
+        <value>Salesforce Notificator detected potential problems with your organization!</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_EmailStorageHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator EmailStorageHeader</shortDescription>
+        <value>Storage Usage Alerts</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_KillButton</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator KillButton</shortDescription>
+        <value>Abort job</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_Limit</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator Limit</shortDescription>
+        <value>Limit</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_Name</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator Name</shortDescription>
+        <value>Name</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_PageHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator PageHeader</shortDescription>
+        <value>Notificator Settings</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_PercentUsage</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator PercentUsage</shortDescription>
+        <value>Percent Usage</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_RecipientHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator RecipientHeader</shortDescription>
+        <value>Recipient</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_ReplyTo</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator ReplyTo</shortDescription>
+        <value>noreply@salesforce.com</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_RunButton</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator RunButton</shortDescription>
+        <value>Run job</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_SaveButton</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator SaveButton</shortDescription>
+        <value>Save</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_Sender_Name</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator Sender Name</shortDescription>
+        <value>Salesforce Notificator</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_Status</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator Status</shortDescription>
+        <value>Status</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_StorageAlert</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator StorageAlert</shortDescription>
+        <value>&apos;&apos;s usage has overstepped {0} threshold! Actual Percent Usage: {1}.</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_StorageHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator StorageHeader</shortDescription>
+        <value>Storage Usage</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_Subject</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator Subject</shortDescription>
+        <value>[ACTION REQUIRED] Salesforce Usage Alert</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_TriggerError</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator TriggerError</shortDescription>
+        <value>Cannot insert more than one record.</value>
+    </labels>
+    <labels>
+        <fullName>Notificator_Usage</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Notificator Usage</shortDescription>
+        <value>Usage</value>
+    </labels>
+    <labels>
+        <fullName>OK</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>OK</shortDescription>
+        <value>OK</value>
+    </labels>
+    <labels>
+        <fullName>Operator</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Operator</shortDescription>
+        <value>Operator</value>
+    </labels>
+    <labels>
+        <fullName>Opportunity_Contact_Mandatory</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Opportunity Contact Mandatory</shortDescription>
+        <value>Please add at least one Contact in order to save Opportunity</value>
+    </labels>
+    <labels>
+        <fullName>Opportunity_Record_Type_Agency</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Opportunity Record Type Agency</shortDescription>
+        <value>0120B000000oa1k</value>
+    </labels>
+    <labels>
+        <fullName>Opportunity_Record_Type_Brand_Direct</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Opportunity Record Type Brand Direct</shortDescription>
+        <value>0120B000000oa1p</value>
+    </labels>
+    <labels>
+        <fullName>Opportunity_Record_Type_SaaS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Opportunity Record Type SaaS</shortDescription>
+        <value>0120B000000oa1f</value>
+    </labels>
+    <labels>
+        <fullName>PaymentCannotBeRemoved</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>PaymentCannotBeRemoved</shortDescription>
+        <value>Payment cannot be removed, unless every date is included in another payment or gaps between projects are allowed.</value>
+    </labels>
+    <labels>
+        <fullName>PaymentEndDateLowerThanLastProjectStartDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Payment End Date Lower Than Last Project Start Date</shortDescription>
+        <value>Payment End Date cannot be lower than last Project Start Date.</value>
+    </labels>
+    <labels>
+        <fullName>PaymentHasMultipleProjectsCannotEditClientSpend</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Payment Has Multiple Projects Cannot Edit Client Spend</shortDescription>
+        <value>Payment has multiple Projects. In order to change Payment Client Spend, please update their Client Spend values.</value>
+    </labels>
+    <labels>
+        <fullName>PaymentPlan</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Payment Plan</shortDescription>
+        <value>Payment Plan</value>
+    </labels>
+    <labels>
+        <fullName>PaymentStartDateBiggerThanFirstProjectEndDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Payment Start Date Bigger Than First Project End Date</shortDescription>
+        <value>Payment Start Date cannot be bigger than first Project End Date.</value>
+    </labels>
+    <labels>
+        <fullName>PaymentsOverlapping</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>PaymentsOverlapping</shortDescription>
+        <value>Payments cannot have overlapping dates.</value>
+    </labels>
+    <labels>
+        <fullName>PaymentsProjectsIncorrectStartEndDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Payments Projects Incorrect start/end date</shortDescription>
+        <value>have incorrect start and/or end date. Please change them to match dates of Contract.</value>
+    </labels>
+    <labels>
+        <fullName>Previous</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Previous</shortDescription>
+        <value>Previous</value>
+    </labels>
+    <labels>
+        <fullName>ProjectCannotBeRemoved</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>ProjectCannotBeRemoved</shortDescription>
+        <value>Project cannot be removed, unless every date is included in another project or gaps between projects are allowed.</value>
+    </labels>
+    <labels>
+        <fullName>ProjectGaps</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>ProjectGaps</shortDescription>
+        <value>Projects cannot have gaps between.</value>
+    </labels>
+    <labels>
+        <fullName>ProjectsOverlapping</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>ProjectsOverlapping</shortDescription>
+        <value>Projects cannot have overlapping dates.</value>
+    </labels>
+    <labels>
+        <fullName>RemoveAllMatchingContacts</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>RemoveAllMatchingContacts</shortDescription>
+        <value>Remove all matching contacts</value>
+    </labels>
+    <labels>
+        <fullName>RemoveOnlySelectedContacts</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>RemoveOnlySelectedContacts</shortDescription>
+        <value>Remove only selected contacts</value>
+    </labels>
+    <labels>
+        <fullName>SYNC_TIMEOUT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SYNC TIMEOUT</shortDescription>
+        <value>120000</value>
+    </labels>
+    <labels>
+        <fullName>Save</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Save</shortDescription>
+        <value>Save</value>
+    </labels>
+    <labels>
+        <fullName>Search</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Search</shortDescription>
+        <value>Search!</value>
+    </labels>
+    <labels>
+        <fullName>SelectCampaignAddMembers</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SelectCampaignAddMembers</shortDescription>
+        <value>Please select campaign first and then add members</value>
+    </labels>
+    <labels>
+        <fullName>Settings</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Settings</shortDescription>
+        <value>Settings</value>
+    </labels>
+    <labels>
+        <fullName>SpendRefreshBeforeInvoicing</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SpendRefreshBeforeInvoicing</shortDescription>
+        <value>Please refresh and verify Media Spends before invoicing.</value>
+    </labels>
+    <labels>
+        <fullName>SumPaymentClientSpendNotEqualContractClientSpend</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SumPaymentClientSpendNotEqualContractClientSpend</shortDescription>
+        <value>Sum of payment client spend must be equal to contract client spend.</value>
+    </labels>
+    <labels>
+        <fullName>SumProjectClientSpendNotEqualPaymentClientSpend</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SumProjectClientSpendNotEqualPaymentClientSpend</shortDescription>
+        <value>Sum of project client spend must be equal to payment client spend.</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_OPPORTUNITY_SWITCH</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER OPPORTUNITY SWITCH</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_PROJECT_SWITCH</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER PROJECT SWITCH</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_Account</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH Account</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_AdWordsAccount</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH AdWordsAccount</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_Audience</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH Audience</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_Brand</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH Brand</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_BrandAccount</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH BrandAccount</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_ContactOpportunity</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH ContactOpportunity</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_ContractSalesRep</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH ContractSalesRep</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_CreditNote</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH CreditNote</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_DataLoadBatch</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH DataLoadBatch</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_GoodMediaSpend</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH GoodMediaSpend</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_MMSpendings</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH MMSpendings</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_MakeGood</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH MakeGood</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_MonthlyDistribution</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH MonthlyDistribution</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_Opportunity</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH Opportunity</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_OpportunityAdPlacement</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH OpportunityAdPlacement</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_OpportunityPlatform</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH OpportunityPlatform</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_Payment</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH Payment</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_PlatformAccount</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH PlatformAccount</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_Project</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH Project</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_SubProject</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH SubProject</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TRIGGER_SWITCH_VideoUrl</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TRIGGER SWITCH VideoUrl</shortDescription>
+        <value>ON</value>
+    </labels>
+    <labels>
+        <fullName>TodaysCalls</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Today&apos;s Calls</shortDescription>
+        <value>Today&apos;s Calls</value>
+    </labels>
+    <labels>
+        <fullName>TodaysClosedOpportunities</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Today&apos;s Closed Opportunities</shortDescription>
+        <value>Today&apos;s Closed Opportunities</value>
+    </labels>
+    <labels>
+        <fullName>TodaysEmails</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Today&apos;s Emails</shortDescription>
+        <value>Today&apos;s Emails</value>
+    </labels>
+    <labels>
+        <fullName>TodaysMeetings</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Today&apos;s Meetings</shortDescription>
+        <value>Today&apos;s Meetings</value>
+    </labels>
+    <labels>
+        <fullName>Value</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Value</shortDescription>
+        <value>Value</value>
+    </labels>
+</CustomLabels>
