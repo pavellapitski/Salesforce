@@ -20,30 +20,6 @@ public class OpportunityPlatformHandler implements ITrigger {
         for (OpportunityPlatform__c oppPlatform : newMap.values()) {
             if (oppPlatform.NoCostStructure__c) {
                 oppPlatform.CostStructure__c = '';
-                oppPlatform.Cost_Structure_Metrics__c = '';
-
-                oppPlatform.VariableCPA__c = false;
-                oppPlatform.VariableCPAC__c = false;
-                oppPlatform.VariableCPCO__c = false;
-                oppPlatform.VariableCPC__c = false;
-                oppPlatform.VariableCPE__c = false;
-                oppPlatform.VariableCPER__c = false;
-                oppPlatform.VariableCPF__c = false;
-                oppPlatform.VariableCPI__c = false;
-                oppPlatform.VariableCPL__c = false;
-                oppPlatform.VariableCPLC__c = false;
-                oppPlatform.VariableCPM__c = false;
-                oppPlatform.VariableCPPL__c = false;
-                oppPlatform.VariableCPS__c = false;
-                oppPlatform.VariableCPSU__c = false;
-                oppPlatform.VariableCPV__c = false;
-                oppPlatform.VariableCPDPV__c = false;
-                oppPlatform.VariableCPVC__c = false;
-                oppPlatform.VariableCPLP__c = false;
-                oppPlatform.VariableCPCV__c = false;
-
-                oppPlatform.CPCO__c = null;
-                oppPlatform.CPLP__c = null;
                 oppPlatform.CPA__c = null;
                 oppPlatform.CPAC__c = null;
                 oppPlatform.CPC__c = null;
@@ -60,7 +36,23 @@ public class OpportunityPlatformHandler implements ITrigger {
                 oppPlatform.CPV__c = null;
                 oppPlatform.CPVC__c = null;
                 oppPlatform.CPDPV__c = null;
-                oppPlatform.CPCV__c = null;
+                oppPlatform.VariableCPA__c = false;
+                oppPlatform.VariableCPAC__c = false;
+                oppPlatform.VariableCPC__c = false;
+                oppPlatform.VariableCPE__c = false;
+                oppPlatform.VariableCPER__c = false;
+                oppPlatform.VariableCPF__c = false;
+                oppPlatform.VariableCPI__c = false;
+                oppPlatform.VariableCPL__c = false;
+                oppPlatform.VariableCPLC__c = false;
+                oppPlatform.VariableCPM__c = false;
+                oppPlatform.VariableCPPL__c = false;
+                oppPlatform.VariableCPS__c = false;
+                oppPlatform.VariableCPSU__c = false;
+                oppPlatform.VariableCPV__c = false;
+                oppPlatform.VariableCPDPV__c = false;
+                oppPlatform.VariableCPVC__c = false;
+                oppPlatform.Cost_Structure_Metrics__c = '';
             }
         }
     }

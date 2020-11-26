@@ -203,7 +203,9 @@
                                             Invoicing locked until  <apex:outputField value="{!paymentWrapper.payment.LockedUntil__c}"/>
                                         </apex:outputLabel>
                                         <apex:outputLabel rendered="{!NOT(paymentWrapper.payment.InvoicingLocked__c)}">
-                                            <apex:commandButton value="Invoice" onclick="PaymentPlan.invoice('{!paymentWrapper.payment.Id}', {!paymentWrapper.inconsistentSpends});" rendered="{!ISBLANK(paymentWrapper.payment.XeroStatus__c)}" rerender="none" />
+                                            <apex:outputLabel styleClass="btn" onclick="PaymentPlan.invoice('{!paymentWrapper.payment.Id}', {!paymentWrapper.inconsistentSpends});" rendered="{!ISBLANK(paymentWrapper.payment.XeroStatus__c)}">
+                                                Invoice
+                                            </apex:outputLabel>
                                             <apex:outputLabel rendered="{!AND(NOT(ISBLANK(paymentWrapper.payment.XeroStatus__c)), CONTAINS(paymentWrapper.payment.XeroStatus__c, 'Submitted'))}">
                                                 Invoice Submitted
                                             </apex:outputLabel>
@@ -262,7 +264,6 @@
                                 <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Platform__c.Label}</span></th>
                                 <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.CostStructure__c.Label}</span></th>
                                 <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.Media_Buyer__c.Label}</span></th>
-                                <th><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">{!$objectType.Payment__c.Fields.Timezone__c.Label}</span></th>
                                 <th colspan="{!IF(canDeletePPs, 3, 2)}"><span class="{!IF(isLightningTheme, 'headerText-L', 'headerText')}">Creatives</span></th>
                             </tr>
 
@@ -329,9 +330,6 @@
 
                                     <td>
                                         <apex:outputField value="{!projWrapper.project.Media_Buyer__c}" />
-                                    </td>
-                                    <td>
-                                        <apex:outputField value="{!projWrapper.project.Timezone__c}" />
                                     </td>
                                     <td colspan="2">
                                         <apex:outputpanel styleClass="{!paymentWrapper.payment.Id}-{!projectRow}-creativesDiv" layout="block" style="border: 1px solid #ff000000; min-height:1rem" rendered="{!projWrapper.creativesOptions.size > 0}">

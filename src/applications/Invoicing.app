@@ -10,9 +10,8 @@
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <label>Invoicing</label>
     <navType>Standard</navType>
-    <tabs>Invoice_Job_Launcher</tabs>
     <tabs>Invoice__c</tabs>
-    <tabs>EventLog__c</tabs>
+    <tabs>Contract_Sales_Rep__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Invoicing_UtilityBar</utilityBar>
 </CustomApplication>

@@ -162,7 +162,10 @@ public class ContractRepository {
                 Sync_with_MM__c, SystemModstamp, Targeting__c, Total_Revenue__c, Total_Revenue_RollUp__c, Verticals__c, Video_Length__c, WeeklyReportingSchedule__c,
                 Xero_Contact__c, Xero_Entity__c, Xero_ID__c,
                 (SELECT Id, Opportunity__c, AdPlacement__c, AdPlacement__r.Name, AdPlacement__r.Platform__c FROM ContractAdPlacements__r),
-                (SELECT Id, Account_Entity__c, CostStructure__c, NoCostStructure__c,Opportunity__c, Platform__c, Platform__r.Name, PlatformAccount__c FROM ContractPlatforms__r),
+                (SELECT Id, Account_Entity__c, CostStructure__c, NoCostStructure__c, /*VariableCPA__c, CPA__c, VariableCPAC__c, CPAC__c, VariableCPC__c, CPC__c, VariableCPE__c,
+                    CPE__c, VariableCPER__c, CPER__c, VariableCPF__c, CPF__c, VariableCPI__c, CPI__c, VariableCPL__c, CPL__c, VariableCPLC__c, CPLC__c,
+                    VariableCPM__c, CPM__c, VariableCPPL__c, CPPL__c, VariableCPS__c, CPS__c, VariableCPSU__c, CPSU__c, VariableCPV__c, CPV__c,*/
+                    Opportunity__c, Platform__c, Platform__r.Name, PlatformAccount__c FROM ContractPlatforms__r),
                 (SELECT CreatedById, CreatedDate, Field, Id, NewValue, OldValue, ParentId, Parent.CurrencyIsoCode FROM Histories ORDER BY CreatedDate DESC LIMIT :HISTORIES_SOQL_LIMIT),
                 (SELECT Id, Commission_Profile__c, Commission_Type__c, Notes__c, Percentage_of_GP_Allocation__c FROM Sales_Reps__r)
             FROM Project__c

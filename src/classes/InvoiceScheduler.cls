@@ -4,7 +4,6 @@
 
 public with sharing class InvoiceScheduler implements Schedulable {
 
-    public static final String JOB_NAME = 'Strike Invoice Job';
     /*
     * // every hour at 45 minutes
     System.schedule('Strike Invoice Job', '0 45 * * * ?', new InvoiceScheduler());
@@ -57,7 +56,7 @@ public with sharing class InvoiceScheduler implements Schedulable {
                 ));
             }
         }
-
+        
         HttpRequest req = new HttpRequest();
         req.setEndpoint(InvoiceHelper.getEndpointUrl());
         req.setTimeout(60000);
@@ -75,23 +74,18 @@ public with sharing class InvoiceScheduler implements Schedulable {
                     strikeIDsToInvoice.put(invoice.strike_id, InvoiceHelper.setInvoice(invoice));
                 }
 
-                System.debug('### StrikeIDs: ' + strikeIDsToInvoice.keySet());
                 Map<String,Invoice__c> existingInvoices = getExistingInvoice(InvoiceHelper.getDate(), new List<String>(strikeIDsToInvoice.keySet()));
-                System.debug('### existingInvoices: ' + existingInvoices);
                 for (String strikeId :strikeIDsToInvoice.keySet()) {
-                    Invoice__c externalInvoice = strikeIDsToInvoice.get(strikeId);
+                    Invoice__c updatedInvoice = strikeIDsToInvoice.get(strikeId);
                     Invoice__c existingInvoice = existingInvoices.get(strikeId);
                     if (existingInvoice == null) {
-                        System.debug('### existingInvoice is NULL: ' + externalInvoice);
                         // new invoice record should be inserted
-                        invoicesToUpsert.add(externalInvoice);
+                        invoicesToUpsert.add(updatedInvoice);
                     } else {
-                        Boolean doUpsert = isChanged(existingInvoice, externalInvoice);
-                        System.debug('### doUpsert: ' + doUpsert);
+                        Boolean doUpsert = isChanged(existingInvoice, updatedInvoice);
                         if (doUpsert) {
-                            externalInvoice.Id = existingInvoice.Id;
-                            System.debug('### externalInvoice: ' + externalInvoice);
-                            invoicesToUpsert.add(externalInvoice);
+                            updatedInvoice.Id = existingInvoice.Id;
+                            invoicesToUpsert.add(updatedInvoice);
                         }
                     }
                 }

@@ -1265,11 +1265,6 @@ Client_Spend__c * (1-Margin__c)
                     <default>false</default>
                     <label>Link Click Order</label>
                 </value>
-                <value>
-                    <fullName>Complete View Order</fullName>
-                    <default>false</default>
-                    <label>Complete View Order</label>
-                </value>
             </valueSetDefinition>
         </valueSet>
     </fields>

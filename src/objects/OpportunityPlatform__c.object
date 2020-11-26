@@ -960,17 +960,6 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>CPCV__c</fullName>
-        <externalId>false</externalId>
-        <label>CPCV</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>4</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
         <fullName>CPC__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Cost per Click</inlineHelpText>
@@ -1300,11 +1289,6 @@
                     <fullName>CPDPV</fullName>
                     <default>false</default>
                     <label>CPDPV</label>
-                </value>
-                <value>
-                    <fullName>CPCV</fullName>
-                    <default>false</default>
-                    <label>CPCV</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1905,15 +1889,6 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Variable CPCO</label>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>VariableCPCV__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Variable CPCV</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>

@@ -13,12 +13,11 @@ public with sharing class PlatformRepository {
                     (SELECT Id, Name, Platform__c FROM AdPlacements__r ORDER BY Name),
                     (SELECT Id, Account_Entity__c, Age__c, Age_min__c, Age_max__c, Brand_Lift_Study__c, Companion_Banner__c, Contract__c, CostStructure__c, 
                      	CTA_Overlay_Text__c, Facebook_page__c, Gender__c, KPI__c, NoCostStructure__c, Objectives__c, Opportunity_Ad_Placement__c, Opportunity__c, 
-                     	Pixel_Tracking__c, PlatformAccount__c, Platform__c, Platform__r.CostStructures__c, Platform__r.Name, Provider__c, Cost_Structure_Metrics__c,
-                        VariableCPAC__c, VariableCPA__c, VariableCPCO__c, VariableCPC__c, VariableCPDPV__c, VariableCPER__c, VariableCPE__c,
-                        VariableCPF__c, VariableCPI__c, VariableCPLC__c, VariableCPLP__c, VariableCPL__c, VariableCPM__c, VariableCPPL__c,
-                        VariableCPSU__c, VariableCPS__c, VariableCPVC__c, VariableCPV__c, VariableCPCV__c,
-                        CPAC__c, CPA__c, CPCO__c, CPC__c, CPDPV__c, CPER__c, CPE__c, CPF__c, CPI__c, CPLC__c, CPLP__c, CPL__c,
-                        CPM__c, CPPL__c, CPSU__c, CPS__c, CPVC__c, CPV__c, CPCV__c
+                     	Pixel_Tracking__c, PlatformAccount__c, Platform__c, Platform__r.CostStructures__c, Platform__r.Name, Provider__c, VariableCPA__c, CPA__c,
+                        VariableCPAC__c, CPAC__c, VariableCPC__c, CPC__c, VariableCPE__c, CPE__c, VariableCPER__c, CPER__c, VariableCPF__c, CPF__c,
+                        VariableCPI__c, CPI__c, VariableCPL__c, CPL__c, VariableCPLC__c, CPLC__c, VariableCPM__c, CPM__c, VariableCPPL__c, CPPL__c,
+                        VariableCPS__c, CPS__c, VariableCPSU__c, CPSU__c, VariableCPV__c, CPV__c, CPLP__c, VariableCPLP__c, CPCO__c, VariableCPCO__c, Cost_Structure_Metrics__c,
+                        CPDPV__c, VariableCPDPV__c, CPVC__c, VariableCPVC__c
                     FROM OpportunityPlatforms__r WHERE Contract__c = :contractId)
             FROM Platform__c
             ORDER BY Name
@@ -29,14 +28,13 @@ public with sharing class PlatformRepository {
         return [
             SELECT Id, Name, Prefix__c, CostStructures__c,
                     (SELECT Id, Name, Platform__c FROM AdPlacements__r ORDER BY Name),
-                    (SELECT Id, Account_Entity__c, Age__c, Age_min__c, Age_max__c, Companion_Banner__c, Contract__c, CostStructure__c, CTA_Overlay_Text__c,
-                     	Facebook_page__c, Gender__c, KPI__c, NoCostStructure__c, Objectives__c, Opportunity_Ad_Placement__c, Opportunity__c, PlatformAccount__c,
-                     	Pixel_Tracking__c, Platform__c, Platform__r.CostStructures__c, Platform__r.Name, Provider__c, Cost_Structure_Metrics__c,
-                        VariableCPAC__c, VariableCPA__c, VariableCPCO__c, VariableCPC__c, VariableCPDPV__c, VariableCPER__c, VariableCPE__c,
-                        VariableCPF__c, VariableCPI__c, VariableCPLC__c, VariableCPLP__c, VariableCPL__c, VariableCPM__c, VariableCPPL__c,
-                        VariableCPSU__c, VariableCPS__c, VariableCPVC__c, VariableCPV__c, VariableCPCV__c,
-                        CPAC__c, CPA__c, CPCO__c, CPC__c, CPDPV__c, CPER__c, CPE__c, CPF__c, CPI__c, CPLC__c, CPLP__c, CPL__c,
-                        CPM__c, CPPL__c, CPSU__c, CPS__c, CPVC__c, CPV__c, CPCV__c
+                    (SELECT Id, Account_Entity__c, Age__c, Age_min__c, Age_max__c, Companion_Banner__c, Contract__c, CostStructure__c, CTA_Overlay_Text__c, 
+                     	Facebook_page__c, Gender__c, KPI__c, NoCostStructure__c, Objectives__c, Opportunity_Ad_Placement__c, Opportunity__c, 
+                     	Pixel_Tracking__c, Platform__c, Platform__r.CostStructures__c, Platform__r.Name, Provider__c, VariableCPA__c, CPA__c,
+                        VariableCPAC__c, CPAC__c, VariableCPC__c, CPC__c, VariableCPE__c, CPE__c, VariableCPER__c, CPER__c, VariableCPF__c, CPF__c,
+                        VariableCPI__c, CPI__c, VariableCPL__c, CPL__c, VariableCPLC__c, CPLC__c, VariableCPM__c, CPM__c, VariableCPPL__c, CPPL__c,
+                        VariableCPS__c, CPS__c, VariableCPSU__c, CPSU__c, VariableCPV__c, CPV__c, VariableCPCO__c, CPCO__c, PlatformAccount__c, Cost_Structure_Metrics__c,
+                        CPDPV__c, VariableCPDPV__c, CPVC__c, VariableCPVC__c
                     FROM OpportunityPlatforms__r WHERE Opportunity__c = :oppId)
             FROM Platform__c
             ORDER BY Name
@@ -65,9 +63,9 @@ public with sharing class PlatformRepository {
     public static Map<Id, List<OpportunityPlatform__c>> getPlatformsForContracts(Set<Id> contractIds) {
         Map<Id, List<OpportunityPlatform__c>> retVal = new Map<Id, List<OpportunityPlatform__c>>();
         List<OpportunityPlatform__c> contractPlatforms = [
-            SELECT Id, Contract__c, CostStructure__c, NoCostStructure__c, Opportunity__c, Platform__c, Platform__r.CostStructures__c, Platform__r.Name,
-                CPAC__c, CPA__c, CPCO__c, CPC__c, CPDPV__c, CPER__c, CPE__c, CPF__c, CPI__c, CPLC__c, CPLP__c, CPL__c,
-                CPM__c, CPPL__c, CPSU__c, CPS__c, CPVC__c, CPV__c, CPCV__c
+            SELECT Id, Contract__c, CostStructure__c, CPA__c, CPAC__c, CPC__c, CPE__c, CPER__c, CPF__c, CPI__c, CPCO__c,
+                CPL__c, CPLC__c, CPM__c, CPPL__c, CPS__c, CPSU__c, CPV__c, NoCostStructure__c, Opportunity__c,
+                Platform__c, Platform__r.CostStructures__c, Platform__r.Name
             FROM OpportunityPlatform__c
             WHERE Contract__c IN :contractIds
             ORDER BY Name ASC
@@ -86,9 +84,9 @@ public with sharing class PlatformRepository {
     public static Map<Id, List<OpportunityPlatform__c>> getPlatformsForOpportunities(Set<Id> opportunityIds) {
         Map<Id, List<OpportunityPlatform__c>> retVal = new Map<Id, List<OpportunityPlatform__c>>();
         List<OpportunityPlatform__c> oppPlatforms = [
-            SELECT Id, Contract__c, CostStructure__c, Platform__c, Platform__r.CostStructures__c, Platform__r.Name,  NoCostStructure__c, Opportunity__c,
-                CPAC__c, CPA__c, CPCO__c, CPC__c, CPDPV__c, CPER__c, CPE__c, CPF__c, CPI__c, CPLC__c, CPLP__c, CPL__c,
-                CPM__c, CPPL__c, CPSU__c, CPS__c, CPVC__c, CPV__c, CPCV__c
+            SELECT Id, Contract__c, CostStructure__c, CPA__c, CPAC__c, CPC__c, CPE__c, CPER__c, CPF__c, CPI__c, CPCO__c,
+                CPL__c, CPLC__c, CPM__c, CPPL__c, CPS__c, CPSU__c, CPV__c, NoCostStructure__c, Opportunity__c,
+                Platform__c, Platform__r.CostStructures__c, Platform__r.Name
             FROM OpportunityPlatform__c
             WHERE Opportunity__c IN :opportunityIds
             ORDER BY Name ASC

@@ -29,14 +29,14 @@ public with sharing class PaymentRepository {
         ];
     }
 
-    /*public static List<Payment__c> getPaymentsWithSubProjectsByContractID(Id contractID) {
+    public static List<Payment__c> getPaymentsWithSubProjectsByContractID(Id contractID) {
         return [
             SELECT Id, Margin__c, Margin_Type__c, Name, Start_Date__c, End_Date__c, Project__c, Client_Spend__c, Media_Order__c, IsOverlapping__c,
                     Payment__c, ProjectID__c, StrikeId__c, StrikeIdFormula__c, UnitCost__c, VariableUnitCost__c
             FROM Payment__c
             WHERE Project__c = :contractID AND Payment__c != NULL
         ];
-    }*/
+    }
 
     public static List<Payment__c> getPaymentsByIdsSortedByStartDateAndStrikeID(Set<Id> projectIds) {
         return [
@@ -46,7 +46,7 @@ public with sharing class PaymentRepository {
                     OpportunityPlatform__r.CostStructure__c, OpportunityPlatform__r.Platform__r.CostStructures__c,
                     OpportunityPlatform__r.NoCostStructure__c, Payment__r.Project__r.Gaps_Exist_Between_Projects__c, Project__c, Media_Buyer__c,
                     ProjectID__c, Start_Date__c, Quantity__c, StrikeId__c, StrikeIdFormula__c, SuggestedSpend__c, UnitCost__c, VariableUnitCost__c,
-                    PlatformPrefix__c, OpportunityPlatform__r.Objectives__c, OpportunityPlatform__r.Platform_Selected__c, Timezone__c,
+                    PlatformPrefix__c, OpportunityPlatform__r.Objectives__c, OpportunityPlatform__r.Platform_Selected__c,
                     OpportunityPlatform__r.VariableCPA__c, OpportunityPlatform__r.CPA__c,
                     OpportunityPlatform__r.VariableCPAC__c, OpportunityPlatform__r.CPAC__c,
                     OpportunityPlatform__r.VariableCPC__c, OpportunityPlatform__r.CPC__c,
@@ -97,7 +97,7 @@ public with sharing class PaymentRepository {
                         OpportunityPlatform__r.CostStructure__c, OpportunityPlatform__r.Platform__r.CostStructures__c,
                         OpportunityPlatform__r.NoCostStructure__c, Payment__r.Project__r.Gaps_Exist_Between_Projects__c, Project__c, Media_Buyer__c,
                         ProjectID__c, Start_Date__c, Quantity__c, StrikeId__c, StrikeIdFormula__c, SuggestedSpend__c, UnitCost__c, VariableUnitCost__c,
-                        PlatformPrefix__c, OpportunityPlatform__r.Objectives__c, OpportunityPlatform__r.Platform_Selected__c, Timezone__c,
+                        PlatformPrefix__c, OpportunityPlatform__r.Objectives__c, OpportunityPlatform__r.Platform_Selected__c,
                         OpportunityPlatform__r.VariableCPA__c, OpportunityPlatform__r.CPA__c,
                         OpportunityPlatform__r.VariableCPAC__c, OpportunityPlatform__r.CPAC__c,
                         OpportunityPlatform__r.VariableCPC__c, OpportunityPlatform__r.CPC__c,

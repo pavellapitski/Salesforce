@@ -197,7 +197,7 @@ public with sharing class InvoiceHelper {
             Start_Date__c = Date.valueOf(invoice.start_date),
             End_Date__c = Date.valueOf(invoice.end_date),
             Due_Date__c = (String.isBlank(invoice.due_date)) ? null : Date.valueOf(invoice.due_date),
-            Payment_Type__c = (String.isNotBlank(invoice.payment_type)) ? invoice.payment_type.replace('_',' ') : invoice.payment_type,
+            Payment_Type__c = invoice.payment_type,
             Project__c = invoice.project_name,
             Strike_Id__c = invoice.strike_id,
             Contract_Id__c = invoice.contract_id,
@@ -242,7 +242,7 @@ public with sharing class InvoiceHelper {
                 invoice.contract_name = 'ContractName' + i;
                 invoice.project_name = 'ProjectName' + i;
                 invoice.strike_id = 'TVName' + i;
-                invoice.invoice_type = 'Monthly';
+                invoice.invoice_type = 'Month';
                 invoice.invoice_amount = (1000 * i / (1 + i * 0.5)).setScale(4);
                 invoice.start_date = startDateString;
                 invoice.end_date = endDateString;
