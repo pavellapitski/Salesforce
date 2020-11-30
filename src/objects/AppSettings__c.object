@@ -182,6 +182,36 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>StrikeInvoicePassword__c</fullName>
+        <externalId>false</externalId>
+        <label>StrikeInvoicePassword</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>StrikeInvoiceURL__c</fullName>
+        <externalId>false</externalId>
+        <label>StrikeInvoiceURL</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>StrikeInvoiceUser__c</fullName>
+        <externalId>false</externalId>
+        <label>StrikeInvoiceUser</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <label>App Settings</label>
     <visibility>Public</visibility>
 </CustomObject>

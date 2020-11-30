@@ -2297,6 +2297,19 @@ NOT(Payment__r.Project__r.PerformMMSync__c))</formula>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Timezone__c</fullName>
+        <externalId>false</externalId>
+        <label>Timezone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Timezone</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>UnitCost__c</fullName>
         <externalId>false</externalId>
         <label>Unit Cost</label>
