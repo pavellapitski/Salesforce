@@ -212,7 +212,7 @@ public class StrikeDataAPI {
             SELECT Pixel_Tracking__c, UnitCost__c, StrikeId__c, Start_Date__c, Quantity__c, Name, Platform_Type__c, PaymentType__c, Objectives__c, Metric__c,
                     AdWordsSpend__c, Media_Order__c, Margin_Type__c, Margin__c, KPI__c, InvoiceAmount__c, Gender__c, Facebook_Page__c, End_Date__c, Action_Type__c,
                     AmountDelivered__c, CTA_Overlay_Text__c, CostStructure__c, Companion_Banner__c, Client_Spend__c, BillingCondition__c, Age__c,
-                    Actual_Gross_Profit_New__c, OpportunityPlatform__r.PlatformAccount__c, OpportunityPlatform__c, Account_Type__c,
+                    Actual_Gross_Profit_New__c, OpportunityPlatform__r.PlatformAccount__c, OpportunityPlatform__c, Account_Type__c, Timezone__c,
                 (SELECT Id, Creative__r.CopyUrl__c, Creative__r.Name, Creative__r.Format__c, Creative__r.Url__c,  Creative__r.StartDate__c, Creative__r.EndDate__c
                     FROM Project2Creatives__r)
             FROM Payment__c

@@ -11,13 +11,28 @@ public with sharing class InvoiceHelper {
 
     @TestVisible private static final AppSettings__c settings = AppSettings__c.getInstance('Default');
 
-    public static String getAuthorizationHeader() {
+    /*public static String getAuthorizationHeader() {
         Blob header = Blob.valueOf(settings.StrikeDataWarehouseUser__c + ':' + settings.StrikeDataWarehouseToken__c);
         return 'BASIC ' + EncodingUtil.base64Encode(header);
-    }
+    }*/
 
     public static String getEndpointUrl() {
-        return '';
+        return settings.StrikeInvoiceURL__c + String.format('invoices?month={0}&year={1}', getDate());
+    }
+
+    public static String getAccessTokenEndpoint() {
+        return settings.StrikeInvoiceURL__c + 'login/access-token';
+    }
+
+    public static List<String> getUserNameAndPassword() {
+        return new List<String>{settings.StrikeInvoiceUser__c, settings.StrikeInvoicePassword__c};
+    }
+
+    public static List<String> getDate() {
+        return new List<String>{
+            String.valueOf(System.today().month()),
+            String.valueOf(System.today().year())
+        };
     }
 
     public static XeroSync.InvoiceWrapper sendInvoice(Invoice__c invoiceRecord) {
@@ -160,13 +175,13 @@ public with sharing class InvoiceHelper {
         String project_id { get; set; }              // external Id
         String contract_name { get; set; }           // i.e. 012183
         String project_name { get; set; }
-        String strike_id { get; set; }               // i.e. TV012183A
+        public String strike_id { get; set; }               // i.e. TV012183A
 
         String client_io { get; set; }
         String po { get; set; }
         String region { get; set; }             // NA; EMEA; APAC
         String invoice_type { get; set; }        // month / lifetime
-        Decimal invoice_amount { get; set; }
+        public Decimal invoice_amount { get; set; }
         String start_date { get; set; }
         String end_date { get; set; }
         String due_date { get; set; }
@@ -181,7 +196,7 @@ public with sharing class InvoiceHelper {
             Invoice_Amount__c = invoice.invoice_amount,
             Start_Date__c = Date.valueOf(invoice.start_date),
             End_Date__c = Date.valueOf(invoice.end_date),
-            Due_Date__c = Date.valueOf(invoice.due_date),
+            Due_Date__c = (String.isBlank(invoice.due_date)) ? null : Date.valueOf(invoice.due_date),
             Payment_Type__c = invoice.payment_type,
             Project__c = invoice.project_name,
             Strike_Id__c = invoice.strike_id,
@@ -201,6 +216,7 @@ public with sharing class InvoiceHelper {
             System.assertEquals(getEndpointUrl(), req.getEndpoint());
             System.assertEquals('GET', req.getMethod());
 
+
             HttpResponse res = new HttpResponse();
             res.setHeader('Content-Type', 'application/json');
             res.setBody(JSON.serialize(getBodyFor5Records()));
@@ -211,10 +227,11 @@ public with sharing class InvoiceHelper {
         @TestVisible private List<InvoiceData> getBodyFor5Records() {
             List<InvoiceData> invoices = new List<InvoiceData>();
 
-            Date endDate = Date.today().addDays(25),
+            Date startDate = Date.newInstance(System.today().year(), System.today().month(), 01),
+                    endDate = Date.newInstance(System.today().year(), System.today().addMonths(1).month(), 01).addDays(-1), // last day in current month
                     dueDate = Date.today().addMonths(1).addDays(-3);
 
-            String startDateString = Date.today().year() + '-' + Date.today().month() + '-' + Date.today().day(),
+            String startDateString = startDate.year() + '-' + startDate.month() + '-' + startDate.day(),
                     endDateString = endDate.year() + '-' + endDate.month() + '-' + endDate.day(),
                     dueDateString = dueDate.year() + '-' + dueDate.month() + '-' + dueDate.day();
 
@@ -226,7 +243,7 @@ public with sharing class InvoiceHelper {
                 invoice.project_name = 'ProjectName' + i;
                 invoice.strike_id = 'TVName' + i;
                 invoice.invoice_type = 'Month';
-                invoice.invoice_amount = 1000 * i / (1 - i * 0.1);
+                invoice.invoice_amount = (1000 * i / (1 + i * 0.5)).setScale(4);
                 invoice.start_date = startDateString;
                 invoice.end_date = endDateString;
                 invoice.due_date = dueDateString;
@@ -240,4 +257,5 @@ public with sharing class InvoiceHelper {
             return invoices;
         }
     }
+
 }
