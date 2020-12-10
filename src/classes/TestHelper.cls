@@ -1040,7 +1040,7 @@ public class TestHelper {
             Project__c = '',
             Region__c = region,
             Status__c = '',
-            Type__c = 'Month',
+            Type__c = 'Monthly',
             Xero_Id__c = 'c412389e-49f5-4c81-a2a1-9e1e4fb7707f', // Xero Contract Id
             Xero_Entity__c = xe,
             Xero_Invoice_Id__c = '',

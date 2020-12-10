@@ -1,0 +1,85 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable" access="global" controller="InvoiceJobLauncherCtrl">
+
+    <aura:attribute name="showSpinner" type="Boolean" description="" default="false"/>
+    <aura:attribute name="errorDetails" type="String[]" />
+    <aura:attribute name="nextJobRun" type="String" />
+    <aura:attribute name="lastJobRun" type="String" />
+    <aura:attribute name="months" type="String[]" default="['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <article class="slds-card">
+        <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner aura:id="mySpinner" variant="brand" size="large" alternativeText="Loading..." />
+        </aura:if>
+        <div class="slds-page-header slds-page-header_record-home">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <lightning:icon iconName="standard:recent" title="Launch Now" />
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="title slds-text-heading--medium slds-truncate">Invoice Job Launcher</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-page-header__col-actions"><!----> <!---->
+                    <div class="slds-page-header__controls">
+                        <div class="slds-page-header__controls">
+                            <lightning:select label="Month to Launch the Sync:" class="label-hidden" variant="label-hidden" name="monthsPicklist" aura:id="monthsPicklist">
+                                <aura:iteration items="{!v.months}" var="m">
+                                    <option value="{!m}" text="{!m}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                        </div>
+                        <div class="slds-page-header__control">
+                            <ul class="slds-button-group-list">
+                                <li>
+                                <lightning:button aura:id="launch-btn" variant="neutral" label="Launch Now" onclick="{!c.launchClick}" />
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning:icon iconName="standard:recent" title="Launch Now" />
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="title slds-text-heading&#45;&#45;medium slds-truncate">
+                        Invoice Job Launcher
+                    </h2>
+                </div>
+                <lightning:layoutItem size="2" padding="around-small" class="vertical-align">
+                    <lightning:button aura:id="launch-btn" variant="neutral" label="Launch Now" onclick="{!c.launchClick}" />
+                </lightning:layoutItem>
+            </header>
+        </div>-->
+
+        <div class="slds-card__body slds-card__body_inner">
+            <lightning:layout horizontalAlign="center" multipleRows="true" verticalAlign="stretch">
+                <lightning:layoutItem size="12" padding="around-small">
+                    <p class="slds-timeline__date">Next sync at: {!v.nextJobRun}</p>
+                    <p class="slds-timeline__date">Last sync at: {!v.lastJobRun}</p>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12" padding="around-small">
+                    <aura:if isTrue="{!not(empty(v.errorDetails))}">
+                        <div aura:id="errors" class="pageLevelErrors forceRecordEdit" data-aura-class="forceRecordEdit" tabindex="-1">
+                            <div class="desktop forcePageError" aria-live="assertive" data-aura-class="forcePageError">
+                                <div class="genericNotification" style="border-radius: 0">
+                                    <span class="genericError uiOutputText" data-aura-class="uiOutputText">Review the errors on this page.</span>
+                                </div>
+                                <ul class="errorsList"><aura:iteration items="{!v.errorDetails}" var="error"><li>{!error}</li></aura:iteration></ul>
+                            </div>
+                        </div>
+                    </aura:if>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </article>
+</aura:component>

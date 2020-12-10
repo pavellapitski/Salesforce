@@ -203,9 +203,7 @@
                                             Invoicing locked until  <apex:outputField value="{!paymentWrapper.payment.LockedUntil__c}"/>
                                         </apex:outputLabel>
                                         <apex:outputLabel rendered="{!NOT(paymentWrapper.payment.InvoicingLocked__c)}">
-                                            <apex:outputLabel styleClass="btn" onclick="PaymentPlan.invoice('{!paymentWrapper.payment.Id}', {!paymentWrapper.inconsistentSpends});" rendered="{!ISBLANK(paymentWrapper.payment.XeroStatus__c)}">
-                                                Invoice
-                                            </apex:outputLabel>
+                                            <apex:commandButton value="Invoice" onclick="PaymentPlan.invoice('{!paymentWrapper.payment.Id}', {!paymentWrapper.inconsistentSpends});" rendered="{!ISBLANK(paymentWrapper.payment.XeroStatus__c)}" rerender="none" />
                                             <apex:outputLabel rendered="{!AND(NOT(ISBLANK(paymentWrapper.payment.XeroStatus__c)), CONTAINS(paymentWrapper.payment.XeroStatus__c, 'Submitted'))}">
                                                 Invoice Submitted
                                             </apex:outputLabel>

@@ -851,7 +851,8 @@ private class ProjectHandlerTest {
     }
 
     @IsTest static void updatePaymentInvoiceAmountIfBillingConditionStrikeProfitUpdated() {
-        Date sDate = Date.newInstance(System.today().year(), System.today().addMonths(1).month(), 1),
+        Date todayPlusMonth = System.today().addMonths(1);
+        Date sDate = Date.newInstance(todayPlusMonth.year(), todayPlusMonth.month(), 1),
                 eDate = sDate.addMonths(1).addDays(-1);
 
         BillingCondition__c initialBC = TestHelper.createBillingCondition('Instant Rebate 50:50 / 50%', false);

@@ -292,6 +292,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>InvoiceJobLauncherCtrl</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>InvoiceNotificationCtrl</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -3316,6 +3320,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>OpportunityPlatform__c.CPCV__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>OpportunityPlatform__c.CPC__c</field>
         <readable>false</readable>
@@ -3484,6 +3493,11 @@
         <editable>false</editable>
         <field>OpportunityPlatform__c.VariableCPCO__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>OpportunityPlatform__c.VariableCPCV__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -5489,6 +5503,10 @@
         <recordType>Sub_Project__c.Payment</recordType>
         <visible>false</visible>
     </recordTypeVisibilities>
+    <tabVisibilities>
+        <tab>Invoice_Job_Launcher</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
     <tabVisibilities>
         <tab>standard-Account</tab>
         <visibility>Hidden</visibility>

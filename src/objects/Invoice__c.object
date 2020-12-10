@@ -388,14 +388,20 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
-                    <fullName>Month</fullName>
+                    <fullName>Monthly</fullName>
                     <default>false</default>
-                    <label>Month</label>
+                    <label>Monthly</label>
                 </value>
                 <value>
                     <fullName>Lifetime</fullName>
                     <default>false</default>
                     <label>Lifetime</label>
+                </value>
+                <value>
+                    <fullName>Month</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Month</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -459,8 +465,29 @@
     <label>Invoice</label>
     <listViews>
         <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Strike_Id__c</columns>
+        <columns>Invoice_Amount__c</columns>
+        <columns>Status__c</columns>
+        <columns>Project__c</columns>
+        <columns>Contract__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Due_Date__c</columns>
+        <columns>CURRENCY_ISO_CODE</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>This_Month</fullName>
+        <columns>NAME</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Start_Date__c</field>
+            <operation>equals</operation>
+            <value>THIS_MONTH</value>
+        </filters>
+        <label>This Month</label>
     </listViews>
     <nameField>
         <displayFormat>INV-{00000}</displayFormat>

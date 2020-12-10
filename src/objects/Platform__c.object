@@ -252,6 +252,11 @@
                     <default>false</default>
                     <label>CPDPV</label>
                 </value>
+                <value>
+                    <fullName>CPCV</fullName>
+                    <default>false</default>
+                    <label>CPCV</label>
+                </value>
             </valueSetDefinition>
         </valueSet>
         <visibleLines>4</visibleLines>

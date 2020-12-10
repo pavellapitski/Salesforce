@@ -1876,6 +1876,11 @@
                     <default>false</default>
                     <label>Link Click Order</label>
                 </value>
+                <value>
+                    <fullName>Complete View Order</fullName>
+                    <default>false</default>
+                    <label>Complete View Order</label>
+                </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
@@ -3242,6 +3247,10 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Complete View Order</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Impression Order</fullName>
                 <default>false</default>
             </values>
@@ -4018,6 +4027,10 @@
             </values>
             <values>
                 <fullName>Click Order</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Complete View Order</fullName>
                 <default>false</default>
             </values>
             <values>

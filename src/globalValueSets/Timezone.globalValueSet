@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>America/New_York</fullName>
+        <default>true</default>
+        <label>America/New_York</label>
+    </customValue>
+    <customValue>
+        <fullName>Asia/Manila</fullName>
+        <default>false</default>
+        <label>Asia/Manila</label>
+    </customValue>
+    <customValue>
+        <fullName>Australia/Sydney</fullName>
+        <default>false</default>
+        <label>Australia/Sydney</label>
+    </customValue>
+    <customValue>
+        <fullName>Europe/Berlin</fullName>
+        <default>false</default>
+        <label>Europe/Berlin</label>
+    </customValue>
+    <masterLabel>Timezone</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

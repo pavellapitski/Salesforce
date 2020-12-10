@@ -2497,6 +2497,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>OpportunityPlatform__c.CPCV__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>OpportunityPlatform__c.CPC__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -2663,6 +2668,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>OpportunityPlatform__c.VariableCPCO__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>OpportunityPlatform__c.VariableCPCV__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

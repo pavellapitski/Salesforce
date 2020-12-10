@@ -3,7 +3,7 @@
     <applicationVisibilities>
         <application>Invoicing</application>
         <default>false</default>
-        <visible>false</visible>
+        <visible>true</visible>
     </applicationVisibilities>
     <applicationVisibilities>
         <application>Operations</application>
@@ -289,6 +289,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>InvoiceHelperTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>InvoiceJobLauncherCtrl</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -3317,6 +3321,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>OpportunityPlatform__c.CPCV__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>OpportunityPlatform__c.CPC__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -3483,6 +3492,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>OpportunityPlatform__c.VariableCPCO__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>OpportunityPlatform__c.VariableCPCV__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -5535,6 +5549,10 @@
         <recordType>Sub_Project__c.Payment</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
+    <tabVisibilities>
+        <tab>Invoice_Job_Launcher</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
     <tabVisibilities>
         <tab>standard-Account</tab>
         <visibility>DefaultOn</visibility>
