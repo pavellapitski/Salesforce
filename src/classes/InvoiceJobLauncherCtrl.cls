@@ -36,13 +36,18 @@ public without sharing class InvoiceJobLauncherCtrl {
     @AuraEnabled
     public static List<String> launchInvoiceJob(Integer monthIdx) {
         System.debug('### monthIdx: ' + monthIdx);
-        String cronExpression = '0 ' + Datetime.now().addMinutes(1).minute() + ' ' +
+        String cronExpression = '0 ' + Datetime.now().addMinutes(2).minute() + ' ' +
                 Datetime.now().hour() + ' ' +
                 System.today().day() + ' ' +
-                String.valueOf(monthIdx + 1) + ' ? ' + System.today().year();
+                System.today().month() + ' ? ' + System.today().year();
 
         String newJobName = InvoiceScheduler.JOB_NAME + ' ' + Datetime.now().addMinutes(1).format(InvoiceJobLauncherCtrl.DATE_FORMAT_PATTERN);
-        System.schedule(newJobName, cronExpression, new InvoiceScheduler());
+
+        System.schedule(
+            newJobName,
+            cronExpression,
+            new InvoiceScheduler(monthIdx + 1, System.today().year())
+        );
 
         return onInit();
     }

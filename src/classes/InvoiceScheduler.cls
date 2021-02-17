@@ -4,6 +4,7 @@
 
 public with sharing class InvoiceScheduler implements Schedulable {
 
+    public static final String JOB_NAME = 'Strike Invoice Job';
     /*
     * // every hour at 45 minutes
     System.schedule('Strike Invoice Job', '0 45 * * * ?', new InvoiceScheduler());
@@ -14,8 +15,21 @@ public with sharing class InvoiceScheduler implements Schedulable {
         System.today().month() + ' ? ' + System.today().year();
     * */
 
+    private Integer year  { get; set; }
+    private Integer month { get; set; }
+
+    public InvoiceScheduler(Integer month, Integer year) {
+        this.month = month;
+        this.year = year;
+    }
+
+    public InvoiceScheduler() {
+        this.month = System.today().month();
+        this.year = System.today().year();
+    }
+
     public void execute(SchedulableContext sc) {
-        calloutInvoices();
+        calloutInvoices(month, year);
     }
 
     private static HttpRequest getAccessTokenRequest() {
@@ -28,7 +42,7 @@ public with sharing class InvoiceScheduler implements Schedulable {
     }
 
     @Future(Callout=true)
-    public static void calloutInvoices() {
+    public static void calloutInvoices(Integer month, Integer year) {
         List<EventLog__c> logs = new List<EventLog__c>();
 
         String accessToken = '';
@@ -56,9 +70,9 @@ public with sharing class InvoiceScheduler implements Schedulable {
                 ));
             }
         }
-        
+
         HttpRequest req = new HttpRequest();
-        req.setEndpoint(InvoiceHelper.getEndpointUrl());
+        req.setEndpoint(InvoiceHelper.getEndpointUrl(String.valueOf(month), String.valueOf(year)));
         req.setTimeout(60000);
         req.setMethod('GET');
         req.setHeader('Authorization', 'Bearer ' + accessToken/*InvoiceHelper.getAuthorizationHeader()*/);
@@ -71,21 +85,26 @@ public with sharing class InvoiceScheduler implements Schedulable {
 
                 List<Invoice__c> invoicesToUpsert = new List<Invoice__c>();
                 for (InvoiceHelper.InvoiceData invoice :response) {
-                    strikeIDsToInvoice.put(invoice.strike_id, InvoiceHelper.setInvoice(invoice));
+                    strikeIDsToInvoice.put(invoice.strike_id, InvoiceHelper.setInvoice(invoice/*, xeroContactId*/));
                 }
 
-                Map<String,Invoice__c> existingInvoices = getExistingInvoice(InvoiceHelper.getDate(), new List<String>(strikeIDsToInvoice.keySet()));
+                System.debug('### StrikeIDs: ' + strikeIDsToInvoice.keySet());
+                Map<String,Invoice__c> existingInvoices = getExistingInvoice(month, year, new List<String>(strikeIDsToInvoice.keySet()));
+                System.debug('### existingInvoices: ' + existingInvoices);
                 for (String strikeId :strikeIDsToInvoice.keySet()) {
-                    Invoice__c updatedInvoice = strikeIDsToInvoice.get(strikeId);
+                    Invoice__c externalInvoice = strikeIDsToInvoice.get(strikeId);
                     Invoice__c existingInvoice = existingInvoices.get(strikeId);
                     if (existingInvoice == null) {
+                        System.debug('### existingInvoice is NULL: ' + externalInvoice);
                         // new invoice record should be inserted
-                        invoicesToUpsert.add(updatedInvoice);
+                        invoicesToUpsert.add(externalInvoice);
                     } else {
-                        Boolean doUpsert = isChanged(existingInvoice, updatedInvoice);
+                        Boolean doUpsert = isChanged(existingInvoice, externalInvoice);
+                        System.debug('### doUpsert: ' + doUpsert);
                         if (doUpsert) {
-                            updatedInvoice.Id = existingInvoice.Id;
-                            invoicesToUpsert.add(updatedInvoice);
+                            externalInvoice.Id = existingInvoice.Id;
+                            System.debug('### externalInvoice: ' + externalInvoice);
+                            invoicesToUpsert.add(externalInvoice);
                         }
                     }
                 }
@@ -107,8 +126,8 @@ public with sharing class InvoiceScheduler implements Schedulable {
         insert logs;
     }
 
-    private static Map<String, Invoice__c> getExistingInvoice(List<String> monthYearList, List<String> strikeIDs) {
-        Date invoiceDate = Date.newInstance(Integer.valueOf(monthYearList[1]), Integer.valueOf(monthYearList[0]), 01);
+    private static Map<String, Invoice__c> getExistingInvoice(Integer month, Integer year, List<String> strikeIDs) {
+        Date invoiceDate = Date.newInstance(year, month, 01);
         Map<String, Invoice__c> strikeIdToInvoice = new Map<String, Invoice__c>();
         List<Invoice__c> existingInvoices = [
             SELECT Id, Start_Date__c, End_Date__c, Invoice_Amount__c, Due_Date__c, Strike_Id__c

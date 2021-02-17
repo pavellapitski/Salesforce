@@ -25,10 +25,13 @@ public class OpportunityRepository {
                 RFP_Due_Date__c, StageName, Strike_ID__c, Targeting__c, Trial_Notes__c, Verticals__c, Video_Length__c,
                 (SELECT Id, Opportunity__c, AdPlacement__c, AdPlacement__r.Name, AdPlacement__r.Platform__c FROM OpportunityAdPlacements__r),
                 (SELECT Id, Opportunity__c, Contact__c, Role__c FROM Contact_Opportunities__r),
-                (SELECT Id, Account_Entity__c, CostStructure__c, VariableCPA__c, CPA__c, VariableCPAC__c, CPAC__c, VariableCPC__c, CPC__c,
-                    VariableCPE__c, CPE__c, VariableCPER__c, CPER__c, VariableCPF__c, CPF__c, VariableCPI__c, CPI__c, VariableCPM__c, CPM__c,
-                    VariableCPL__c, CPL__c, VariableCPLC__c, CPLC__c, VariableCPPL__c, CPPL__c, VariableCPS__c, CPS__c, VariableCPSU__c, CPSU__c,
-                    VariableCPV__c, CPV__c, Opportunity__c, Platform__c, Platform__r.Name, PlatformAccount__c FROM OpportunityPlatforms__r),
+                (SELECT Id, Account_Entity__c, CostStructure__c, Opportunity__c, Platform__c, Platform__r.Name, PlatformAccount__c,
+                    VariableCPAC__c, VariableCPA__c, VariableCPCO__c, VariableCPC__c, VariableCPDPV__c, VariableCPER__c, VariableCPE__c,
+                    VariableCPF__c, VariableCPI__c, VariableCPLC__c, VariableCPLP__c, VariableCPL__c, VariableCPM__c, VariableCPPL__c,
+                    VariableCPSU__c, VariableCPS__c, VariableCPVC__c, VariableCPV__c, VariableCPCV__c,
+                    CPAC__c, CPA__c, CPCO__c, CPC__c, CPDPV__c, CPER__c, CPE__c, CPF__c, CPI__c, CPLC__c, CPLP__c, CPL__c,
+                    CPM__c, CPPL__c, CPSU__c, CPS__c, CPVC__c, CPV__c, CPCV__c
+                FROM OpportunityPlatforms__r),
                 (SELECT Id FROM Projects__r)
             FROM Opportunity
             WHERE Id = :oppIds

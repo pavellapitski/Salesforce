@@ -25,10 +25,11 @@ private class InvoiceHelperTest {
 
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, mockClass);
-        InvoiceScheduler.calloutInvoices();
+        InvoiceScheduler.calloutInvoices(System.today().month(), System.today().year());
         Test.stopTest();
 
         List<EventLog__c> logs = [SELECT Id, Info__c, Status__c FROM EventLog__c WHERE Type__c = :EventLog.STRIKE_DATA_CALLOUT AND Status__c = :EventLog.STATUS_ERROR];
+        System.debug('### logs: ' + logs);
         System.assertEquals(logs.size(), 0, 'No Errors Should Be');
 
         List<Invoice__c> invoices = [SELECT Id FROM Invoice__c];
@@ -88,7 +89,7 @@ private class InvoiceHelperTest {
         insert invoicesToInsert;
 
         Test.setMock(HttpCalloutMock.class, mockClass);
-        InvoiceScheduler.calloutInvoices();
+        InvoiceScheduler.calloutInvoices(System.today().month(), System.today().year());
         Test.stopTest();
 
         List<EventLog__c> logs = [SELECT Id, Info__c, Status__c FROM EventLog__c WHERE Type__c = :EventLog.STRIKE_DATA_CALLOUT AND Status__c = :EventLog.STATUS_ERROR];
@@ -114,7 +115,7 @@ private class InvoiceHelperTest {
         insert invoicesToInsert;
 
         Test.setMock(HttpCalloutMock.class, mockClass);
-        InvoiceScheduler.calloutInvoices();
+        InvoiceScheduler.calloutInvoices(System.today().month(), System.today().year());
         Test.stopTest();
 
         List<EventLog__c> logs = [SELECT Id, Info__c, Status__c FROM EventLog__c WHERE Type__c = :EventLog.STRIKE_DATA_CALLOUT AND Status__c = :EventLog.STATUS_ERROR];

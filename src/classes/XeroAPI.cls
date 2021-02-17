@@ -169,6 +169,19 @@ global with sharing class XeroAPI {
         }
     }
 
+    public static XeroWrappers.XeroInvoiceResponse getInvoicesGreaterThanDate(XeroSettings__c serviceName, Date gtDate) {
+        Map<String,String> filters = new Map<String,String>{
+                'date' => 'DateTime(' + gtDate.year() + ', ' + gtDate.month() + ', ' + gtDate.day() + ')'
+        };
+        HttpResponse res = XeroAPI.connect(serviceName, 'GET', 'Invoices', filters);
+        System.debug('### body:' + res.getBody());
+        if (res.getStatusCode() == 200) {
+            return new XeroWrappers.XeroInvoiceResponse(res.getBody());
+        } else {
+            return new XeroWrappers.XeroInvoiceResponse(res.getStatus(), res.getStatusCode());
+        }
+    }
+
     public static XeroWrappers.XeroInvoiceResponse getAllInvoices(XeroSettings__c serviceName) {
         HttpResponse res = XeroAPI.connect(serviceName, 'GET', 'Invoices');
         if (res.getStatusCode() == 200) {
@@ -252,7 +265,9 @@ global with sharing class XeroAPI {
                 }
                 if (f == 'order') {
                     filterStr += f + '=' + filters.get(f);
-                } else {
+                } else if (f == 'date') {
+                    filterStr += f + '>=' + filters.get(f);
+                }  else {
                     filterStr += f;
                     if (!String.isBlank(filters.get(f))) {
                         filterStr += '==' + filters.get(f);
@@ -279,7 +294,11 @@ global with sharing class XeroAPI {
             req.setHeader('Content-Type', 'application/xml');
             errorSummarize = '?summarizeErrors=false';
         }
-        req.setEndpoint(getUrlParam(endpoint) + (String.isBlank(objId) == true ? '' : '/' + objId) + errorSummarize);
+        req.setEndpoint(
+                getUrlParam(endpoint)
+                + (String.isBlank(objId) == true ? '' : '/' + objId)
+                + errorSummarize
+        );
         signRequest(xeroEntity, req);
 
         return new Http().send(req);

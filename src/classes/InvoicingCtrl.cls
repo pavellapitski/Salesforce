@@ -16,7 +16,7 @@ public with sharing class InvoicingCtrl {
 
     private static Invoice__c getInvoice(String recordId) {
         return [SELECT Id , Xero_Id__c, CurrencyIsoCode, PO__c, IO__c, Type__c, Xero_Invoice_Id__c, Billing_Profile__c, Invoice_Amount__c,
-                Start_Date__c, Due_Date__c, Payment_Type__c, Project__c, Contract__c, Xero_Entity__c, Xero_Invoice_Name__c
+                Start_Date__c, End_Date__c, Due_Date__c, Payment_Type__c, Contract__c, Xero_Entity__c, Xero_Invoice_Name__c, Strike_Id__c
                 FROM Invoice__c WHERE Id = :recordId
         ];
     }

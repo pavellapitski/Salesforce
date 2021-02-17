@@ -1,9 +1,11 @@
 global class XeroSync {
+    public static final Integer MONTH_COUNT_DIFF = 2;
     public static String XERO_TYPE_CONTACT = 'Contact';
-    public static Boolean performSync = false;
-
     public static String STATUS_SUCCESS = 'Success';
     public static String STATUS_FAILED = 'Failed';
+
+    public static Boolean performSync = false;
+
 
     private static List<XeroSettings__c> xeroSettings { get {
         if (xeroSettings == null) {
@@ -150,18 +152,28 @@ global class XeroSync {
     }
 
     // Invoices
-    /*@Future (Callout=true)
+    @Future (Callout=true)
     public static void updateInvoiceFromXero() {
         XeroAPI.lastModifiedDate = System.today();
+
+        Date greaterThanDate = Date.newInstance(
+            System.today().addMonths(-1 * MONTH_COUNT_DIFF).year(),
+            System.today().addMonths(-1 * MONTH_COUNT_DIFF).month(),
+            01
+        );
 
         Map<String, XeroWrappers.XeroInvoice> invoiceFromXero = new Map<String,XeroWrappers.XeroInvoice>();
         List<EventLog__c> logs = new List<EventLog__c>();
         for (XeroSettings__c xeroSetting :xeroSettings) {
-            XeroWrappers.XeroInvoiceResponse response = XeroAPI.getAllInvoices(xeroSetting);
-            if (response.StatusCode == 200) {
+            System.debug('### xeroSetting: ' + xeroSetting.Name);
+
+            XeroWrappers.XeroInvoiceResponse response = XeroAPI.getInvoicesGreaterThanDate(xeroSetting, greaterThanDate);
+            System.debug('### response: ' + response.statusCode + '   ' + response.xeroObjects.size());
+            if (response.statusCode == 200) {
                 for (XeroWrappers.XeroObject xo :response.xeroObjects) {
+                    System.debug('### xo: ' + xo);
                     XeroWrappers.XeroInvoice invoice = (XeroWrappers.XeroInvoice) xo;
-                    invoiceFromXero.put(invoice.InvoiceID, invoice);
+                    invoiceFromXero.put(invoice.invoiceID, invoice);
                 }
             } else {
                 logs.add(EventLog.createEventLog('Callout Failed', EventLog.STATUS_ERROR, EventLog.TYPE_XERO_SYNC));
@@ -169,14 +181,20 @@ global class XeroSync {
         }
 
         Map<String, Invoice__c> xeroIdToInvoice = new Map<String,Invoice__c>();
-        for (Invoice__c invoice :[SELECT Id, Xero_Invoice_Id__c, Status__c FROM Invoice__c WHERE Status__c != 'Paid']) {
+        for (Invoice__c invoice :[SELECT Id, Xero_Invoice_Id__c, Status__c FROM Invoice__c WHERE Status__c != 'Paid' AND Xero_Invoice_Id__c != NULL]) {
             xeroIdToInvoice.put(invoice.Xero_Invoice_Id__c, invoice);
         }
 
+        System.debug('### xeroIdToInvoice: ' + xeroIdToInvoice);
+        System.debug('### invoiceFromXero: ' + invoiceFromXero);
         List<Invoice__c> invoicesToUpdate = new List<Invoice__c>();
         for (String xeroId :invoiceFromXero.keySet()) {
             XeroWrappers.XeroInvoice xeroInvoice = invoiceFromXero.get(xeroId);
-            Invoice__c invoice = xeroIdToInvoice.get(xeroId);
+            Invoice__c invoice = xeroIdToInvoice.containsKey(xeroId) ? xeroIdToInvoice.get(xeroId) : null;
+            if (invoice == null) {
+                continue;
+            }
+
             if (xeroInvoice.Status == XeroWrappers.XeroInvoiceStatus.AUTHORISED) {
                 invoice.Status__c = XeroWrappers.XeroInvoiceStatus.AUTHORISED.name();
                 invoicesToUpdate.add(invoice);
@@ -188,14 +206,14 @@ global class XeroSync {
             }
         }
 
+        System.debug('### invoicesToUpdate: ' + invoicesToUpdate);
         try {
             update invoicesToUpdate;
             insert logs;
         } catch (Exception ex) {
             insert EventLog.createEventLog('Payment Sync failed', EventLog.STATUS_ERROR, EventLog.TYPE_XERO_SYNC, ex.getMessage());
         }
-
-    }*/
+    }
 
     // Payments
     public static Map<String, XeroWrappers.XeroInvoice> getUpdatedInvoices(XeroSettings__c service) {

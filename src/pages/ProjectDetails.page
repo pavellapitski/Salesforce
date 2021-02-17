@@ -180,6 +180,7 @@
                 <apex:outputField value="{!Payment__c.CTA_Overlay_Text__c}" label="CTA Overlay" rendered="{!OR(Payment__c.PlatformPrefix__c='AV',Payment__c.PlatformPrefix__c='DR',Payment__c.PlatformPrefix__c='DT',Payment__c.PlatformPrefix__c='TV')}"/>
                 <apex:outputField value="{!Payment__c.Action_Type__c}" rendered="{!OR(Payment__c.PlatformPrefix__c='FB', Payment__c.PlatformPrefix__c='IG')}"/>
                 <apex:outputField value="{!Payment__c.Brand_Lift_Study__c}"/>
+                <apex:outputField value="{!Payment__c.Timezone__c}"/>
                 <apex:outputPanel style="display:none">
                     <apex:outputField value="{!Payment__c.Platform_Prefix__c}"/>
                 </apex:outputPanel>

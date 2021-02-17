@@ -18,7 +18,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>filterName</name>
-                    <value>All</value>
+                    <value>Last_Month</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>hideActionBar</name>
@@ -30,7 +30,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>pageSize</name>
-                    <value>20</value>
+                    <value>30</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:filterListCard</componentName>
             </componentInstance>

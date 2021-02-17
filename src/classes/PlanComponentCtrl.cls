@@ -346,10 +346,6 @@ public with sharing class PlanComponentCtrl {
         }
     }
 
-    public void testAction() {
-        System.debug('### TEST expandedProjectsByPaymentId: ' + expandedProjectsByPaymentId);
-    }
-
     public void addNewPayment() {
         Sub_Project__c newPayment = Utility.copyContractDataToPayment(project.Id);
         newPayment.Start_Date__c = null;
@@ -357,7 +353,7 @@ public with sharing class PlanComponentCtrl {
         newPayment.Client_Spend__c = 0;
 
         newPayments.add(newPayment);
-        paymentWrappers.add(new SubProject.PaymentWrapper(newPayment, true));// TODO: check this case !!!!! COST STRUCTURE VALIDATION FOR NEW PAYMENT
+        paymentWrappers.add(new SubProject.PaymentWrapper(newPayment, true));
     }
 
     public PageReference addNewProject() {

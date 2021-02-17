@@ -5,7 +5,7 @@
 @IsTest
 private class InvoiceAmountCalculationTest {
 
-    private static final Decimal CLIENT_SPEND = 100000;
+    /*private static final Decimal CLIENT_SPEND = 100000;
     private static final Decimal CPM_UNIT_COST = 20;
     private static final Integer PROJECT_LENGTH_IN_DAYS = 25;
     private static final Decimal DIFFERENCE_MEDIA_ORDER_TO_MEDIA_SPEND = 5000;
@@ -6153,5 +6153,5 @@ private class InvoiceAmountCalculationTest {
         Sub_Project__c after = getPaymentById(payment.Id);
         Decimal result = (after.AdWordsSpend__c * (payment.Margin__c / 100) / (1 - payment.Margin__c / 100)) * 2 / 3 + after.AdWordsSpend__c;
         System.assertEquals(100, (after.Invoice_Amount__c * 100).round() / 100);
-    }
+    }*/
 }

@@ -370,14 +370,12 @@ public with sharing class XeroConnectionCtrl {
     }
 
 
-
     // XeroConnection.cmp related part
     public static final String KEY_ACCOUNT = Schema.Account.SObjectType.getDescribe().getKeyPrefix();
     public static final String KEY_INVOICE = Schema.Invoice__c.SObjectType.getDescribe().getKeyPrefix();
 
     @AuraEnabled
     public static Contract fetchContract(String recordId) {
-        System.debug('### recId: ' + recordId);
         SObject baseRecord = getRecordById(recordId);
         Contract contractRecord = new Contract(baseRecord);
         return contractRecord;
@@ -387,9 +385,9 @@ public with sharing class XeroConnectionCtrl {
         String idPrefix = recId.left(3);
         SObject record;
         if (KEY_ACCOUNT == idPrefix) {
-            record = [SELECT Id, Xero_Id__c, Xero_Entity__c, Name, Region__c FROM Account WHERE Id = :recId];
+            record = [SELECT Id, Xero_Id__c, Xero_Entity__c, Name, Region__c, CurrencyIsoCode FROM Account WHERE Id = :recId];
         } else if (KEY_INVOICE == idPrefix) {
-            record = [SELECT Id, Name, Xero_Id__c, Xero_Entity__c, Region__c FROM Invoice__c WHERE Id = :recId];
+            record = [SELECT Id, Name, Xero_Id__c, Xero_Entity__c, Region__c, CurrencyIsoCode FROM Invoice__c WHERE Id = :recId];
         } else {
             // TODO: APPLY TO OTHER OBJECTS
         }
@@ -401,7 +399,7 @@ public with sharing class XeroConnectionCtrl {
         @TestVisible @AuraEnabled String xeroEntityId { get; set; }
         @TestVisible @AuraEnabled String recordId { get; set; }
         @TestVisible @AuraEnabled String contractName { get; set; }
-        @TestVisible @AuraEnabled String currencyIsoCode { get; set; } // TODO: find where it should be used
+        @TestVisible @AuraEnabled String currencyIsoCode { get; set; }
         @TestVisible @AuraEnabled List<XeroEntity> xeroEntities { get {
             if (xeroEntities == null) {
                 xeroEntities = new List<XeroEntity>();
@@ -417,11 +415,16 @@ public with sharing class XeroConnectionCtrl {
                 setXeroId(record);
                 setXeroEntityId(record);
                 setContractName(record);
+                setCurrency(record);
 
                 fetchXeroEntities();
             } catch (Exception ex) {
                 throw new AuraHandledException('An error has occurred: ' + ex.getMessage());
             }
+        }
+
+        private void setCurrency(SObject record) {
+            this.currencyIsoCode = (String) record.get('CurrencyIsoCode');
         }
 
         private void setRegion(SObject record) {
@@ -442,7 +445,7 @@ public with sharing class XeroConnectionCtrl {
             } else if (KEY_INVOICE == idPrefix) {
                 this.xeroEntityId = (String) record.get(Invoice__c.Xero_Entity__c.getDescribe().getName());
             } else {
-                // TODO: APPLY TO OTHER OBJECTS
+                // APPLY TO OTHER OBJECTS
             }
         }
 
@@ -453,7 +456,7 @@ public with sharing class XeroConnectionCtrl {
             } else if (KEY_INVOICE == idPrefix) {
                 this.contractName = 'Do we need any name here?'; // TODO: what contract name should be
             } else {
-                // TODO: APPLY TO OTHER OBJECTS
+                // APPLY TO OTHER OBJECTS
             }
         }
 
@@ -464,7 +467,7 @@ public with sharing class XeroConnectionCtrl {
             } else if (KEY_INVOICE == idPrefix) {
                 this.xeroId = (String) record.get(Invoice__c.Xero_Id__c.getDescribe().getName());
             } else {
-                // TODO: APPLY TO OTHER OBJECTS
+                // APPLY TO OTHER OBJECTS
             }
         }
 
@@ -495,7 +498,7 @@ public with sharing class XeroConnectionCtrl {
                 inv.Xero_Id__c = null;
                 update inv;
             } else {
-                // TODO: APPLY TO OTHER OBJECTS
+                // APPLY TO OTHER OBJECTS
             }
         }
 
@@ -512,7 +515,7 @@ public with sharing class XeroConnectionCtrl {
                 inv.Xero_Id__c = xeroContactId;
                 update inv;
             } else {
-                // TODO: APPLY TO OTHER OBJECTS
+                // APPLY TO OTHER OBJECTS
             }
         }
     }
@@ -534,7 +537,6 @@ public with sharing class XeroConnectionCtrl {
     }
 
     @AuraEnabled
-    // TODO: check if instead of xeroContactIdOrXeroId could be used only xeroId in v.contract.xeroEntities as a values
     public static XeroWrappers.XeroContact getXeroContactInfo(String xeroSettingId, String xeroId) {
         XeroSettings__c xs = [SELECT Id, Name, ConsumerKey__c, ConsumerSecret__c, PrivateKey__c FROM XeroSettings__c WHERE Id = :xeroSettingId];
         XeroWrappers.XeroContactResponse contactResponse = XeroAPI.getContact(xs, xeroId);
@@ -547,6 +549,7 @@ public with sharing class XeroConnectionCtrl {
         return selectedContact;
     }
 
+    @SuppressWarnings('ApexUnresolvableSignature')
     @AuraEnabled
     public static AuraResponse establishXeroConnection(String contractJSON, String xeroContactId, String xeroSettingId) {
         XeroConnectionCtrl.Contract contract = (XeroConnectionCtrl.Contract) JSON.deserialize(contractJSON, XeroConnectionCtrl.Contract.class);
@@ -579,12 +582,12 @@ public with sharing class XeroConnectionCtrl {
         AuraResponse auResp = new AuraResponse();
 
         XeroWrappers.XeroContact newXeroContact = new XeroWrappers.XeroContact();
-        newXeroContact.EmailAddress = newEmail;
-        newXeroContact.Name = newName;
-        newXeroContact.ContactStatus = XeroWrappers.XeroContactStatus.ACTIVE;
-        newXeroContact.DefaultCurrency = contract.currencyIsoCode;
-        newXeroContact.Addresses = new List<XeroWrappers.XeroAddress>();
-        newXeroContact.Phones = new List<XeroWrappers.XeroPhone>();
+        newXeroContact.emailAddress = newEmail;
+        newXeroContact.name = newName;
+        newXeroContact.contactStatus = XeroWrappers.XeroContactStatus.ACTIVE;
+        newXeroContact.defaultCurrency = contract.currencyIsoCode;
+        newXeroContact.addresses = new List<XeroWrappers.XeroAddress>();
+        newXeroContact.phones = new List<XeroWrappers.XeroPhone>();
 
         XeroSettings__c xeroSettings = [SELECT Id, ConsumerKey__c, PrivateKey__c, ConsumerSecret__c FROM XeroSettings__c WHERE Id = :contract.xeroEntityId];
 
@@ -596,7 +599,7 @@ public with sharing class XeroConnectionCtrl {
                 WHERE Id = :contract.recordId
             ];
 
-            newXeroContact.DefaultCurrency = acc.CurrencyIsoCode;
+            newXeroContact.defaultCurrency = acc.CurrencyIsoCode;
 
             XeroWrappers.XeroAddress newXeroContactAddress = new XeroWrappers.XeroAddress();
             newXeroContactAddress.AddressLine1 = acc.BillingStreet;
@@ -605,29 +608,29 @@ public with sharing class XeroConnectionCtrl {
             newXeroContactAddress.PostalCode = acc.BillingPostalCode;
             newXeroContactAddress.Region = acc.BillingState;
 
-            newXeroContact.Addresses.add(newXeroContactAddress);
+            newXeroContact.addresses.add(newXeroContactAddress);
 
             if (String.isNotBlank(acc.Phone)) {
                 XeroWrappers.XeroPhone newXeroContactPhone = new XeroWrappers.XeroPhone();
-                newXeroContactPhone.PhoneType = XeroWrappers.XeroPhoneType.XDEFAULT;
-                newXeroContactPhone.PhoneNumber = acc.Phone;
-                newXeroContact.Phones.add(newXeroContactPhone);
+                newXeroContactPhone.phoneType = XeroWrappers.XeroPhoneType.XDEFAULT;
+                newXeroContactPhone.phoneNumber = acc.Phone;
+                newXeroContact.phones.add(newXeroContactPhone);
             }
             if (String.isNotBlank(acc.Fax)) {
                 XeroWrappers.XeroPhone newXeroContactFax = new XeroWrappers.XeroPhone();
-                newXeroContactFax.PhoneType = XeroWrappers.XeroPhoneType.FAX;
-                newXeroContactFax.PhoneNumber = acc.Fax;
-                newXeroContact.Phones.add(newXeroContactFax);
+                newXeroContactFax.phoneType = XeroWrappers.XeroPhoneType.FAX;
+                newXeroContactFax.phoneNumber = acc.Fax;
+                newXeroContact.phones.add(newXeroContactFax);
             }
 
             XeroWrappers.XeroContactResponse xeroResponse = XeroAPI.postContact(newXeroContact, xeroSettings);
-            if (xeroResponse.StatusCode == 200 || xeroResponse.StatusCode == 201) {
+            if (xeroResponse.statusCode == 200 || xeroResponse.statusCode == 201) {
                 XeroWrappers.XeroContact contactResponse = (XeroWrappers.XeroContact) xeroResponse.xeroObjects[0];
 
-                if (contactResponse.HasErrors) {
-                    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, String.join(contactResponse.ValidationErrors, ' ')));
+                if (contactResponse.hasErrors) {
+                    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, String.join(contactResponse.validationErrors, ' ')));
                 } else {
-                    acc.Xero_Id__c = contactResponse.ContactID;
+                    acc.Xero_Id__c = contactResponse.contactID;
                     if (String.isBlank(acc.Xero_Entity__c) == true || acc.Xero_Entity__c != contract.xeroEntityId) {
                         acc.Xero_Entity__c = contract.xeroEntityId;
                     }
@@ -640,18 +643,18 @@ public with sharing class XeroConnectionCtrl {
                     }
                 }
             } else {
-                auResp.errorMsg = 'Contact could not be created in Xero. Reason: ' + xeroResponse.Status;
+                auResp.errorMsg = 'Contact could not be created in Xero. Reason: ' + xeroResponse.status;
             }
         } else if (KEY_INVOICE == idPrefix) {
             XeroWrappers.XeroContactResponse xeroResponse = XeroAPI.postContact(newXeroContact, xeroSettings);
-            if (xeroResponse.StatusCode == 200 || xeroResponse.StatusCode == 201) {
+            if (xeroResponse.statusCode == 200 || xeroResponse.statusCode == 201) {
                 XeroWrappers.XeroContact contactResponse = (XeroWrappers.XeroContact) xeroResponse.xeroObjects[0];
 
-                if (contactResponse.HasErrors) {
-                    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, String.join(contactResponse.ValidationErrors, ' ')));
+                if (contactResponse.hasErrors) {
+                    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, String.join(contactResponse.validationErrors, ' ')));
                 } else {
                     Invoice__c invoice = [SELECT Xero_Id__c, Xero_Entity__c FROM Invoice__c WHERE Id = :contract.recordId];
-                    invoice.Xero_Id__c = contactResponse.ContactID;
+                    invoice.Xero_Id__c = contactResponse.contactID;
                     if (String.isBlank(invoice.Xero_Entity__c) == true || invoice.Xero_Entity__c != contract.xeroEntityId) {
                         invoice.Xero_Entity__c = contract.xeroEntityId;
                     }
@@ -664,10 +667,9 @@ public with sharing class XeroConnectionCtrl {
                     }
                 }
             } else {
-                auResp.errorMsg = 'Contact could not be created in Xero. Reason: ' + xeroResponse.Status;
+                auResp.errorMsg = 'Contact could not be created in Xero. Reason: ' + xeroResponse.status;
             }
         } else {
-            // TODO: APPLY TO OTHER OBJECTS => "createXeroAccount" method
             auResp.errorMsg = '"createXeroRecord" method doesn\'t support processing the following idPrefix: ' + idPrefix;
         }
         return auResp;

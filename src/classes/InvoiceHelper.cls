@@ -16,8 +16,8 @@ public with sharing class InvoiceHelper {
         return 'BASIC ' + EncodingUtil.base64Encode(header);
     }*/
 
-    public static String getEndpointUrl() {
-        return settings.StrikeInvoiceURL__c + String.format('invoices?month={0}&year={1}', getDate());
+    public static String getEndpointUrl(String month, String year) {
+        return settings.StrikeInvoiceURL__c + String.format('invoices?month={0}&year={1}', new List<String>{month, year});
     }
 
     public static String getAccessTokenEndpoint() {
@@ -28,11 +28,41 @@ public with sharing class InvoiceHelper {
         return new List<String>{settings.StrikeInvoiceUser__c, settings.StrikeInvoicePassword__c};
     }
 
-    public static List<String> getDate() {
-        return new List<String>{
-            String.valueOf(System.today().month()),
-            String.valueOf(System.today().year())
-        };
+    public class Invoice { // Data Model Class for Invoice__c object
+        String xeroExternalId { get; set; }
+        String paymentType { get; set; }
+        String strikeId { get; set; }
+        //String project { get; set; }
+        String contract { get; set; }
+        String po { get; set;}
+        String io { get; set;}
+        String type { get; set;}
+        String billingProfile { get; set; }
+        String currencyIsoCode { get; set; }
+        Id xeroEntityId { get; set; }
+        Date startDate { get; set; }
+        Date endDate { get; set; }
+        Date dueDate { get; set; }
+        Decimal invoiceAmount { get; set; }
+    }
+
+    public static Invoice createInstance(Invoice__c invoice) {
+        Invoice instance = new Invoice();
+        instance.xeroExternalId = invoice.Xero_Id__c;
+        instance.xeroEntityId = invoice.Xero_Entity__c;
+        instance.billingProfile = invoice.Billing_Profile__c;
+        instance.currencyIsoCode = invoice.CurrencyIsoCode;
+        instance.po = invoice.PO__c;            // "PO #"
+        instance.io = invoice.IO__c;            // "IO #" the same as invoice.Contract__c
+        instance.type = invoice.Type__c;
+        instance.startDate = invoice.Start_Date__c;
+        instance.dueDate = invoice.Due_Date__c;
+        instance.endDate = invoice.End_Date__c;
+        instance.paymentType = invoice.Payment_Type__c;
+        instance.contract = invoice.Contract__c;
+        instance.invoiceAmount = invoice.Invoice_Amount__c;
+        instance.strikeId = invoice.Strike_Id__c;
+        return instance;
     }
 
     public static XeroSync.InvoiceWrapper sendInvoice(Invoice__c invoiceRecord) {
@@ -67,42 +97,6 @@ public with sharing class InvoiceHelper {
         return response;
     }
 
-    public class Invoice { // Data Model Class for Invoice__c object
-        String xeroExternalId { get; set; }
-        String paymentType { get; set; }
-        String project { get; set; }
-        String contract { get; set; }
-        String po { get; set;}
-        String io { get; set;}
-        String type { get; set;}
-        String billingProfile { get; set; }
-        String currencyIsoCode { get; set; }
-        Id xeroEntityId { get; set; }
-        Date startDate { get; set; }
-        Date endDate { get; set; }
-        Date dueDate { get; set; }
-        Decimal invoiceAmount { get; set; }
-    }
-    
-    public static Invoice createInstance(Invoice__c invoice) {
-        Invoice instance = new Invoice();
-        instance.xeroExternalId = invoice.Xero_Id__c;
-        instance.xeroEntityId = invoice.Xero_Entity__c;
-        instance.billingProfile = invoice.Billing_Profile__c;
-        instance.currencyIsoCode = invoice.CurrencyIsoCode;
-        instance.po = invoice.PO__c;            // "PO #"
-        instance.io = invoice.IO__c;            // "IO #" the same as invoice.Contract__c
-        instance.type = invoice.Type__c;
-        instance.startDate = invoice.Start_Date__c;
-        instance.dueDate = invoice.Due_Date__c;
-        instance.endDate = invoice.Start_Date__c;
-        instance.paymentType = invoice.Payment_Type__c;
-        instance.project = invoice.Project__c;
-        instance.contract = invoice.Contract__c;
-        instance.invoiceAmount = invoice.Invoice_Amount__c;
-        return instance;
-    }
-
     private static XeroWrappers.XeroInvoice prepareXeroInvoice(Invoice invoiceData, XeroSettings__c xeroSettings) {
         Id xeroEntityId = invoiceData.xeroEntityId;
         String xeroItemQuery = ' SELECT ItemCode__c FROM XeroItem__c WHERE XeroSettings__c = :xeroEntityId AND ' +
@@ -113,9 +107,10 @@ public with sharing class InvoiceHelper {
         XeroWrappers.XeroInvoice invoice = new XeroWrappers.XeroInvoice();
         invoice.contact = new XeroWrappers.XeroContact(invoiceData.xeroExternalId);
         invoice.currencyCode = invoiceData.currencyIsoCode;
-        invoice.invoiceDate = invoiceData.startDate;
-        invoice.dueDate = (invoiceData.type == 'Month') ? invoiceData.startDate.addMonths(1).addDays(-1) : invoiceData.dueDate;
+        invoice.invoiceDate = invoiceData.endDate;
+        invoice.dueDate = invoiceData.dueDate;
 
+        /*invoice.dueDate = (invoiceData.type == 'Monthly') ? invoiceData.startDate.addMonths(1).addDays(-1) : invoiceData.dueDate;
         if (String.isNotBlank(invoiceData.paymentType)) {
             if (invoiceData.paymentType.startsWith('Net')) {
                 List<String> splitType = invoiceData.paymentType.split(' ');
@@ -123,7 +118,7 @@ public with sharing class InvoiceHelper {
                     invoice.dueDate = invoiceData.startDate.addDays(Integer.valueOf(splitType[1]));
                 }
             }
-        }
+        }*/
 
         List<XeroWrappers.XeroLineItem> lineItems = new List<XeroWrappers.XeroLineItem>();
         String itemCode = !xeroItems.isEmpty() ? xeroItems[0].ItemCode__c : '';
@@ -137,8 +132,9 @@ public with sharing class InvoiceHelper {
             lineItems.add(createXeroLineItem(invoiceData, xeroSettings, '111', invoiceData.invoiceAmount - invoiceData.mediaSpend));
         } */
 
-        Datetime endDateTime = Datetime.newInstance(invoiceData.startDate.year(), invoiceData.startDate.month(), invoiceData.startDate.day());
-        invoice.reference = endDateTime.formatGmt('MMM') + ' - ' + invoiceData.contract + ' - ' + invoiceData.project;
+        Datetime endDateTime = Datetime.newInstanceGmt(invoiceData.startDate.year(), invoiceData.startDate.month(), invoiceData.startDate.day());
+        invoice.reference = endDateTime.formatGmt('MMM') + ' - ' + invoiceData.contract
+                + (String.isNotBlank(invoiceData.strikeId) ? ' - ' + invoiceData.strikeId : '');
         return invoice;
     }
 
@@ -156,7 +152,7 @@ public with sharing class InvoiceHelper {
     }
 
     private static String prepareLineItemDescription(Invoice invoiceData) {
-        String retVal = LINE_ITEM_DESCRIPTION_CAMPAIGN_ID + invoiceData.project + '\n'
+        String retVal = LINE_ITEM_DESCRIPTION_CAMPAIGN_ID + invoiceData.strikeId + '\n'
                 + LINE_ITEM_DESCRIPTION_CAMPAIGN_NAME + invoiceData.contract + '\n';
 
         if (String.isNotBlank(invoiceData.po)) {
@@ -164,29 +160,40 @@ public with sharing class InvoiceHelper {
         }
 
         retVal += LINE_ITEM_DESCRIPTION_IO + (String.isBlank(invoiceData.io) == false ? String.valueOf(invoiceData.io) : '')+ '\n'
-                + LINE_ITEM_DESCRIPTION_INVOICING_PERIOD + invoiceData.startDate.format() + '-' + invoiceData.endDate.format() + ' (' + invoiceData.type + ')';
+                + LINE_ITEM_DESCRIPTION_INVOICING_PERIOD + invoiceData.startDate.format() + '-' + invoiceData.endDate.format();
 
         return retVal;
     }
 
+    public static String getAllowedCurrency(String currencyToCheck) {
+        Set<String> validCurrencies = new Set<String>();
+        for (Schema.PicklistEntry plVal :Invoice__c.CurrencyIsoCode.getDescribe().getPicklistValues()){
+            validCurrencies.add(plVal.getValue());
+        }
+        return validCurrencies.contains(currencyToCheck) ? currencyToCheck : 'USD';
+    }
+
     // Data Model Class for response received from Project-Creator API
     public class InvoiceData {
-        String contract_id { get; set; }             // external Id
-        String project_id { get; set; }              // external Id
-        String contract_name { get; set; }           // i.e. 012183
-        String project_name { get; set; }
-        public String strike_id { get; set; }               // i.e. TV012183A
+        String contract_id { get; set; }                // external Id
+        public String strike_id { get; set; }           // i.e. TV012183A
+        String contract_name { get; set; }              // i.e. 012183
+        String agency_name { get; set; }
+        String brand_name { get; set; }
+        String client_service_name { get; set; }
+        String currency_code { get; set; }
+        String xero_contact { get; set; }
 
         String client_io { get; set; }
         String po { get; set; }
         String region { get; set; }             // NA; EMEA; APAC
+        String billing_profile { get; set; }     // Client/Strike
+        String payment_type { get; set; }        // "Net 30" / "Net 45" / "Net 60" / "Net 90" / "Net 120" / "50/50" / "100% Upfront"
         String invoice_type { get; set; }        // month / lifetime
         public Decimal invoice_amount { get; set; }
         String start_date { get; set; }
         String end_date { get; set; }
         String due_date { get; set; }
-        String billing_profile { get; set; }     // Client/Strike
-        String payment_type { get; set; }        // "Net 30" / "Net 45" / "Net 60" / "Net 90" / "Net 120" / "50/50" / "100% Upfront"
     }
 
     public static Invoice__c setInvoice(InvoiceData invoice) {
@@ -197,15 +204,18 @@ public with sharing class InvoiceHelper {
             Start_Date__c = Date.valueOf(invoice.start_date),
             End_Date__c = Date.valueOf(invoice.end_date),
             Due_Date__c = (String.isBlank(invoice.due_date)) ? null : Date.valueOf(invoice.due_date),
-            Payment_Type__c = invoice.payment_type,
-            Project__c = invoice.project_name,
+            Payment_Type__c = (String.isNotBlank(invoice.payment_type)) ? invoice.payment_type.replace('_',' ') : invoice.payment_type,
             Strike_Id__c = invoice.strike_id,
             Contract_Id__c = invoice.contract_id,
-            Project_Id__c = invoice.project_id,
             Type__c = invoice.invoice_type,
             PO__c = invoice.po,
             IO__c = invoice.client_io,
-            Region__c = invoice.region
+            Region__c = invoice.region,
+            Agency_Name__c = invoice.agency_name,
+            Brand_Name__c = invoice.brand_name,
+            Client_Service_Name__c = invoice.client_service_name,
+            CurrencyIsoCode = getAllowedCurrency(invoice.currency_code),
+            Xero_Contact_Name__c = invoice.xero_contact
         );
     }
 
@@ -213,9 +223,7 @@ public with sharing class InvoiceHelper {
         @TestVisible private Integer invoice_amount = 5;
 
         public HttpResponse respond(HttpRequest req) {
-            System.assertEquals(getEndpointUrl(), req.getEndpoint());
             System.assertEquals('GET', req.getMethod());
-
 
             HttpResponse res = new HttpResponse();
             res.setHeader('Content-Type', 'application/json');
@@ -237,12 +245,10 @@ public with sharing class InvoiceHelper {
 
             for (Integer i = 1; i <= invoice_amount; i++) {
                 InvoiceData invoice = new InvoiceData();
-                invoice.project_id = 'ExtPId' + i;
                 invoice.contract_id = 'ExtCId' + i;
                 invoice.contract_name = 'ContractName' + i;
-                invoice.project_name = 'ProjectName' + i;
                 invoice.strike_id = 'TVName' + i;
-                invoice.invoice_type = 'Month';
+                invoice.invoice_type = 'Monthly';
                 invoice.invoice_amount = (1000 * i / (1 + i * 0.5)).setScale(4);
                 invoice.start_date = startDateString;
                 invoice.end_date = endDateString;
@@ -252,6 +258,9 @@ public with sharing class InvoiceHelper {
                 invoice.client_io = 'IO Text' + i;
                 invoice.po = 'PO Text' + i;
                 invoice.region = 'APAC';
+                invoice.agency_name = 'Publicis Group APAC';
+                invoice.brand_name = 'P&G';
+                invoice.client_service_name = 'Karen Chen';
                 invoices.add(invoice);
             }
             return invoices;

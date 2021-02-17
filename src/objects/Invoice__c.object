@@ -148,7 +148,7 @@
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
-    <deploymentStatus>InDevelopment</deploymentStatus>
+    <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
@@ -158,6 +158,16 @@
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Agency_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Agency Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>Billing_Profile__c</fullName>
         <externalId>false</externalId>
@@ -181,6 +191,34 @@
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Brand_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Brand Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Checked__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Checked</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Client_Service_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Client Service Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Contract_Id__c</fullName>
@@ -298,26 +336,6 @@
         </valueSet>
     </fields>
     <fields>
-        <fullName>Project_Id__c</fullName>
-        <externalId>true</externalId>
-        <label>Project Id</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Project__c</fullName>
-        <externalId>false</externalId>
-        <label>Project</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>Region__c</fullName>
         <externalId>false</externalId>
         <label>Region</label>
@@ -388,17 +406,38 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
-                    <fullName>Month</fullName>
+                    <fullName>Monthly</fullName>
                     <default>false</default>
-                    <label>Month</label>
+                    <label>Monthly</label>
                 </value>
                 <value>
                     <fullName>Lifetime</fullName>
                     <default>false</default>
                     <label>Lifetime</label>
                 </value>
+                <value>
+                    <fullName>Once</fullName>
+                    <default>false</default>
+                    <label>Once</label>
+                </value>
+                <value>
+                    <fullName>Month</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Month</label>
+                </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Xero_Contact_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Xero Contact Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Xero_Entity__c</fullName>
@@ -415,7 +454,7 @@
     <fields>
         <fullName>Xero_Id__c</fullName>
         <externalId>true</externalId>
-        <label>Xero Contract Id</label>
+        <label>Xero Contact ID</label>
         <length>50</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -459,11 +498,75 @@
     <label>Invoice</label>
     <listViews>
         <fullName>All</fullName>
+        <columns>Xero_Invoice_Name__c</columns>
+        <columns>Region__c</columns>
+        <columns>Agency_Name__c</columns>
+        <columns>Brand_Name__c</columns>
+        <columns>Contract__c</columns>
+        <columns>Strike_Id__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>NAME</columns>
+        <columns>Checked__c</columns>
+        <columns>Invoice_Amount__c</columns>
+        <columns>Client_Service_Name__c</columns>
         <filterScope>Everything</filterScope>
+        <filters>
+            <field>End_Date__c</field>
+            <operation>greaterThan</operation>
+            <value>12/31/2020</value>
+        </filters>
+        <filters>
+            <field>End_Date__c</field>
+            <operation>lessThan</operation>
+            <value>2/1/2021</value>
+        </filters>
         <label>All</label>
     </listViews>
+    <listViews>
+        <fullName>Last_Month</fullName>
+        <columns>Xero_Invoice_Name__c</columns>
+        <columns>Region__c</columns>
+        <columns>Agency_Name__c</columns>
+        <columns>Brand_Name__c</columns>
+        <columns>Contract__c</columns>
+        <columns>Strike_Id__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Invoice_Amount__c</columns>
+        <columns>Client_Service_Name__c</columns>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>End_Date__c</field>
+            <operation>equals</operation>
+            <value>LAST_MONTH</value>
+        </filters>
+        <label>Last Month</label>
+    </listViews>
+    <listViews>
+        <fullName>This_Month</fullName>
+        <columns>Xero_Invoice_Name__c</columns>
+        <columns>Region__c</columns>
+        <columns>Agency_Name__c</columns>
+        <columns>Brand_Name__c</columns>
+        <columns>Contract__c</columns>
+        <columns>Strike_Id__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Invoice_Amount__c</columns>
+        <columns>Client_Service_Name__c</columns>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>End_Date__c</field>
+            <operation>equals</operation>
+            <value>THIS_MONTH</value>
+        </filters>
+        <label>This Month</label>
+    </listViews>
     <nameField>
-        <displayFormat>INV-{00000}</displayFormat>
+        <displayFormat>INV-{000000}</displayFormat>
         <label>Invoice Name</label>
         <type>AutoNumber</type>
     </nameField>

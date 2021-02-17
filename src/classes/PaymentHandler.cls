@@ -1,6 +1,8 @@
 public with sharing class PaymentHandler implements ITrigger {
 
     @TestVisible private static final String VARIABLE_KEYWORD = 'Variable';
+    @TestVisible private static final String DEFAULT_TIMEZONE = (String) SObjectType.Payment__c.fields.Timezone__c.getDefaultValue();
+
     @TestVisible public static Map<String, BillingCondition__c> billingConditions { get {
         if (billingConditions == null) {
             billingConditions = new Map<String, BillingCondition__c>();
@@ -32,6 +34,7 @@ public with sharing class PaymentHandler implements ITrigger {
         for (Payment__c project :projects) {
             project.Platform_Type__c = project.Platform_Type_Formula__c;
             project.Platform_Prefix__c = project.PlatformPrefix__c;
+            project.Timezone__c = DEFAULT_TIMEZONE;
 
             if (!projectsForPayments.containsKey(project.Payment__c)) {
                 projectsForPayments.put(project.Payment__c, new List<Payment__c>());
