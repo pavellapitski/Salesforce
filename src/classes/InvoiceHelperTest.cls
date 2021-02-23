@@ -29,7 +29,6 @@ private class InvoiceHelperTest {
         Test.stopTest();
 
         List<EventLog__c> logs = [SELECT Id, Info__c, Status__c FROM EventLog__c WHERE Type__c = :EventLog.STRIKE_DATA_CALLOUT AND Status__c = :EventLog.STATUS_ERROR];
-        System.debug('### logs: ' + logs);
         System.assertEquals(logs.size(), 0, 'No Errors Should Be');
 
         List<Invoice__c> invoices = [SELECT Id FROM Invoice__c];
@@ -75,12 +74,11 @@ private class InvoiceHelperTest {
         InvoiceHelper.ResponseMockSuccess mockClass = new InvoiceHelper.ResponseMockSuccess();
 
         Test.startTest();
-        // create duplicate records
+        // create duplicate records with modified dates
         List<Invoice__c> invoicesToInsert = new List<Invoice__c>();
-        for (InvoiceHelper.InvoiceData invoice :mockClass.getBodyFor5Records()) {
+        for (InvoiceHelper.InvoiceResponse invoice :mockClass.getBodyFor5Records()) {
             invoicesToInsert.add(InvoiceHelper.setInvoice(invoice));
         }
-        // change the date, decreasing the month by 1
         for (Invoice__c invoice :invoicesToInsert) {
             invoice.Start_Date__c = invoice.Start_Date__c.addMonths(-1);
             invoice.End_Date__c = invoice.End_Date__c.addMonths(-1);
@@ -108,8 +106,8 @@ private class InvoiceHelperTest {
         Test.startTest();
         // create duplicate records
         List<Invoice__c> invoicesToInsert = new List<Invoice__c>();
-        for (InvoiceHelper.InvoiceData invoice :mockClass.getBodyFor5Records()) {
-            invoice.invoice_amount = initialInvoiceAmount; // set up Invoice Amount to check the value is updated further
+        for (InvoiceHelper.InvoiceResponse invoice :mockClass.getBodyFor5Records()) {
+            invoice.invoice_amount = initialInvoiceAmount;
             invoicesToInsert.add(InvoiceHelper.setInvoice(invoice));
         }
         insert invoicesToInsert;
@@ -129,23 +127,72 @@ private class InvoiceHelperTest {
     }
 
     @IsTest
-    static void updateInvoiceFromXeroSyncScheduler() { // XeroSync.updateInvoice()
-
-    }
-
-    /*@IsTest
-    static void invoiceBatchTestError() {
+    static void calloutCheckedInvoicesWithoutChangingInvoiceAmountTest1() {
+        Decimal initialInvoiceAmount = 100;
+        String initialContractName = 'TestContract';
         TestHelper.createAppSettings();
+        InvoiceHelper.ResponseMockSuccess mockClass = new InvoiceHelper.ResponseMockSuccess();
 
         Test.startTest();
-        Test.setMock(HttpCalloutMock.class, new InvoiceHelper.ResponseMockError());
-        System.schedule('Test Scheduler 1', '0 0 22 * * ?', new InvoiceScheduler());
+        // create duplicate records
+        List<Invoice__c> invoicesToInsert = new List<Invoice__c>();
+        for (InvoiceHelper.InvoiceResponse invoice :mockClass.getBodyFor5Records()) {
+            invoice.invoice_amount = initialInvoiceAmount;
+            Invoice__c invoiceToInsert = InvoiceHelper.setInvoice(invoice);
+            invoiceToInsert.Checked__c = true;
+            invoiceToInsert.Contract__c = initialContractName;
+
+            invoicesToInsert.add(invoiceToInsert);
+        }
+        insert invoicesToInsert;
+
+        Test.setMock(HttpCalloutMock.class, mockClass);
+        InvoiceScheduler.calloutInvoices(System.today().month(), System.today().year());
         Test.stopTest();
 
         List<EventLog__c> logs = [SELECT Id, Info__c, Status__c FROM EventLog__c WHERE Type__c = :EventLog.STRIKE_DATA_CALLOUT AND Status__c = :EventLog.STATUS_ERROR];
-        System.assertEquals(1, logs.size());
-        System.assert((logs[0].Info__c).startsWith('CALLOUT ERROR. STATUS: '));
-    }*/
+        System.assertEquals(logs.size(), 0, 'No Errors Should Be');
 
+        List<Invoice__c> invoices = [SELECT Id, Invoice_Amount__c, Contract__c  FROM Invoice__c];
+        System.assertEquals(mockClass.invoice_amount, invoices.size(), 'Old records have been replaced by new ones');
+        for (Invoice__c invoice :invoices) {
+            System.assertEquals(initialInvoiceAmount, invoice.Invoice_Amount__c, 'Invoice Amount should NOT be updated for Checked invoice');
+            System.assertNotEquals(initialContractName, invoice.Contract__c, 'Contact Name should be updated even for Checked invoice');
+        }
+    }
 
+    @IsTest
+    static void calloutCheckedInvoicesWithoutChangingInvoiceAmountTest2() {
+        Decimal initialInvoiceAmount = 100;
+        Date initialDueDate = Date.newInstance(System.today().year(), System.today().month(), System.today().day());
+        TestHelper.createAppSettings();
+        InvoiceHelper.ResponseMockSuccess mockClass = new InvoiceHelper.ResponseMockSuccess();
+
+        Test.startTest();
+        // create duplicate records
+        List<Invoice__c> invoicesToInsert = new List<Invoice__c>();
+        for (InvoiceHelper.InvoiceResponse invoice :mockClass.getBodyFor5Records()) {
+            invoice.invoice_amount = initialInvoiceAmount;
+            Invoice__c invoiceToInsert = InvoiceHelper.setInvoice(invoice);
+            invoiceToInsert.Checked__c = true;
+            invoiceToInsert.Due_Date__c = initialDueDate;
+
+            invoicesToInsert.add(invoiceToInsert);
+        }
+        insert invoicesToInsert;
+
+        Test.setMock(HttpCalloutMock.class, mockClass);
+        InvoiceScheduler.calloutInvoices(System.today().month(), System.today().year());
+        Test.stopTest();
+
+        List<EventLog__c> logs = [SELECT Id, Info__c, Status__c FROM EventLog__c WHERE Type__c = :EventLog.STRIKE_DATA_CALLOUT AND Status__c = :EventLog.STATUS_ERROR];
+        System.assertEquals(logs.size(), 0, 'No Errors Should Be');
+
+        List<Invoice__c> invoices = [SELECT Id, Invoice_Amount__c, Contract__c, Due_Date__c  FROM Invoice__c];
+        System.assertEquals(mockClass.invoice_amount, invoices.size(), 'Old records have been replaced by new ones');
+        for (Invoice__c invoice :invoices) {
+            System.assertEquals(initialInvoiceAmount, invoice.Invoice_Amount__c, 'Invoice Amount should NOT be updated for Checked invoice');
+            System.assertNotEquals(initialDueDate, invoice.Due_Date__c, 'Due Date should be updated even for Checked invoice');
+        }
+    }
 }

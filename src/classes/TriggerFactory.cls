@@ -1,5 +1,5 @@
 public with sharing class TriggerFactory {
-    public static void createHandler(Schema.sObjectType soType) {
+    public static void createHandler(Schema.SObjectType soType) {
         ITrigger handler = getHandler(soType);
         if (handler == null) {
             throw new TriggerException('No Trigger Handler registered for Object Type: ' + soType);
@@ -40,57 +40,60 @@ public with sharing class TriggerFactory {
         handler.andFinally();
     }
 
-    private static ITrigger getHandler(Schema.sObjectType soType) {
-        if (soType == Opportunity.sObjectType) {
+    private static ITrigger getHandler(Schema.SObjectType soType) {
+        if (soType == Opportunity.SObjectType) {
             return new OpportunityHandler();
         }
-        if (soType == BillingCondition__c.sObjectType) {
+        if (soType == BillingCondition__c.SObjectType) {
             return new BillingConditionHandler();
         }
-        else if (soType == Project__c.sObjectType) {
+        else if (soType == Project__c.SObjectType) {
             return new ProjectHandler();
         }
-        else if (soType == Sub_Project__c.sObjectType) {
+        else if (soType == Sub_Project__c.SObjectType) {
             return new SubProjectHandler();
         }
-        else if (soType == Payment__c.sObjectType) {
+        else if (soType == Payment__c.SObjectType) {
             return new PaymentHandler();
         }
-        else if (soType == MM_Spendings__c.sObjectType) {
+        else if (soType == MM_Spendings__c.SObjectType) {
             return new MMSpendingsHandler();
         }
-        else if (soType == Account.sObjectType) {
+        else if (soType == Account.SObjectType) {
             return new AccountHandler();
         }
-        else if (soType == Brand__c.sObjectType) {
+        else if (soType == Brand__c.SObjectType) {
             return new BrandHandler();
         }
-        else if (soType == Brand_Account__c.sObjectType) {
+        else if (soType == Brand_Account__c.SObjectType) {
             return new BrandAccountHandler();
         }
-        else if (soType == Contract_Sales_Rep__c.sObjectType) {
+        else if (soType == Contract_Sales_Rep__c.SObjectType) {
             return new ContractSalesRepHandler();
         }
-        else if (soType == CreditNote__c.sObjectType) {
+        else if (soType == CreditNote__c.SObjectType) {
             return new CreditNoteHandler();
         }
-        else if (soType == MakeGood__c.sObjectType) {
+        else if (soType == MakeGood__c.SObjectType) {
             return new MakeGoodHandler();
         }
-        else if (soType == Monthly_Distribution__c.sObjectType) {
+        else if (soType == Monthly_Distribution__c.SObjectType) {
             return new MonthlyDistributionHandler();
         }
-        else if (soType == OpportunityAdPlacement__c.sObjectType) {
+        else if (soType == OpportunityAdPlacement__c.SObjectType) {
             return new OpportunityAdPlacementHandler();
         }
-        else if (soType == OpportunityPlatform__c.sObjectType) {
+        else if (soType == OpportunityPlatform__c.SObjectType) {
             return new OpportunityPlatformHandler();
         }
-        else if (soType == VideoUrl__c.sObjectType) {
+        else if (soType == VideoUrl__c.SObjectType) {
             return new VideoUrlHandler();
         }
-        else if (soType == Sales_Rep_MD__c.sObjectType) {
+        else if (soType == Sales_Rep_MD__c.SObjectType) {
             return new SalesRepMDHandler();
+        }
+        else if (soType == Invoice__c.SObjectType) {
+            return new InvoiceHandler();
         }
         return null;
     }

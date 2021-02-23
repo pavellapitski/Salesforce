@@ -519,7 +519,7 @@
         <filters>
             <field>End_Date__c</field>
             <operation>lessThan</operation>
-            <value>2/1/2021</value>
+            <value>3/1/2021</value>
         </filters>
         <label>All</label>
     </listViews>

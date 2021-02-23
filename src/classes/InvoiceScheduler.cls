@@ -32,7 +32,45 @@ public with sharing class InvoiceScheduler implements Schedulable {
         calloutInvoices(month, year);
     }
 
-    private static HttpRequest getAccessTokenRequest() {
+    private static List<EventLog__c> logs { get {
+        if (logs == null) {
+            logs = new List<EventLog__c>();
+        }
+        return  logs;
+    } set; }
+
+    @Future(Callout=true)
+    public static void calloutInvoices(Integer month, Integer year) {
+        logs.clear();
+
+        String accessToken = getAccessTokenOrWriteErrorLogs();
+        getInvoicesWithInsertionOrWriteErrorLogs(accessToken, new List<Integer>{month, year});
+
+        insert logs;
+    }
+
+    private static String getAccessTokenOrWriteErrorLogs() {
+        String accessToken = '';
+        if (Test.isRunningTest()) {
+            accessToken = 'TOKEN_TEST';
+        } else {
+            HttpRequest accessTokenRequest = prepareRequestToPostAccessToken();
+            try {
+                HttpResponse res = new Http().send(accessTokenRequest);
+                if (res.getStatusCode() == 200) {
+                    Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+                    accessToken = String.valueOf(responseMap.get('access_token'));
+                } else {
+                    writeErrorLog('CALLOUT ERROR. STATUS: ' + res.getStatus() + '\nSTATUS CODE: ' + res.getStatusCode() + '\nRESPONSE BODY: ' + res.getBody());
+                }
+            } catch (Exception ex) {
+                writeErrorLog((ex.getTypeName()).toUpperCase() + ' EXCEPTION. MESSAGE: ' + ex.getMessage() + '\nLINE: ' + ex.getStackTraceString());
+            }
+        }
+        return accessToken;
+    }
+
+    private static HttpRequest prepareRequestToPostAccessToken() {
         HttpRequest req = new HttpRequest();
         req.setMethod('POST');
         req.setHeader('content-type', 'application/x-www-form-urlencoded');
@@ -41,96 +79,71 @@ public with sharing class InvoiceScheduler implements Schedulable {
         return req;
     }
 
-    @Future(Callout=true)
-    public static void calloutInvoices(Integer month, Integer year) {
-        List<EventLog__c> logs = new List<EventLog__c>();
-
-        String accessToken = '';
-        if (Test.isRunningTest()) {
-            accessToken = 'TOKEN_TEST';
-        } else {
-            HttpRequest accessTokenRequest = getAccessTokenRequest();
-            try {
-                HttpResponse res = new Http().send(accessTokenRequest);
-                if (res.getStatusCode() == 200) {
-                    Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
-                    accessToken = String.valueOf(responseMap.get('access_token'));
-                } else {
-                    logs.add(EventLog.createEventLog(
-                        'CALLOUT ERROR. STATUS: ' + res.getStatus() + '\nSTATUS CODE: ' + res.getStatusCode() + '\nRESPONSE BODY: ' + res.getBody(),
-                        EventLog.STATUS_ERROR,
-                        EventLog.STRIKE_DATA_CALLOUT
-                    ));
-                }
-            } catch (Exception ex) {
-                logs.add(EventLog.createEventLog(
-                    (ex.getTypeName()).toUpperCase() + ' EXCEPTION. MESSAGE: ' + ex.getMessage() + '\nLINE: ' + ex.getStackTraceString(),
-                    EventLog.STATUS_ERROR,
-                    EventLog.STRIKE_DATA_CALLOUT
-                ));
-            }
-        }
-
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint(InvoiceHelper.getEndpointUrl(String.valueOf(month), String.valueOf(year)));
-        req.setTimeout(60000);
-        req.setMethod('GET');
-        req.setHeader('Authorization', 'Bearer ' + accessToken/*InvoiceHelper.getAuthorizationHeader()*/);
+    private static void getInvoicesWithInsertionOrWriteErrorLogs(String accessToken, List<Integer> monthYear) {
+        // Bearer Authentication
+        HttpRequest req = prepareRequestToGetInvoices(accessToken, monthYear);
 
         try {
             HttpResponse res = new Http().send(req);
             if (res.getStatusCode() == 200) {
-                List<InvoiceHelper.InvoiceData> response = (List<InvoiceHelper.InvoiceData>) JSON.deserializeStrict(res.getBody(), List<InvoiceHelper.InvoiceData>.class);
-                Map<String, Invoice__c> strikeIDsToInvoice = new Map<String, Invoice__c>();
+                List<InvoiceHelper.InvoiceResponse> response = (List<InvoiceHelper.InvoiceResponse>)
+                            JSON.deserializeStrict(res.getBody(), List<InvoiceHelper.InvoiceResponse>.class);
 
-                List<Invoice__c> invoicesToUpsert = new List<Invoice__c>();
-                for (InvoiceHelper.InvoiceData invoice :response) {
-                    strikeIDsToInvoice.put(invoice.strike_id, InvoiceHelper.setInvoice(invoice/*, xeroContactId*/));
+                Map<String, Invoice__c> strikeIDsToInvoice = new Map<String, Invoice__c>();
+                for (InvoiceHelper.InvoiceResponse invoice :response) {
+                    strikeIDsToInvoice.put(invoice.strike_id, InvoiceHelper.setInvoice(invoice));
                 }
 
-                System.debug('### StrikeIDs: ' + strikeIDsToInvoice.keySet());
-                Map<String,Invoice__c> existingInvoices = getExistingInvoice(month, year, new List<String>(strikeIDsToInvoice.keySet()));
-                System.debug('### existingInvoices: ' + existingInvoices);
+                Map<String, Invoice__c> existingInvoices = getExistingInvoicesByMonthYearID(monthYear, strikeIDsToInvoice.keySet());
+                List<Invoice__c> invoicesToUpsert = new List<Invoice__c>();
                 for (String strikeId :strikeIDsToInvoice.keySet()) {
-                    Invoice__c externalInvoice = strikeIDsToInvoice.get(strikeId);
+                    Invoice__c invoiceFromResponse = strikeIDsToInvoice.get(strikeId);
                     Invoice__c existingInvoice = existingInvoices.get(strikeId);
+                    System.debug('### invoiceFromResponse: ' + invoiceFromResponse);
+                    System.debug('### existingInvoice: ' + existingInvoice);
                     if (existingInvoice == null) {
-                        System.debug('### existingInvoice is NULL: ' + externalInvoice);
-                        // new invoice record should be inserted
-                        invoicesToUpsert.add(externalInvoice);
+                        invoicesToUpsert.add(invoiceFromResponse);
                     } else {
-                        Boolean doUpsert = isChanged(existingInvoice, externalInvoice);
+                        Boolean doUpsert = isInvoiceDifferent(existingInvoice, invoiceFromResponse);
+                        Boolean ignoreInvoiceAmountDifference = existingInvoice.Checked__c;
                         System.debug('### doUpsert: ' + doUpsert);
                         if (doUpsert) {
-                            externalInvoice.Id = existingInvoice.Id;
-                            System.debug('### externalInvoice: ' + externalInvoice);
-                            invoicesToUpsert.add(externalInvoice);
+                            invoiceFromResponse.Id = existingInvoice.Id;
+                            if (ignoreInvoiceAmountDifference) {
+                                invoiceFromResponse.Invoice_Amount__c = existingInvoice.Invoice_Amount__c;
+                            }
+                            invoicesToUpsert.add(invoiceFromResponse);
                         }
                     }
                 }
                 upsert invoicesToUpsert;
             } else {
-                logs.add(EventLog.createEventLog(
-                    'CALLOUT ERROR. STATUS: ' + res.getStatus() + '\nSTATUS CODE: ' + res.getStatusCode() + '\nRESPONSE BODY: ' + res.getBody(),
-                    EventLog.STATUS_ERROR,
-                    EventLog.STRIKE_DATA_CALLOUT
-                ));
+                writeErrorLog('CALLOUT ERROR. STATUS: ' + res.getStatus() + '\nSTATUS CODE: ' + res.getStatusCode() + '\nRESPONSE BODY: ' + res.getBody());
             }
         } catch (Exception ex) {
-            logs.add(EventLog.createEventLog(
-                (ex.getTypeName()).toUpperCase() + ' EXCEPTION. MESSAGE: ' + ex.getMessage() + '\nLINE: ' + ex.getStackTraceString(),
-                EventLog.STATUS_ERROR,
-                EventLog.STRIKE_DATA_CALLOUT
-            ));
+            writeErrorLog((ex.getTypeName()).toUpperCase() + ' EXCEPTION. MESSAGE: ' + ex.getMessage() + '\nLINE: ' + ex.getStackTraceString());
         }
-        insert logs;
     }
 
-    private static Map<String, Invoice__c> getExistingInvoice(Integer month, Integer year, List<String> strikeIDs) {
-        Date invoiceDate = Date.newInstance(year, month, 01);
+    private static HttpRequest prepareRequestToGetInvoices(String accessToken, List<Integer> monthYear) {
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(InvoiceHelper.getEndpointUrl(String.valueOf(monthYear[0]), String.valueOf(monthYear[1])));
+        req.setTimeout(60000);
+        req.setMethod('GET');
+        req.setHeader('Authorization', 'Bearer ' + accessToken);
+        return req;
+    }
+
+    private static void writeErrorLog(String msg) {
+        logs.add(EventLog.createEventLog(msg, EventLog.STATUS_ERROR, EventLog.STRIKE_DATA_CALLOUT));
+    }
+
+    private static Map<String, Invoice__c> getExistingInvoicesByMonthYearID(List<Integer> monthYear, Set<String> strikeIDs) {
+        Date invoiceDate = Date.newInstance(monthYear[1], monthYear[0], 01);
         Map<String, Invoice__c> strikeIdToInvoice = new Map<String, Invoice__c>();
         List<Invoice__c> existingInvoices = [
-            SELECT Id, Start_Date__c, End_Date__c, Invoice_Amount__c, Due_Date__c, Strike_Id__c
+            SELECT Id, Start_Date__c, End_Date__c, Invoice_Amount__c, Due_Date__c, Strike_Id__c, Checked__c, Contract__c, IO__c, PO__c, Payment_Type__c, CurrencyIsoCode,
+                    Agency_Name__c, Billing_Profile__c, Region__c, Brand_Name__c, Client_Service_Name__c, Xero_Contact_Name__c
             FROM Invoice__c
             WHERE Start_Date__c >= :invoiceDate AND End_Date__c < :invoiceDate.addMonths(1) AND Strike_Id__c IN :strikeIDs
         ];
@@ -140,10 +153,22 @@ public with sharing class InvoiceScheduler implements Schedulable {
         return strikeIdToInvoice;
     }
 
-    private static Boolean isChanged(Invoice__c existingInvoice, Invoice__c updatedInvoice) {
-        return existingInvoice.Start_Date__c != updatedInvoice.Start_Date__c ||
-            existingInvoice.End_Date__c != updatedInvoice.End_Date__c ||
-            existingInvoice.Invoice_Amount__c != updatedInvoice.Invoice_Amount__c ||
-            existingInvoice.Due_Date__c != updatedInvoice.Due_Date__c;
+    private static Boolean isInvoiceDifferent(Invoice__c existingInvoice, Invoice__c invoiceFromResponse) {
+
+        return existingInvoice.Start_Date__c != invoiceFromResponse.Start_Date__c ||
+            existingInvoice.End_Date__c != invoiceFromResponse.End_Date__c ||
+            existingInvoice.Due_Date__c != invoiceFromResponse.Due_Date__c ||
+            existingInvoice.Contract__c != invoiceFromResponse.Contract__c ||
+            existingInvoice.IO__c != invoiceFromResponse.IO__c ||
+            existingInvoice.PO__c != invoiceFromResponse.PO__c ||
+            existingInvoice.Payment_Type__c != invoiceFromResponse.Payment_Type__c ||
+            existingInvoice.CurrencyIsoCode != invoiceFromResponse.CurrencyIsoCode ||
+            existingInvoice.Agency_Name__c != invoiceFromResponse.Agency_Name__c ||
+            existingInvoice.Billing_Profile__c != invoiceFromResponse.Billing_Profile__c ||
+            existingInvoice.Region__c != invoiceFromResponse.Region__c ||
+            existingInvoice.Brand_Name__c != invoiceFromResponse.Brand_Name__c ||
+            existingInvoice.Client_Service_Name__c != invoiceFromResponse.Client_Service_Name__c ||
+            existingInvoice.Xero_Contact_Name__c != invoiceFromResponse.Xero_Contact_Name__c ||
+            existingInvoice.Invoice_Amount__c != invoiceFromResponse.Invoice_Amount__c;
     }
 }

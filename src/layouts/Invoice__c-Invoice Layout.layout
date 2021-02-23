@@ -126,6 +126,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>Xero_Invoice_Name__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>Xero_Invoice_Id__c</field>
             </layoutItems>
             <layoutItems>

@@ -11,6 +11,8 @@ public with sharing class InvoiceHelper {
 
     @TestVisible private static final AppSettings__c settings = AppSettings__c.getInstance('Default');
 
+    public static final String INVOICE_AMOUNT_MODIFICATION_ERROR_MSG = 'You cannot modify Invoice Amount value for Checked record';
+
     /*public static String getAuthorizationHeader() {
         Blob header = Blob.valueOf(settings.StrikeDataWarehouseUser__c + ':' + settings.StrikeDataWarehouseToken__c);
         return 'BASIC ' + EncodingUtil.base64Encode(header);
@@ -28,11 +30,10 @@ public with sharing class InvoiceHelper {
         return new List<String>{settings.StrikeInvoiceUser__c, settings.StrikeInvoicePassword__c};
     }
 
-    public class Invoice { // Data Model Class for Invoice__c object
+    public class Invoice {
         String xeroExternalId { get; set; }
         String paymentType { get; set; }
         String strikeId { get; set; }
-        //String project { get; set; }
         String contract { get; set; }
         String po { get; set;}
         String io { get; set;}
@@ -52,7 +53,7 @@ public with sharing class InvoiceHelper {
         instance.xeroEntityId = invoice.Xero_Entity__c;
         instance.billingProfile = invoice.Billing_Profile__c;
         instance.currencyIsoCode = invoice.CurrencyIsoCode;
-        instance.po = invoice.PO__c;            // "PO #"
+        instance.po = invoice.PO__c;
         instance.io = invoice.IO__c;            // "IO #" the same as invoice.Contract__c
         instance.type = invoice.Type__c;
         instance.startDate = invoice.Start_Date__c;
@@ -72,11 +73,8 @@ public with sharing class InvoiceHelper {
             XeroSettings__c xeroSettings = XeroSync.getXeroSettingsByIds(new Set<Id>{invoice.xeroEntityId})[0];
 
             List<XeroWrappers.XeroInvoice> xeroInvoices = new List<XeroWrappers.XeroInvoice>{prepareXeroInvoice(invoice, xeroSettings)};
-            System.debug('### xeroInvoices: ' + xeroInvoices);
 
             XeroWrappers.XeroInvoiceResponse xeroInvoiceResponse = XeroAPI.postInvoices(xeroInvoices, xeroSettings);
-            System.debug('### xeroInvoiceResponse: ' + xeroInvoiceResponse);
-
             if (xeroInvoiceResponse.statusCode == 200 || xeroInvoiceResponse.statusCode == 201) {
                 XeroWrappers.XeroInvoice submittedInvoice = (XeroWrappers.XeroInvoice) xeroInvoiceResponse.xeroObjects[0];
                 if (!submittedInvoice.hasErrors) {
@@ -109,16 +107,6 @@ public with sharing class InvoiceHelper {
         invoice.currencyCode = invoiceData.currencyIsoCode;
         invoice.invoiceDate = invoiceData.endDate;
         invoice.dueDate = invoiceData.dueDate;
-
-        /*invoice.dueDate = (invoiceData.type == 'Monthly') ? invoiceData.startDate.addMonths(1).addDays(-1) : invoiceData.dueDate;
-        if (String.isNotBlank(invoiceData.paymentType)) {
-            if (invoiceData.paymentType.startsWith('Net')) {
-                List<String> splitType = invoiceData.paymentType.split(' ');
-                if (splitType.size() == 2) {
-                    invoice.dueDate = invoiceData.startDate.addDays(Integer.valueOf(splitType[1]));
-                }
-            }
-        }*/
 
         List<XeroWrappers.XeroLineItem> lineItems = new List<XeroWrappers.XeroLineItem>();
         String itemCode = !xeroItems.isEmpty() ? xeroItems[0].ItemCode__c : '';
@@ -160,7 +148,7 @@ public with sharing class InvoiceHelper {
         }
 
         retVal += LINE_ITEM_DESCRIPTION_IO + (String.isBlank(invoiceData.io) == false ? String.valueOf(invoiceData.io) : '')+ '\n'
-                + LINE_ITEM_DESCRIPTION_INVOICING_PERIOD + invoiceData.startDate.format() + '-' + invoiceData.endDate.format();
+                + LINE_ITEM_DESCRIPTION_INVOICING_PERIOD + invoiceData.startDate.format() + ' - ' + invoiceData.endDate.format();
 
         return retVal;
     }
@@ -174,7 +162,7 @@ public with sharing class InvoiceHelper {
     }
 
     // Data Model Class for response received from Project-Creator API
-    public class InvoiceData {
+    public class InvoiceResponse {
         String contract_id { get; set; }                // external Id
         public String strike_id { get; set; }           // i.e. TV012183A
         String contract_name { get; set; }              // i.e. 012183
@@ -186,17 +174,17 @@ public with sharing class InvoiceHelper {
 
         String client_io { get; set; }
         String po { get; set; }
-        String region { get; set; }             // NA; EMEA; APAC
-        String billing_profile { get; set; }     // Client/Strike
-        String payment_type { get; set; }        // "Net 30" / "Net 45" / "Net 60" / "Net 90" / "Net 120" / "50/50" / "100% Upfront"
-        String invoice_type { get; set; }        // month / lifetime
+        String region { get; set; }                 // NA; EMEA; APAC
+        String billing_profile { get; set; }        // Client/Strike
+        String payment_type { get; set; }           // "Net 30" / "Net 45" / "Net 60" / "Net 90" / "Net 120" / "50/50" / "100% Upfront"
+        String invoice_type { get; set; }
         public Decimal invoice_amount { get; set; }
         String start_date { get; set; }
         String end_date { get; set; }
         String due_date { get; set; }
     }
 
-    public static Invoice__c setInvoice(InvoiceData invoice) {
+    public static Invoice__c setInvoice(InvoiceResponse invoice) {
         return new Invoice__c(
             Billing_Profile__c = invoice.billing_profile,
             Contract__c = invoice.contract_name,
@@ -232,8 +220,8 @@ public with sharing class InvoiceHelper {
             return res;
         }
 
-        @TestVisible private List<InvoiceData> getBodyFor5Records() {
-            List<InvoiceData> invoices = new List<InvoiceData>();
+        @TestVisible private List<InvoiceResponse> getBodyFor5Records() {
+            List<InvoiceResponse> invoices = new List<InvoiceResponse>();
 
             Date startDate = Date.newInstance(System.today().year(), System.today().month(), 01),
                     endDate = Date.newInstance(System.today().year(), System.today().addMonths(1).month(), 01).addDays(-1), // last day in current month
@@ -244,7 +232,7 @@ public with sharing class InvoiceHelper {
                     dueDateString = dueDate.year() + '-' + dueDate.month() + '-' + dueDate.day();
 
             for (Integer i = 1; i <= invoice_amount; i++) {
-                InvoiceData invoice = new InvoiceData();
+                InvoiceResponse invoice = new InvoiceResponse();
                 invoice.contract_id = 'ExtCId' + i;
                 invoice.contract_name = 'ContractName' + i;
                 invoice.strike_id = 'TVName' + i;
